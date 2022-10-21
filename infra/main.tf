@@ -7,3 +7,26 @@ terraform {
   }
   required_version = ">= 1.2.0"
 }
+
+
+module "production_environment_variables" {
+  source = "./environment_variables"
+
+  project_id = local.vercel_project_id
+  variables = {
+    DATABASE_URL    = var.PROD_DATABASE_URL
+    NEXTAUTH_SECRET = var.PROD_NEXTAUTH_SECRET
+  }
+  targets = ["production"]
+}
+
+module "preview_environment_variables" {
+  source = "./environment_variables"
+
+  project_id = local.vercel_project_id
+  variables = {
+    DATABASE_URL    = var.PREVIEW_DATABASE_URL
+    NEXTAUTH_SECRET = var.PREVIEW_NEXTAUTH_SECRET
+  }
+  targets = ["development", "preview"]
+}

@@ -1,0 +1,24 @@
+variable "PROD_DATABASE_URL" {
+  type     = string
+  nullable = false
+}
+
+variable "PROD_NEXTAUTH_SECRET" {
+  type     = string
+  nullable = false
+}
+
+variable "PREVIEW_DATABASE_URL" {
+  type     = string
+  nullable = false
+}
+
+variable "PREVIEW_NEXTAUTH_SECRET" {
+  type     = string
+  nullable = false
+}
+
+variable "VERCEL_API_TOKEN" {
+  type     = string
+  nullable = false
+}
