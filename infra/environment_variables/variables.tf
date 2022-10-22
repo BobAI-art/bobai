@@ -8,6 +8,8 @@ variable "variables" {
   type = object({
     DATABASE_URL    = string
     NEXTAUTH_SECRET = string
+    EMAIL_FROM      = string
+    EMAIL_SERVER    = string
   })
   nullable = false
 }

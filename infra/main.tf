@@ -16,6 +16,8 @@ module "production_environment_variables" {
   variables = {
     DATABASE_URL    = var.PROD_DATABASE_URL
     NEXTAUTH_SECRET = var.PROD_NEXTAUTH_SECRET
+    EMAIL_FROM      = var.EMAIL_FROM
+    EMAIL_SERVER    = var.EMAIL_SERVER
   }
   targets = ["production"]
 }
@@ -27,6 +29,8 @@ module "preview_environment_variables" {
   variables = {
     DATABASE_URL    = var.PREVIEW_DATABASE_URL
     NEXTAUTH_SECRET = var.PREVIEW_NEXTAUTH_SECRET
+    EMAIL_FROM      = var.EMAIL_FROM
+    EMAIL_SERVER    = var.EMAIL_SERVER
   }
   targets = ["development", "preview"]
 }

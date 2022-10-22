@@ -7,7 +7,8 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "infra": "cd infra && eval \"$(sed -e 's/^/export /' .env)\" && terraform init && terraform apply -auto-approve"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.12",
@@ -20,6 +21,7 @@
     "@trpc/server": "10.0.0-proxy-beta.17",
     "next": "12.3.1",
     "next-auth": "^4.12.3",
+    "nodemailer": "^6.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "1.9.1",

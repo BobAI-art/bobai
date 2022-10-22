@@ -22,3 +22,13 @@ variable "VERCEL_API_TOKEN" {
   type     = string
   nullable = false
 }
+
+variable "EMAIL_FROM" {
+  type     = string
+  nullable = false
+}
+
+variable "EMAIL_SERVER" {
+  type     = string
+  nullable = false
+}
