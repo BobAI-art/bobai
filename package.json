@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "eval \"$(sed -e 's/^/export /' .env)\" && next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "infra": "cd infra && eval \"$(sed -e 's/^/export /' .env)\" && terraform init && terraform apply -auto-approve"
+    "infra": "cd infra && eval \"$(sed -e 's/^/export /' .env)\" && terraform init && terraform apply -auto-approve",
+    "db:push": "eval \"$(sed -e 's/^/export /' .env)\" && prisma db push"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.12",
