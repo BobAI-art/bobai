@@ -63,8 +63,10 @@ model TrainingPhoto {
 
 model Model {
   id          String   @id @default(cuid()) @db.Char(25)
+  slug        String   @unique @db.Char(190)
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   created     DateTime @default(now())
   description String   @db.Text
   ownerId     String   @db.Char(25)
+  state       String   @db.Char(20)
 }

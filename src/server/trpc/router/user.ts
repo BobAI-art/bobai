@@ -1,8 +1,15 @@
 import { z } from "zod";
 import { userSchema } from "../../../utils/schema";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, publicProcedure } from "../trpc";
 
 export const userRouter = router({
+    get: publicProcedure.input(userSchema.name).query(async ({ input, ctx }) => {
+        return ctx.prisma.user.findUnique({
+            where: {
+                name: input,
+            }
+        })
+    }),
     nameAllowed: protectedProcedure
       .input(z.string())
       .query(async ({ input, ctx }) => {

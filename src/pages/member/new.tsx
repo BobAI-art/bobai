@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
+import Button from "../../components/Button";
 import { Layout } from "../../components/Layout";
 import { useDebounce } from "../../hooks/tools";
 import { userSchema } from "../../utils/schema";
@@ -73,9 +74,7 @@ const MemberNew: NextPage = () => {
               onChange={(e) => handleNameChanged(e.target.value)}
             />
           </label>
-          <button className="disabled:opacity-50" disabled={!canSave}>
-            Confirm
-          </button>
+          <Button disabled={!canSave}>Confirm</Button>
         </form>
         {nameCheck.success || !changed ? null : (
           <ul>
