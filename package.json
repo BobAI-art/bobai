@@ -9,7 +9,8 @@
     "lint": "next lint",
     "start": "next start",
     "infra": "cd infra && eval \"$(sed -e 's/^/export /' .env)\" && terraform init && terraform apply -auto-approve",
-    "db:push": "eval \"$(sed -e 's/^/export /' .env)\" && prisma db push"
+    "db:push": "eval \"$(sed -e 's/^/export /' .env)\" && prisma db push",
+    "db:studio": "eval \"$(sed -e 's/^/export /' .env)\" && prisma studio"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.12",
