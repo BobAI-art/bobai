@@ -38,10 +38,10 @@ model Session {
 
 model User {
   id            String    @id @default(cuid()) @db.Char(25)
-  name          String?
-  email         String?   @unique
+  name          String    @unique @default(cuid()) @db.Char(190)
+  email         String    @unique @db.Char(190)
   emailVerified DateTime?
-  image         String?
+  image         String?   @db.Char(190)
   accounts      Account[]
   sessions      Session[]
   Model         Model[]
@@ -57,7 +57,7 @@ model VerificationToken {
 
 model TrainingPhoto {
   id   String @id @default(cuid())
-  path String @db.Char(200)
+  path String @db.Char(190)
   type String @db.Char(20)
 }
 

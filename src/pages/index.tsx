@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { trpc } from "../utils/trpc";
-import { Header } from "../components/Header";
+import { Layout } from "../components/Layout";
 
 const Home: NextPage = () => {
   return (
@@ -14,9 +13,9 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="container mx-auto flex min-h-screen flex-col ">
-        <Header />
-      </main>
+      <Layout>
+        <h1>Hello world</h1>
+      </Layout>
     </>
   );
 };

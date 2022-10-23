@@ -1,5 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
-import { UserIcon, ArrowLeftOnRectangleIcon } from "@heroicons/react/24/solid";
+import { UserIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
 export const Header: React.FC = () => {
@@ -12,13 +12,16 @@ export const Header: React.FC = () => {
       </h1>
       <div className="flex-grow" />
       {session ? (
-        <button
-          className="flex cursor-pointer gap-2 text-2xl font-extrabold leading-normal tracking-tight underline decoration-pink-500 hover:text-slate-800 hover:decoration-pink-900"
-          onClick={() => signOut()}
+        <Link
+          href={{
+            pathname: "/member/[name]",
+            query: { name: session?.user?.name },
+          }}
         >
-          <ArrowLeftOnRectangleIcon className="w-8" />
-          Sign out
-        </button>
+          <button className="flex items-center gap-2">
+            <UserIcon className="w-8" /> {session?.user?.name}
+          </button>
+        </Link>
       ) : (
         <button
           onClick={() => signIn()}
