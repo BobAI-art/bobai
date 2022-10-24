@@ -2,7 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.hero-text {
-    -webkit-text-fill-color: transparent;
-}

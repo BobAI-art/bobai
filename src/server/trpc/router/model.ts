@@ -29,4 +29,14 @@ export const modelRouter = router({
         },
       });
     }),
+  list: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.model.findMany({
+      where: {
+        ownerId: ctx.session.user.id,
+      },
+      orderBy: {
+        created: "desc",
+      },
+    });
+  }),
 });

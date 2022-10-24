@@ -17,6 +17,7 @@ specifiers:
   autoprefixer: ^10.4.7
   eslint: 8.22.0
   eslint-config-next: 12.3.1
+  moment: ^2.29.4
   next: 12.3.1
   next-auth: ^4.12.3
   nodemailer: ^6.8.0
@@ -40,6 +41,7 @@ dependencies:
   '@trpc/next': 10.0.0-proxy-beta.17_dzic5qqu4g5njip5df4nsnow4e
   '@trpc/react': 10.0.0-proxy-beta.17_toauwijr5xrg2tfgkv2b5sjcly
   '@trpc/server': 10.0.0-proxy-beta.17
+  moment: 2.29.4
   next: 12.3.1_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.14.0_pvhs6umhoiyo7cgwjp6cvqsra4
   nodemailer: 6.8.0
@@ -1735,6 +1737,10 @@ packages:
   /minimist/1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
     dev: true
+
+  /moment/2.29.4:
+    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
+    dev: false
 
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
