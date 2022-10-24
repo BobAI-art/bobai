@@ -10,7 +10,8 @@
     "start": "next start",
     "infra": "cd infra && eval \"$(sed -e 's/^/export /' .env)\" && terraform init && terraform apply -auto-approve",
     "db:push": "eval \"$(sed -e 's/^/export /' .env)\" && prisma db push",
-    "db:studio": "eval \"$(sed -e 's/^/export /' .env)\" && prisma studio"
+    "db:studio": "eval \"$(sed -e 's/^/export /' .env)\" && prisma studio",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.12",
@@ -39,6 +40,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "8.22.0",
     "eslint-config-next": "12.3.1",
+    "husky": "^8.0.1",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
