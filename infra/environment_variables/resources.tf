@@ -27,3 +27,30 @@ resource "vercel_project_environment_variable" "email_server" {
   target     = var.targets
 }
 
+resource "vercel_project_environment_variable" "aws_s3_access_key_id" {
+  project_id = var.project_id
+  key        = "AWS_S3_ACCESS_KEY_ID"
+  value      = var.variables.AWS_S3_ACCESS_KEY_ID
+  target     = var.targets
+}
+
+resource "vercel_project_environment_variable" "aws_s3_access_key_secret" {
+  project_id = var.project_id
+  key        = "AWS_S3_ACCESS_KEY_SECRET"
+  value      = var.variables.AWS_S3_ACCESS_KEY_SECRET
+  target     = var.targets
+}
+
+resource "vercel_project_environment_variable" "aws_s3_bucket" {
+  project_id = var.project_id
+  key        = "AWS_S3_BUCKET"
+  value      = var.variables.AWS_S3_BUCKET
+  target     = var.targets
+}
+
+resource "vercel_project_environment_variable" "aws_s3_region" {
+  project_id = var.project_id
+  key        = "AWS_S3_REGION"
+  value      = var.variables.AWS_S3_REGION
+  target     = var.targets
+}
