@@ -21,6 +21,42 @@ const imagesNeeded = {
 };
 const allImages = Object.values(imagesNeeded).reduce((a, b) => a + b, 0);
 
+const useOnMove = (
+  callback: (dx: number, dy: number) => void,
+  active: boolean
+) => {
+  const previousTouch = useRef<Touch | undefined>(undefined);
+
+  useEffect(() => {
+    if (!active) {
+      previousTouch.current = undefined;
+      return;
+    }
+    const moveHandler = (e: MouseEvent) => {
+      callback(e.movementX, e.movementY);
+    };
+    const touchMoveHandler = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      if (previousTouch.current && touch) {
+        callback(
+          touch.clientX - previousTouch.current.clientX,
+          touch.clientY - previousTouch.current.clientY
+        );
+      }
+      previousTouch.current = e.touches[0];
+    };
+    document.addEventListener("mousemove", moveHandler);
+    document.addEventListener("touchmove", touchMoveHandler, {
+      passive: false,
+    });
+    return () => {
+      document.removeEventListener("mousemove", moveHandler);
+      document.removeEventListener("touchmove", touchMoveHandler);
+    };
+  }, [active, callback, previousTouch]);
+};
+
 const ImageCutter: React.FC<{ src: string }> = ({ src }) => {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
@@ -43,12 +79,11 @@ const ImageCutter: React.FC<{ src: string }> = ({ src }) => {
     },
     [maskRef, imageRef]
   );
-
   const scale =
     (imageRef.current?.naturalWidth || 0) / (imageRef.current?.width || 1);
 
   const handleResize = useCallback(
-    (dx: number) => {
+    (dx: number, _: number) => {
       const imageWidth = imageRef.current?.clientWidth || 0;
 
       setWidth((width) =>
@@ -61,20 +96,8 @@ const ImageCutter: React.FC<{ src: string }> = ({ src }) => {
     [scale, x]
   );
 
-  useEffect(() => {
-    const moveHandler = (e: MouseEvent) => {
-      if (isDND && !isResizing) {
-        handleMove(e.movementX, e.movementY);
-      }
-      if (isResizing) {
-        handleResize(e.movementX);
-      }
-    };
-    document.addEventListener("mousemove", moveHandler);
-    return () => {
-      document.removeEventListener("mousemove", moveHandler);
-    };
-  }, [isDND, isResizing, handleMove, handleResize]);
+  useOnMove(handleMove, isDND && !isResizing);
+  useOnMove(handleResize, isResizing);
 
   useEffect(() => {
     const handler = () => {
@@ -82,9 +105,11 @@ const ImageCutter: React.FC<{ src: string }> = ({ src }) => {
       setIsResizing(false);
     };
     document.addEventListener("mouseup", handler);
+    document.addEventListener("touchend", handler);
 
     () => {
       document.removeEventListener("mouseup", handler);
+      document.removeEventListener("touchend", handler);
     };
   }, []);
 
@@ -119,6 +144,7 @@ const ImageCutter: React.FC<{ src: string }> = ({ src }) => {
         <img ref={imageRef} src={src} className="w-max blur-sm" />
         <div
           ref={maskRef}
+          onTouchStart={() => setIsDND(true)}
           onMouseDown={() => setIsDND(true)}
           style={{
             transform: `translate(${x}px, ${y}px)`,
@@ -139,6 +165,7 @@ const ImageCutter: React.FC<{ src: string }> = ({ src }) => {
           />
           <div
             onMouseDown={() => setIsResizing(true)}
+            onTouchStart={() => setIsResizing(true)}
             className={classNames(
               "absolute -right-2 -bottom-2 h-4 w-4 cursor-nw-resize outline-dashed",
               isResizing ? " outline-gray-500" : " outline-gray-700"
