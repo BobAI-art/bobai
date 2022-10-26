@@ -3,6 +3,17 @@ import { modelSchema } from "../../../utils/schema";
 import { router, protectedProcedure } from "../trpc";
 
 export const modelRouter = router({
+  get: protectedProcedure
+    .input(modelSchema.slug)
+    .query(async ({ ctx, input }) => {
+      const model = await ctx.prisma.model.findUnique({
+        where: {
+          slug: input,
+        },
+      });
+
+      return model;
+    }),
   slugExists: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
