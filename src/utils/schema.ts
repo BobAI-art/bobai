@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 const dbString = z.string().max(190);
+export const cuidSchema = z.string().regex(/^c[a-z0-9]{24}$/);
+export const base64ImageSchema = z
+  .string()
+  .regex(/^data:image\/[a-z]+;base64,/);
 
 export const userSchema = {
   name: dbString
