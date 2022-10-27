@@ -18,6 +18,10 @@ export const serverSchema = z.object({
   ),
   EMAIL_SERVER: z.string().url(),
   EMAIL_FROM: z.string(),
+  AWS_S3_REGION: z.string(),
+  AWS_S3_BUCKET: z.string(),
+  AWS_S3_ACCESS_KEY_ID: z.string(),
+  AWS_S3_ACCESS_KEY_SECRET: z.string(),
 });
 
 /**
@@ -37,4 +41,6 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
   // NEXT_PUBLIC_BAR: process.env.NEXT_PUBLIC_BAR,
+  AWS_S3_REGION: process.env.AWS_S3_REGION,
+  AWS_S3_BUCKET: process.env.AWS_S3_BUCKET,
 };

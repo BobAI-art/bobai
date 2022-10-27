@@ -18,6 +18,11 @@ module "production_environment_variables" {
     NEXTAUTH_SECRET = var.PROD_NEXTAUTH_SECRET
     EMAIL_FROM      = var.EMAIL_FROM
     EMAIL_SERVER    = var.EMAIL_SERVER
+
+    AWS_S3_ACCESS_KEY_ID     = module.production_file_store.bucket_access_key_id
+    AWS_S3_ACCESS_KEY_SECRET = module.production_file_store.bucket_secret_access_key
+    AWS_S3_BUCKET            = module.production_file_store.bucket_name
+    AWS_S3_REGION            = local.aws_s3_region
   }
   targets = ["production"]
 }
@@ -31,6 +36,27 @@ module "preview_environment_variables" {
     NEXTAUTH_SECRET = var.PREVIEW_NEXTAUTH_SECRET
     EMAIL_FROM      = var.EMAIL_FROM
     EMAIL_SERVER    = var.EMAIL_SERVER
+
+    AWS_S3_ACCESS_KEY_ID     = module.preview_file_store.bucket_access_key_id
+    AWS_S3_ACCESS_KEY_SECRET = module.preview_file_store.bucket_secret_access_key
+    AWS_S3_BUCKET            = module.preview_file_store.bucket_name
+    AWS_S3_REGION            = local.aws_s3_region
   }
   targets = ["development", "preview"]
+}
+
+module "preview_file_store" {
+  source = "./file_store"
+
+  bucket_name     = local.preview.bucket_name
+  allowed_origins = local.preview.allowed_origins
+  environment     = local.preview.environment
+}
+
+module "production_file_store" {
+  source = "./file_store"
+
+  bucket_name     = local.production.bucket_name
+  allowed_origins = local.production.allowed_origins
+  environment     = local.production.environment
 }
