@@ -28,7 +28,7 @@ export const ImageUpload: React.FC<{
   const file = files[0];
 
   return (
-    <div className={classNames("flex flex-wrap gap-2", className)}>
+    <div className={classNames("flex flex-wrap gap-2", className || "")}>
       {file ? (
         <div className="w-96" key={file}>
           <ImageCutter
