@@ -1,9 +1,12 @@
 import { ChangeEventHandler, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
+import { classNames } from "../toolbox";
 import { ImageCutter } from "./ImageCutter";
 
-export const ImageUpload: React.FC<{ onNewImage: (data: string) => void }> = ({
-  onNewImage,
-}) => {
+export const ImageUpload: React.FC<{
+  onNewImage: (data: string) => void;
+  className?: string;
+}> = ({ onNewImage, className }) => {
   const [files, setFiles] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +28,7 @@ export const ImageUpload: React.FC<{ onNewImage: (data: string) => void }> = ({
   const file = files[0];
 
   return (
-    <div className=" flex flex-wrap gap-2">
+    <div className={classNames("flex flex-wrap gap-2", className)}>
       {file ? (
         <div className="w-96" key={file}>
           <ImageCutter
@@ -35,7 +38,7 @@ export const ImageUpload: React.FC<{ onNewImage: (data: string) => void }> = ({
               onNewImage(data);
             }}
             onError={(error) => {
-              alert(error);
+              toast.error(error);
               setFiles(files.slice(1));
             }}
           />

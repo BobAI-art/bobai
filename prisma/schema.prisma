@@ -58,7 +58,8 @@ model VerificationToken {
 model TrainingPhoto {
   id        String @id @default(cuid())
   path      String @db.Char(190)
-  modelSlug String
+  bucket    String @db.Char(190)
+  modelSlug String @db.Char(190)
   model     Model  @relation(fields: [modelSlug], references: [slug], onDelete: Cascade)
 }
 
