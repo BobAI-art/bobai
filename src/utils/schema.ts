@@ -26,3 +26,6 @@ export const modelSchema = {
     .string()
     .max(2000, "Description must be at most 2000 characters long"),
 };
+
+
+export const modelState = z.enum(["created", "ready", "training", "trained"]);

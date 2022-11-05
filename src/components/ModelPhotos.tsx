@@ -1,14 +1,16 @@
 import { AppRouterTypes, trpc } from "../utils/trpc";
 import { ImageUpload } from "./ImageUpload";
-import { allImages } from "../pages/model/[slug]";
-import { useState } from "react";
+import React, { useState } from "react";
 import cuid from "cuid";
 import toast from "react-hot-toast";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import Button from "./Button";
 
 export const ModelPhotos: React.FC<{
   model: NonNullable<AppRouterTypes["model"]["get"]["output"]>;
-}> = ({ model }) => {
+  howMany: number;
+  onTrain: () => void;
+}> = ({ model, howMany, onTrain }) => {
   const photos = trpc.trainingPhoto.list.useQuery(model.slug);
   const uploadPhoto = trpc.trainingPhoto.add.useMutation({
     onSuccess: (photo) => {
@@ -34,7 +36,7 @@ export const ModelPhotos: React.FC<{
 
   return (
     <div className="flex flex-col">
-      Training Photos: {photos.data.length}/{allImages}
+      Training Photos: {photos.data.length}/{howMany}
       <div className="min-h-24 relative m-2 flex w-full flex-wrap gap-2">
         {photos.data.map((photo) => (
           <div
@@ -77,6 +79,9 @@ export const ModelPhotos: React.FC<{
           setCropped((current) => [...current, { data, cuid: photoCuid }]);
         }}
       />
+      {photos.data.length >= howMany && (
+        <Button onClick={() => onTrain()}>Train</Button>
+      )}
     </div>
   );
 };

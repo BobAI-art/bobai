@@ -45,7 +45,7 @@ export const ImageUpload: React.FC<{
         </div>
       ) : (
         <div
-          className="flex aspect-square w-96 items-center justify-center border"
+          className="flex aspect-square w-96 cursor-pointer items-center justify-center border"
           onClick={() => fileInputRef.current?.click()}
         >
           Drop image here

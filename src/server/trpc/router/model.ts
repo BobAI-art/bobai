@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { modelSchema } from "../../../utils/schema";
+import { modelSchema, modelState } from "../../../utils/schema";
 import { router, protectedProcedure } from "../trpc";
 
 export const modelRouter = router({
@@ -50,4 +50,22 @@ export const modelRouter = router({
       },
     });
   }),
+  updateStatus: protectedProcedure.input(z.object(
+    {slug: modelSchema.slug,
+    state:  z.enum(["created", "ready"])}
+  )).mutation(async ({ input, ctx }) => {
+    return await ctx.prisma.model.updateMany({
+      where: {
+        slug: input.slug,
+        ownerId: ctx.session.user.id,
+        state: {
+          // do not cancel if already trained
+          in: ["created", "ready"],
+        }
+      },
+      data: {
+        state: input.state,
+      },
+    });
+  })
 });
