@@ -38,7 +38,7 @@ const ModelBySlug: NextPage = () => {
     return <>Model not found</>;
   }
 
-  const updateStatus = (state:  "created" | "ready" | "training" | "trained") => {
+  const updateStatus = (state:  "created" | "ready") => {
     updateModelStatus.mutate({state, slug: model.data?.slug || ""});
   }
 
