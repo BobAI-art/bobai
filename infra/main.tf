@@ -60,3 +60,9 @@ module "production_file_store" {
   allowed_origins = local.production.allowed_origins
   environment     = local.production.environment
 }
+
+module "training" {
+  source = "./training"
+
+  deployer_public_key = file(var.DEPLOYER_PUBLICK_KEY_PATH)
+}

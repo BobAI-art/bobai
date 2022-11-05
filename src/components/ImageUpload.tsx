@@ -16,8 +16,10 @@ export const ImageUpload: React.FC<{
       const newFiles: string[] = [];
       for (let i = 0; i < files.length; i++) {
         if (files[i] !== undefined) {
-          const file: File = files[i]!;
-          newFiles.push(URL.createObjectURL(file));
+          const file: File | undefined = files[i];
+          if(file) {
+            newFiles.push(URL.createObjectURL(file));
+          }
         }
       }
       setFiles((currentFiles) => [...currentFiles, ...newFiles]);
@@ -45,7 +47,7 @@ export const ImageUpload: React.FC<{
         </div>
       ) : (
         <div
-          className="flex aspect-square w-96 items-center justify-center border"
+          className="flex aspect-square w-96 cursor-pointer items-center justify-center border"
           onClick={() => fileInputRef.current?.click()}
         >
           Drop image here

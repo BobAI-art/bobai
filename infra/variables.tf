@@ -32,3 +32,8 @@ variable "EMAIL_SERVER" {
   type     = string
   nullable = false
 }
+
+variable "DEPLOYER_PUBLICK_KEY_PATH" {
+  type     = string
+  nullable = false
+}
