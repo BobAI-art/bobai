@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { modelSchema, modelState } from "../../../utils/schema";
+import { modelSchema } from "../../../utils/schema";
 import { router, protectedProcedure } from "../trpc";
 
 export const modelRouter = router({

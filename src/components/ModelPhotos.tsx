@@ -17,7 +17,7 @@ export const ModelPhotos: React.FC<{
       photos.refetch();
       setCropped((current) => current.filter((c) => c.cuid !== photo.id));
     },
-    onError: (err) => {
+    onError: () => {
       toast.error("Failed to upload photo");
     },
   });
@@ -25,7 +25,7 @@ export const ModelPhotos: React.FC<{
     onSuccess: () => {
       photos.refetch();
     },
-    onError: (err) => {
+    onError: () => {
       toast.error("Delete failed");
     },
   });

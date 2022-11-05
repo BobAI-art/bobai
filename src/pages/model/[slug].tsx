@@ -26,7 +26,7 @@ const ModelBySlug: NextPage = () => {
     onSuccess: () => {
       model.refetch();
     },
-    onError: (err) => {
+    onError: () => {
       toast.error("Failed to update model status");
     }
   });
