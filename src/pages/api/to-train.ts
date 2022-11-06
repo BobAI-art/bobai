@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../server/db/client";
 
 export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
-  const subjects = await prisma.subject.findMany({ where: { is_ready: true }, orderBy: { created: "desc" }, include: {
+  const subjects = await prisma.subject.findMany({  orderBy: { created: "desc" }, include: {
     subject_photo: true,
     } });
   res.status(200).json(subjects.map((subject) => ({
