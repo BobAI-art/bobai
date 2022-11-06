@@ -51,7 +51,6 @@ const Member: NextPage = () => {
                       {subject.slug}
                     </Link>
                   </Button>
-                  <div>{subject.is_ready ? "ready" : "not-ready"}</div>
                   <div>{moment(subject.created).fromNow()}</div>
                 </div>
               ))}
