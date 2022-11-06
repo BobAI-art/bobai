@@ -61,8 +61,14 @@ module "production_file_store" {
   environment     = local.production.environment
 }
 
-module "training" {
-  source = "./training"
+# module "training" {
+#   source = "./training"
+#
+#   deployer_public_key = file(var.DEPLOYER_PUBLICK_KEY_PATH)
+# }
 
-  deployer_public_key = file(var.DEPLOYER_PUBLICK_KEY_PATH)
+module "model_store" {
+  source = "./model_store"
+
+  bucket_name     = "portraits-model-store"
 }
