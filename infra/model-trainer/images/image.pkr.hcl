@@ -56,7 +56,6 @@ build {
     destination = "/tmp/id_rsa.pub"
   }
 
-
   provisioner "shell" {
     script = "../scripts/setup.sh"
   }
