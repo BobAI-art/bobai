@@ -19,7 +19,7 @@ const Member: NextPage = () => {
   const name = router.query.name as string;
 
   const { isLoading, data: user } = trpc.user.get.useQuery(name, {});
-  const myModels = trpc.model.list.useQuery(undefined, {
+  const mySubjects = trpc.subject.list.useQuery(undefined, {
     enabled: user?.id === session?.user?.id,
   });
 
@@ -37,28 +37,28 @@ const Member: NextPage = () => {
           <>
             <div className="flex flex-col gap-2 rounded bg-slate-300 p-2 shadow">
               <h3 className="text-xl font-extrabold leading-normal tracking-tight">
-                @{user.name} Models
+                @{user.name} Subjects
               </h3>
-              {myModels.data?.map((model) => (
-                <div key={model.id} className="flex gap-2 ">
+              {mySubjects.data?.map((subject) => (
+                <div key={subject.id} className="flex gap-2 ">
                   <Button>
                     <Link
                       href={{
-                        pathname: "/model/[slug]",
-                        query: { slug: model.slug },
+                        pathname: "/subject/[slug]",
+                        query: { slug: subject.slug },
                       }}
                     >
-                      {model.slug}
+                      {subject.slug}
                     </Link>
                   </Button>
-                  <div>{model.state}</div>
-                  <div>{moment(model.created).fromNow()}</div>
+                  <div>{subject.is_ready ? "ready" : "not-ready"}</div>
+                  <div>{moment(subject.created).fromNow()}</div>
                 </div>
               ))}
-              <Link href="/model/new">
+              <Link href="/subject/new">
                 <div>
                   <Button>
-                    <PlusCircleIcon className="w-4" /> Train new model
+                    <PlusCircleIcon className="w-4" /> Add new subject
                   </Button>
                 </div>
               </Link>

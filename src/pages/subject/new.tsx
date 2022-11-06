@@ -6,7 +6,7 @@ import { z } from "zod";
 import Button from "../../components/Button";
 import { Layout } from "../../components/Layout";
 import { useDebounce } from "../../hooks/tools";
-import { modelSchema } from "../../utils/schema";
+import { subjectSchema } from "../../utils/schema";
 import { trpc } from "../../utils/trpc";
 
 const MemberNew: NextPage = () => {
@@ -17,17 +17,17 @@ const MemberNew: NextPage = () => {
   const [model, setModel] = useState({ slug: "", description: "" });
   const debouncedModel = useDebounce(model, 500);
   const [changed, setChanged] = useState(false);
-  const validator = z.object(modelSchema);
+  const validator = z.object(subjectSchema);
   const validated = validator.safeParse(debouncedModel);
-  const createModelMutation = trpc.model.create.useMutation({
-    onSuccess: (model) => {
+  const createSubject = trpc.subject.create.useMutation({
+    onSuccess: (subject) => {
       router.push({
-        pathname: "/model/[slug]",
-        query: { slug: model.slug },
+        pathname: "/subject/[slug]",
+        query: { slug: subject.slug },
       });
     },
   });
-  const { isLoading, data: slugExists } = trpc.model.slugExists.useQuery(
+  const { isLoading, data: slugExists } = trpc.subject.slugExists.useQuery(
     debouncedModel.slug,
     {
       enabled: validated.success && changed,
@@ -39,7 +39,7 @@ const MemberNew: NextPage = () => {
 
   const handleCreateModel = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createModelMutation.mutate(debouncedModel);
+    createSubject.mutate(debouncedModel);
   };
 
   const handleSlugChanged = (newSlug: string) => {

@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   base64ImageSchema,
   cuidSchema,
-  modelSchema,
+  subjectSchema,
 } from "../../../utils/schema";
 import { router, protectedProcedure } from "../trpc";
 import { deleteS3Object, putS3Object } from "../../s3";
@@ -16,29 +16,29 @@ const s3TrainingImagePath = (
   photoCuid: string
 ) => `user/${userId}/model/${modelId}/photo/${photoCuid}`;
 
-export const trainingPhotoRouter = router({
+export const subjectPhotoRouter = router({
   list: protectedProcedure
-    .input(modelSchema.slug)
+    .input(subjectSchema.slug)
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.trainingPhoto.findMany({
+      return await ctx.prisma.subjectPhoto.findMany({
         where: {
-          modelSlug: input,
+          subject_slug: input,
         },
       });
     }),
   delete: protectedProcedure
     .input(cuidSchema)
     .mutation(async ({ ctx, input }) => {
-      const image = await ctx.prisma.trainingPhoto.findFirst({
+      const image = await ctx.prisma.subjectPhoto.findFirst({
         where: {
           id: input,
-          model: {
-            ownerId: ctx.session.user.id,
+          subject: {
+            owner_id: ctx.session.user.id,
           },
         },
         select: {
           id: true,
-          model: {
+          subject: {
             select: {
               id: true,
             },
@@ -53,12 +53,12 @@ export const trainingPhotoRouter = router({
       }
       const s3Path = s3TrainingImagePath(
         ctx.session.user.id,
-        image.model.id,
+        image.subject.id,
         image.id
       );
       await deleteS3Object(s3Path);
 
-      return await ctx.prisma.trainingPhoto.delete({
+      return await ctx.prisma.subjectPhoto.delete({
         where: {
           id: input,
         },
@@ -67,16 +67,16 @@ export const trainingPhotoRouter = router({
   add: protectedProcedure
     .input(
       z.object({
-        model: modelSchema.slug,
+        model: subjectSchema.slug,
         photoCuid: cuidSchema,
         photoData: base64ImageSchema,
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const model = await ctx.prisma.model.findFirst({
+      const model = await ctx.prisma.subject.findFirst({
         where: {
           slug: input.model,
-          ownerId: ctx.session.user.id,
+          owner_id: ctx.session.user.id,
         },
       });
       if (model) {
@@ -94,9 +94,9 @@ export const trainingPhotoRouter = router({
         const buffer = Buffer.from(data, "base64");
         await putS3Object(s3Path, contentType, buffer);
 
-        return await ctx.prisma.trainingPhoto.create({
+        return await ctx.prisma.subjectPhoto.create({
           data: {
-            modelSlug: input.model,
+            subject_slug: input.model,
             id: input.photoCuid,
             path: s3Path,
             bucket: env.AWS_S3_BUCKET,
