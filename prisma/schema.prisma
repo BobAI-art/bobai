@@ -44,7 +44,7 @@ model User {
   image         String?   @db.Char(190)
   accounts      Account[]
   sessions      Session[]
-  Model         Model[]
+  subjects      Subject[]
 }
 
 model VerificationToken {
@@ -55,21 +55,22 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model TrainingPhoto {
-  id        String @id @default(cuid())
-  path      String @db.Char(190)
-  bucket    String @db.Char(190)
-  modelSlug String @db.Char(190)
-  model     Model  @relation(fields: [modelSlug], references: [slug], onDelete: Cascade)
+// My models
+
+model SubjectPhoto {
+  id           String  @id @default(cuid())
+  path         String  @db.Char(190)
+  bucket       String  @db.Char(190)
+  subject_slug String  @db.Char(190)
+  subject      Subject @relation(fields: [subject_slug], references: [slug], onDelete: Cascade)
 }
 
-model Model {
-  id            String          @id @default(cuid()) @db.Char(25)
-  slug          String          @unique @db.Char(190)
-  owner         User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  created       DateTime        @default(now())
-  description   String          @db.Text
-  ownerId       String          @db.Char(25)
-  state         String          @db.Char(20)
-  TrainingPhoto TrainingPhoto[]
+model Subject {
+  id            String         @id @default(cuid()) @db.Char(25)
+  slug          String         @unique @db.Char(190)
+  owner         User           @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  created       DateTime       @default(now())
+  description   String         @db.Text
+  owner_id      String         @db.Char(25)
+  subject_photo SubjectPhoto[]
 }

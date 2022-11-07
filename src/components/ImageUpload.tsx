@@ -1,7 +1,9 @@
-import { ChangeEventHandler, useRef, useState } from "react";
+import { ChangeEventHandler,  useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { classNames } from "../toolbox";
 import { ImageCutter } from "./ImageCutter";
+import { Dialog } from '@headlessui/react'
+import { ArrowUpOnSquareStackIcon } from "@heroicons/react/24/solid";
 
 export const ImageUpload: React.FC<{
   onNewImage: (data: string) => void;
@@ -28,12 +30,32 @@ export const ImageUpload: React.FC<{
     }
   };
   const file = files[0];
-
+  const isOpen = file!==undefined;
   return (
-    <div className={classNames("flex flex-wrap gap-2", className || "")}>
-      {file ? (
-        <div className="w-96" key={file}>
-          <ImageCutter
+    < >
+      <div
+        className={classNames("flex cursor-pointer aspect-square items-center justify-center text-center border", className || "")}
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <ArrowUpOnSquareStackIcon className="w-4" /> Upload
+      </div>
+      <input
+        type="file"
+        accept="image/*"
+        multiple={true}
+        className="hidden"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+      />
+      <Dialog  className="relative z-50" open={isOpen} onClose={() => console.log("close")}>
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+        <Dialog.Panel className="w-full max-w-sm rounded bg-white p-4">
+          <Dialog.Title className="text-xl">Crop {files.length>1 ? 'images': 'image'}</Dialog.Title>
+          <Dialog.Description className="text-md">
+            Images to crop: {files.length}
+          </Dialog.Description>
+          {file &&  <ImageCutter
             src={file}
             onCrop={(data) => {
               setFiles(files.slice(1));
@@ -43,24 +65,17 @@ export const ImageUpload: React.FC<{
               toast.error(error);
               setFiles(files.slice(1));
             }}
-          />
+            onCancel={() => {
+              setFiles(files.slice(1));
+            }}
+          />}
+        </Dialog.Panel>
         </div>
-      ) : (
-        <div
-          className="flex aspect-square w-96 cursor-pointer items-center justify-center border"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          Drop image here
-        </div>
-      )}
-      <input
-        type="file"
-        accept="image/*"
-        multiple={true}
-        className="hidden"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-      />
-    </div>
+      </Dialog>
+
+
+
+
+    </>
   );
 };

@@ -1,4 +1,4 @@
-import { ArrowsPointingInIcon } from "@heroicons/react/24/solid";
+import { ArrowsPointingInIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { classNames } from "../toolbox";
 import Button from "./Button";
@@ -8,7 +8,8 @@ export const ImageCutter: React.FC<{
   src: string;
   onCrop: (data: string) => void;
   onError: (error: string) => void;
-}> = ({ src, onCrop, onError }) => {
+  onCancel: () => void;
+}> = ({ src, onCrop, onError, onCancel }) => {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [width, setWidth] = useState<number | undefined>();
@@ -111,7 +112,7 @@ export const ImageCutter: React.FC<{
 
   return (
     <>
-      <div className="relative flex select-none items-center justify-center rounded-md border border-2 border-gray-300">
+      <div className="relative  flex select-none items-center justify-center rounded-md border border-2 border-gray-300">
         <picture>
           <source srcSet={src} />
           <img
@@ -148,10 +149,17 @@ export const ImageCutter: React.FC<{
           ></div>
         </div>
       </div>
+      <div className="flex justify-between	">
       <Button onClick={handleCrop} className="m-2">
         <ArrowsPointingInIcon className="w-4" />
         Crop
       </Button>
+
+      <Button onClick={() => onCancel()} className="m-2">
+        <XMarkIcon className="w-4" />
+        Cancel
+      </Button>
+      </div>
       <canvas ref={canvasRef} width={512} height={512} className="hidden" />
     </>
   );
