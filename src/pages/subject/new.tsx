@@ -9,16 +9,16 @@ import { useDebounce } from "../../hooks/tools";
 import { subjectSchema } from "../../utils/schema";
 import { trpc } from "../../utils/trpc";
 
-const MemberNew: NextPage = () => {
+const SubjectNew: NextPage = () => {
   const router = useRouter();
   useSession({
     required: true,
   });
-  const [model, setModel] = useState({ slug: "", description: "" });
-  const debouncedModel = useDebounce(model, 500);
+  const [subject, setSubject] = useState({ slug: "", description: "" });
+  const debounced = useDebounce(subject, 500);
   const [changed, setChanged] = useState(false);
   const validator = z.object(subjectSchema);
-  const validated = validator.safeParse(debouncedModel);
+  const validated = validator.safeParse(debounced);
   const createSubject = trpc.subject.create.useMutation({
     onSuccess: (subject) => {
       router.push({
@@ -28,7 +28,7 @@ const MemberNew: NextPage = () => {
     },
   });
   const { isLoading, data: slugExists } = trpc.subject.slugExists.useQuery(
-    debouncedModel.slug,
+    debounced.slug,
     {
       enabled: validated.success && changed,
     }
@@ -37,40 +37,43 @@ const MemberNew: NextPage = () => {
   const canSave =
     !isLoading && validated.success && !slugExists?.exists && changed;
 
-  const handleCreateModel = (e: FormEvent<HTMLFormElement>) => {
+  const handleCreateSubject = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createSubject.mutate(debouncedModel);
+    createSubject.mutate(debounced);
   };
 
   const handleSlugChanged = (newSlug: string) => {
-    setModel({ ...model, slug: newSlug });
+    setSubject({ ...subject, slug: newSlug });
     setChanged(true);
   };
 
   const handleDescriptionChanged = (newDescription: string) => {
-    setModel({ ...model, description: newDescription });
+    setSubject({ ...subject, description: newDescription });
     setChanged(true);
   };
 
   return (
     <>
       <Layout>
-        <h1>New model</h1>
-        <form className="flex flex-col gap-2" onSubmit={handleCreateModel}>
+        <h1>New subject</h1>
+        <form className="flex flex-col gap-2" onSubmit={handleCreateSubject}>
           <label>
             Slug
             <input
               placeholder="slug"
-              value={model.slug}
+              value={subject.slug}
               onChange={(e) => handleSlugChanged(e.target.value)}
+              className="form-input mt-1 block w-full"
             />
+            <p className="size-sm text-slate-500">url friendly name</p>
           </label>
           <label>
             Description
             <textarea
-              value={model.description}
+              value={subject.description}
               onChange={(e) => handleDescriptionChanged(e.target.value)}
               placeholder="description"
+              className="form-input mt-1 block w-full"
             />
           </label>
           <Button className="w-fit disabled:opacity-50" disabled={!canSave}>
@@ -84,7 +87,7 @@ const MemberNew: NextPage = () => {
                 <li key={error.code}>{error.message}</li>
               ))}
             {slugExists?.exists && (
-              <li>Model with slug {debouncedModel.slug} already exists</li>
+              <li>Model with slug {debounced.slug} already exists</li>
             )}
           </ul>
         ) : null}
@@ -93,4 +96,4 @@ const MemberNew: NextPage = () => {
   );
 };
 
-export default MemberNew;
+export default SubjectNew;
