@@ -35,7 +35,7 @@ const Member: NextPage = () => {
         </h2>
         {user.id === session?.user?.id && (
           <>
-            <div className="flex flex-col gap-2 rounded bg-slate-300 p-2 shadow">
+            <div className="flex flex-col gap-2 p-2">
               <h3 className="text-xl font-extrabold leading-normal tracking-tight">
                 @{user.name} Subjects
               </h3>
@@ -62,7 +62,7 @@ const Member: NextPage = () => {
                 </div>
               </Link>
             </div>
-            <div className="mt-2 flex flex-col gap-4 rounded bg-slate-300 p-2 shadow">
+            <div className="mt-2 flex flex-col gap-4 p-2">
               <Button onClick={() => signOut()}>
                 <ArrowLeftOnRectangleIcon className="w-4" /> Logout
               </Button>

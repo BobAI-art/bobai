@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import cuid from "cuid";
 import toast from "react-hot-toast";
 import { TrashIcon } from "@heroicons/react/24/solid";
-import Button from "./Button";
 
 export const SubjectPhotos: React.FC<{
   model: NonNullable<AppRouterTypes["subject"]["get"]["output"]>;

@@ -66,11 +66,41 @@ model SubjectPhoto {
 }
 
 model Subject {
-  id            String         @id @default(cuid()) @db.Char(25)
-  slug          String         @unique @db.Char(190)
-  owner         User           @relation(fields: [owner_id], references: [id], onDelete: Cascade)
-  created       DateTime       @default(now())
-  description   String         @db.Text
-  owner_id      String         @db.Char(25)
-  subject_photo SubjectPhoto[]
+  id             String         @id @default(cuid()) @db.Char(25)
+  slug           String         @unique @db.Char(190)
+  owner          User           @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  created        DateTime       @default(now())
+  description    String         @db.Text
+  owner_id       String         @db.Char(25)
+  subject_photos SubjectPhoto[]
+  models         Model[]
+}
+
+model Model {
+  id                String           @id @default(cuid()) @db.Char(25)
+  name              String           @db.Char(190)
+  owner_id          String           @db.Char(25)
+  subject           Subject          @relation(fields: [subject_slug], references: [slug], onDelete: Cascade)
+  subject_slug      String           @db.Char(190)
+  created           DateTime         @default(now())
+  state             ModelState       @default(CREATED)
+  parent_model_code String           @db.Char(25)
+  regularization    Json             @db.Json
+  generated_photos  GeneratedPhoto[]
+}
+
+enum ModelState {
+  CREATED
+  TRAINING
+  TRAINED
+    ERROR
+}
+
+model GeneratedPhoto {
+  id       String  @id @default(cuid())
+  path     String  @db.Char(190)
+  bucket   String  @db.Char(190)
+  model_id String  @db.Char(25)
+  model    Model   @relation(fields: [model_id], references: [id], onDelete: Cascade)
+  prompt   String? @db.Char(190)
 }

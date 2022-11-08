@@ -10,6 +10,9 @@ export const subjectRouter = router({
         where: {
           slug: input,
         },
+        include: {
+          models: true,
+        }
       });
 
       return model;
