@@ -4,7 +4,7 @@ import { prisma } from "../../../server/db/client";
 import { ModelName, parentModels } from "../../../utils/consts";
 import { photoUrl } from "../../../utils/helpers";
 
-const getOldestCreatedModel = async () => {
+const getOldestCreatedModel = async (): Promise<GetModelResponse | null> => {
   const model = await prisma.model.findFirst({
     where: {
       state: "CREATED"
@@ -21,9 +21,22 @@ const getOldestCreatedModel = async () => {
   if(!model) return null;
   const parentModel = parentModels.get(model.parent_model_code as ModelName)
   if(!parentModel) return null;
+
   return {
-    ...model, parent_model: parentModel
-  };
+    id: model.id,
+    name: model.name,
+    owner_id: model.owner_id,
+    parent_model_code: model.parent_model_code,
+    regularization: model.regularization as unknown as GenerateRegularization | FetchRegularization,
+    subject: {
+      slug: model.subject.slug,
+      subject_photos: model.subject.subject_photos.map((photo) => photoUrl(photo))
+    },
+    parent_model: {
+      repo_id: parentModel.repoId,
+      filename: parentModel.filename
+    }
+  }
 }
 
 interface GenerateRegularization {
@@ -69,22 +82,8 @@ const getModel = async (): Promise<GetModelResponse  | null> => {
   })
   // returned by somebody else
   if(updateCount.count === 0) return await getModel();
+  return model
 
-  return {
-    id: model.id,
-    name: model.name,
-    owner_id: model.owner_id,
-    parent_model_code: model.parent_model_code,
-    regularization: model.regularization as unknown as GenerateRegularization | FetchRegularization,
-    subject: {
-      slug: model.subject.slug,
-      subject_photos: model.subject.subject_photos.map((photo) => photoUrl(photo))
-    },
-    parent_model: {
-      repo_id: model.parent_model.repoId,
-      filename: model.parent_model.filename
-    }
-  }
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
