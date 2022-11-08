@@ -11,7 +11,7 @@ export const appRouter = router({
   user: userRouter,
   model: modelRouter,
   subject: subjectRouter,
-  trainingPhoto: subjectPhotoRouter,
+  subjectPhoto: subjectPhotoRouter,
 });
 
 // export type definition of API

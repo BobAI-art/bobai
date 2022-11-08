@@ -23,7 +23,7 @@ const ModelNew: NextPage = () => {
   const slug = router.query.slug as string;
 
   const subject = trpc.subject.get.useQuery(slug);
-  const photos = trpc.trainingPhoto.list.useQuery(slug);
+  const photos = trpc.subjectPhoto.list.useQuery(slug);
   const createModel = trpc.model.create.useMutation({
     onSuccess: () => {
       router.push(`/subject/${slug}`);
@@ -40,7 +40,7 @@ const ModelNew: NextPage = () => {
   if(!subject.data) {
     return <>Subject not found</>;
   }
-  if(!photos.data) {
+  if(photos.data == undefined) {
     return <>Photos not found</>;
   }
   const photo = photos.data[0];

@@ -16,20 +16,21 @@ const imagesNeeded = {
 };
 export const allImages = Object.values(imagesNeeded).reduce((a, b) => a + b, 0);
 
-const ModelBySlug: NextPage = () => {
+const SubjectBySlug: NextPage = () => {
   const router = useRouter();
   useSession({
     required: true,
   });
   const slug = router.query.slug as string;
 
-  const subject = trpc.subject.get.useQuery(slug);
-  const photos = trpc.trainingPhoto.list.useQuery(slug);
+  const subjectQuery = trpc.subject.get.useQuery(slug);
+  const photos = trpc.subjectPhoto.list.useQuery(slug);
 
-  if (subject.isLoading || photos.isLoading) {
+  if (subjectQuery.isLoading || photos.isLoading) {
     return <>Loading...</>;
   }
-  if (!subject.data) {
+  const subject = subjectQuery.data;
+  if (!subject) {
     return <>Model not found</>;
   }
   if(photos.data == undefined) {
@@ -39,14 +40,23 @@ const ModelBySlug: NextPage = () => {
   return (
     <Layout>
       <h2 className="text-2xl font-extrabold leading-normal tracking-tight">
-        Subject {subject.data.slug}
+        Subject {subject.slug}
       </h2>
 
-      <SubjectPhotos photos={photos.data} model={subject.data} howMany={allImages} onPhotosChanged={() => photos.refetch()}  />
+      <SubjectPhotos photos={photos.data} subject={subject} howMany={allImages} onPhotosChanged={() => photos.refetch()}  />
       <h3 className="text-xl font-extrabold leading-normal tracking-tight">Models</h3>
       <ul>
-        {subject.data.models.map((model) => (
-          <li key={model.id}>{model.name} <i>{model.state}</i> <b>{model.parent_model_code}</b>, Created: {moment(model.created).fromNow()}</li>
+        {subject.models.map((model) => (
+          <li key={model.id}>
+            <Link
+              href={{
+                pathname: "/subject/[slug]/model/[id]",
+                query: { slug: subject.slug, id: model.id },
+              }}
+            >
+            <a>{model.name} <i>{model.state}</i> <b>{model.parent_model_code}</b>, Created: {moment(model.created).fromNow()}</a>
+            </Link>
+          </li>
           ))}
 
         {photos.data.length >= allImages && (<li><Button>
@@ -67,4 +77,4 @@ const ModelBySlug: NextPage = () => {
   );
 };
 
-export default ModelBySlug;
+export default SubjectBySlug;

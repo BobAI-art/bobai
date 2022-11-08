@@ -59,7 +59,7 @@ model VerificationToken {
 
 model SubjectPhoto {
   id           String  @id @default(cuid())
-  path         String  @db.Char(190)
+  root         String  @db.Char(190)
   bucket       String  @db.Char(190)
   subject_slug String  @db.Char(190)
   subject      Subject @relation(fields: [subject_slug], references: [slug], onDelete: Cascade)
@@ -93,14 +93,16 @@ enum ModelState {
   CREATED
   TRAINING
   TRAINED
-    ERROR
+  ERROR
 }
 
 model GeneratedPhoto {
-  id       String  @id @default(cuid())
-  path     String  @db.Char(190)
-  bucket   String  @db.Char(190)
-  model_id String  @db.Char(25)
-  model    Model   @relation(fields: [model_id], references: [id], onDelete: Cascade)
-  prompt   String? @db.Char(190)
+  id       String   @id @default(cuid())
+  root     String   @db.Char(190)
+  bucket   String   @db.Char(190)
+  model_id String   @db.Char(25)
+  model    Model    @relation(fields: [model_id], references: [id], onDelete: Cascade)
+  prompt   String?  @db.Char(190)
+  category String?  @db.Char(190)
+  created  DateTime @default(now())
 }
