@@ -9,12 +9,8 @@ import {
 import { router, protectedProcedure } from "../trpc";
 import { deleteS3Object, putS3Object } from "../../s3";
 import { env } from "../../../env/server.mjs";
+import { s3SubjectPhotoPath, s3SubjectPhotoRoot } from "../../../utils/helpers";
 
-const s3TrainingImagePath = (
-  userId: string,
-  modelId: string,
-  photoCuid: string
-) => `user/${userId}/model/${modelId}/photo/${photoCuid}`;
 
 export const subjectPhotoRouter = router({
   list: protectedProcedure
@@ -41,6 +37,7 @@ export const subjectPhotoRouter = router({
           subject: {
             select: {
               id: true,
+
             },
           },
         },
@@ -51,7 +48,7 @@ export const subjectPhotoRouter = router({
           message: "You are not allowed to do this",
         });
       }
-      const s3Path = s3TrainingImagePath(
+      const s3Path = s3SubjectPhotoPath(
         ctx.session.user.id,
         image.subject.id,
         image.id
@@ -80,11 +77,16 @@ export const subjectPhotoRouter = router({
         },
       });
       if (model) {
-        const s3Path = s3TrainingImagePath(
+        const s3PathRoot = s3SubjectPhotoRoot(
           ctx.session.user.id,
           model.id,
-          input.photoCuid
         );
+        const s3Path = s3SubjectPhotoPath(
+          ctx.session.user.id,
+          model.id,
+          input.photoCuid,
+        )
+
         const [header, data] = input.photoData.split(",");
         if (!data) throw new Error("Invalid image data");
         if (!header) throw new Error("Invalid image header");
@@ -98,7 +100,7 @@ export const subjectPhotoRouter = router({
           data: {
             subject_slug: input.model,
             id: input.photoCuid,
-            path: s3Path,
+            root: s3PathRoot,
             bucket: env.AWS_S3_BUCKET,
           },
         });

@@ -6,13 +6,13 @@ import toast from "react-hot-toast";
 import { TrashIcon } from "@heroicons/react/24/solid";
 
 export const SubjectPhotos: React.FC<{
-  model: NonNullable<AppRouterTypes["subject"]["get"]["output"]>;
-  photos: NonNullable<AppRouterTypes["trainingPhoto"]["list"]["output"]>;
+  subject: NonNullable<AppRouterTypes["subject"]["get"]["output"]>;
+  photos: NonNullable<AppRouterTypes["subjectPhoto"]["list"]["output"]>;
   howMany: number;
   onPhotosChanged?: () => void;
-}> = ({ model, photos, howMany, onPhotosChanged }) => {
+}> = ({ subject, photos, howMany, onPhotosChanged }) => {
 
-  const uploadPhoto = trpc.trainingPhoto.add.useMutation({
+  const uploadPhoto = trpc.subjectPhoto.add.useMutation({
     onSuccess: (photo) => {
       onPhotosChanged?.();
       setCropped((current) => current.filter((c) => c.cuid !== photo.id));
@@ -21,7 +21,7 @@ export const SubjectPhotos: React.FC<{
       toast.error("Failed to upload photo");
     },
   });
-  const deletePhoto = trpc.trainingPhoto.delete.useMutation({
+  const deletePhoto = trpc.subjectPhoto.delete.useMutation({
     onSuccess: () => {
       onPhotosChanged?.();
     },
@@ -54,7 +54,7 @@ export const SubjectPhotos: React.FC<{
             <picture>
               <img
                 src={`
-              https://${photo.bucket}.s3.eu-west-2.amazonaws.com/${photo.path}`}
+              https://${photo.bucket}.s3.eu-west-2.amazonaws.com/${photo.root}/${photo.id}.png`}
                 className="h-24"
                 alt="uploaded model training photo"
               />
@@ -75,7 +75,7 @@ export const SubjectPhotos: React.FC<{
           className="self-center h-24 w-24 "
           onNewImage={(data) => {
             const photoCuid = cuid();
-            uploadPhoto.mutate({ photoData: data, model: model.slug, photoCuid });
+            uploadPhoto.mutate({ photoData: data, model: subject.slug, photoCuid });
             setCropped((current) => [...current, { data, cuid: photoCuid }]);
           }}
         />

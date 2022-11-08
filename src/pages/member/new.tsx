@@ -65,12 +65,14 @@ const MemberNew: NextPage = () => {
     <>
       <Layout>
         <h1>Welcome to AI Portraits, confirm your username</h1>
-        <form className="flex gap-2" onSubmit={handleSaveUsername}>
+        <div className="bg-red-200 p-10 rounded shadow m-2">Here should be stabled difusion confirmation</div>
+        <form className="flex gap-2 flex-col" onSubmit={handleSaveUsername}>
           <label>
             Username
             <input
               placeholder="username"
               value={name}
+              className="form-input mt-1 block w-full"
               onChange={(e) => handleNameChanged(e.target.value)}
             />
           </label>

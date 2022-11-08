@@ -13,7 +13,7 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
     },
     TrainingPhoto: subject.subject_photos.map((photo) => ({
       ...photo,
-      'url': `https://${photo.bucket}.s3.eu-west-2.amazonaws.com/${photo.path}`
+      'url': `https://${photo.bucket}.s3.eu-west-2.amazonaws.com/${photo.root}/${photo.id}.png`
     })),
     regularization: {
       type: "generate",
