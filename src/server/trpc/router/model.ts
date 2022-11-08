@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { modelCreateSchema } from "../../../utils/schema";
 import { router, protectedProcedure } from "../trpc";
 import { modelClasses } from "../../../utils/consts";

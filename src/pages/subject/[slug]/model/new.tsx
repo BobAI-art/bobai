@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { trpc } from "../../../../utils/trpc";
 import { photoUrl } from "../../../../utils/helpers";
 import Button from "../../../../components/Button";
-import React, { FormEvent } from "react";
+import React  from "react";
 import { defaultModel, defaultModelClass, ModelName, parentModels } from "../../../../utils/consts";
 import { ModelClassSelect } from "../../../../components/ModelClassSelect";
 import { modelCreateSchema } from "../../../../utils/schema";

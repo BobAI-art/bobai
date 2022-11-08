@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { parentModelNames, parentModels } from "./consts";
+import { parentModelNames } from "./consts";
 
 const dbString = z.string().max(190);
 export const cuidSchema = z.string().regex(/^c[a-z0-9]{24}$/);

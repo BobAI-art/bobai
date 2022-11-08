@@ -1,10 +1,10 @@
 import { NextPage } from "next";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Layout } from "../../../components/Layout";
 import { trpc } from "../../../utils/trpc";
 import { SubjectPhotos } from "../../../components/SubjectPhotos";
-import { ArrowLeftOnRectangleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Button from "../../../components/Button";
 import Link from "next/link";
 import moment from "moment/moment";
