@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { prisma } from "../../../server/db/client";
-import { ModelClass, modelClasses, ModelName, parentModels } from "../../../utils/consts";
+import { ModelName, parentModels } from "../../../utils/consts";
 import { photoUrl } from "../../../utils/helpers";
 
 const getOldestCreatedModel = async () => {
