@@ -1,9 +1,9 @@
 import { modelCreateSchema } from "../../../utils/schema";
 import { router, protectedProcedure } from "../trpc";
-import { modelClasses } from "../../../utils/consts";
+import { ModelClass, modelClasses } from "../../../utils/consts";
 
 const makeRegularization = (regularization: string) => {
-  if(modelClasses.has(regularization as any)) {
+  if(modelClasses.has(regularization as ModelClass)) {
     return {
       type: "fetch",
       source: `https://github.com/djbielejeski/Stable-Diffusion-Regularization-Images-${regularization}.git`
