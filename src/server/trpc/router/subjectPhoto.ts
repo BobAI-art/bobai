@@ -11,7 +11,6 @@ import { deleteS3Object, putS3Object } from "../../s3";
 import { env } from "../../../env/server.mjs";
 import { s3SubjectPhotoPath, s3SubjectPhotoRoot } from "../../../utils/helpers";
 
-
 export const subjectPhotoRouter = router({
   list: protectedProcedure
     .input(subjectSchema.slug)
@@ -37,7 +36,6 @@ export const subjectPhotoRouter = router({
           subject: {
             select: {
               id: true,
-
             },
           },
         },
@@ -77,15 +75,12 @@ export const subjectPhotoRouter = router({
         },
       });
       if (model) {
-        const s3PathRoot = s3SubjectPhotoRoot(
-          ctx.session.user.id,
-          model.id,
-        );
+        const s3PathRoot = s3SubjectPhotoRoot(ctx.session.user.id, model.id);
         const s3Path = s3SubjectPhotoPath(
           ctx.session.user.id,
           model.id,
-          input.photoCuid,
-        )
+          input.photoCuid
+        );
 
         const [header, data] = input.photoData.split(",");
         if (!data) throw new Error("Invalid image data");

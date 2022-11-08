@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import cuid from "cuid";
 import toast from "react-hot-toast";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import { photoUrl } from "../utils/helpers";
 
 export const SubjectPhotos: React.FC<{
   subject: NonNullable<AppRouterTypes["subject"]["get"]["output"]>;
@@ -11,7 +12,6 @@ export const SubjectPhotos: React.FC<{
   howMany: number;
   onPhotosChanged?: () => void;
 }> = ({ subject, photos, howMany, onPhotosChanged }) => {
-
   const uploadPhoto = trpc.subjectPhoto.add.useMutation({
     onSuccess: (photo) => {
       onPhotosChanged?.();
@@ -53,8 +53,7 @@ export const SubjectPhotos: React.FC<{
 
             <picture>
               <img
-                src={`
-              https://${photo.bucket}.s3.eu-west-2.amazonaws.com/${photo.root}/${photo.id}.png`}
+                src={photoUrl(photo)}
                 className="h-24"
                 alt="uploaded model training photo"
               />
@@ -72,10 +71,14 @@ export const SubjectPhotos: React.FC<{
           </picture>
         ))}
         <ImageUpload
-          className="self-center h-24 w-24 "
+          className="h-24 w-24 self-center "
           onNewImage={(data) => {
             const photoCuid = cuid();
-            uploadPhoto.mutate({ photoData: data, model: subject.slug, photoCuid });
+            uploadPhoto.mutate({
+              photoData: data,
+              model: subject.slug,
+              photoCuid,
+            });
             setCropped((current) => [...current, { data, cuid: photoCuid }]);
           }}
         />

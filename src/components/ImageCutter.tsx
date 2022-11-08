@@ -150,15 +150,15 @@ export const ImageCutter: React.FC<{
         </div>
       </div>
       <div className="flex justify-between	">
-      <Button onClick={handleCrop} className="m-2">
-        <ArrowsPointingInIcon className="w-4" />
-        Crop
-      </Button>
+        <Button onClick={handleCrop} className="m-2">
+          <ArrowsPointingInIcon className="w-4" />
+          Crop
+        </Button>
 
-      <Button onClick={() => onCancel()} className="m-2">
-        <XMarkIcon className="w-4" />
-        Cancel
-      </Button>
+        <Button onClick={() => onCancel()} className="m-2">
+          <XMarkIcon className="w-4" />
+          Cancel
+        </Button>
       </div>
       <canvas ref={canvasRef} width={512} height={512} className="hidden" />
     </>

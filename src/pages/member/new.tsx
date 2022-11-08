@@ -7,6 +7,7 @@ import { Layout } from "../../components/Layout";
 import { useDebounce } from "../../hooks/tools";
 import { userSchema } from "../../utils/schema";
 import { trpc } from "../../utils/trpc";
+import Form from "../../components/Form";
 
 const MemberNew: NextPage = () => {
   const router = useRouter();
@@ -65,8 +66,10 @@ const MemberNew: NextPage = () => {
     <>
       <Layout>
         <h1>Welcome to AI Portraits, confirm your username</h1>
-        <div className="bg-red-200 p-10 rounded shadow m-2">Here should be stabled difusion confirmation</div>
-        <form className="flex gap-2 flex-col" onSubmit={handleSaveUsername}>
+        <div className="m-2 rounded bg-red-200 p-10 shadow">
+          Here should be stabled difusion confirmation
+        </div>
+        <Form onSubmit={handleSaveUsername}>
           <label>
             Username
             <input
@@ -77,7 +80,7 @@ const MemberNew: NextPage = () => {
             />
           </label>
           <Button disabled={!canSave}>Confirm</Button>
-        </form>
+        </Form>
         {nameCheck.success || !changed ? null : (
           <ul>
             {nameCheck.error.errors.map((error) => (

@@ -1,9 +1,5 @@
 import { classNames } from "../toolbox";
-
-// interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-//   title: string;
-//   showIcon: boolean;
-// }
+import React from "react";
 
 const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
   className,

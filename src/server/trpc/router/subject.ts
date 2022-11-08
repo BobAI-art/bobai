@@ -12,7 +12,7 @@ export const subjectRouter = router({
         },
         include: {
           models: true,
-        }
+        },
       });
 
       return model;

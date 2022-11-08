@@ -33,7 +33,7 @@ const SubjectBySlug: NextPage = () => {
   if (!subject) {
     return <>Model not found</>;
   }
-  if(photos.data == undefined) {
+  if (photos.data == undefined) {
     return <>Photos not found</>;
   }
 
@@ -43,8 +43,15 @@ const SubjectBySlug: NextPage = () => {
         Subject {subject.slug}
       </h2>
 
-      <SubjectPhotos photos={photos.data} subject={subject} howMany={allImages} onPhotosChanged={() => photos.refetch()}  />
-      <h3 className="text-xl font-extrabold leading-normal tracking-tight">Models</h3>
+      <SubjectPhotos
+        photos={photos.data}
+        subject={subject}
+        howMany={allImages}
+        onPhotosChanged={() => photos.refetch()}
+      />
+      <h3 className="text-xl font-extrabold leading-normal tracking-tight">
+        Models
+      </h3>
       <ul>
         {subject.models.map((model) => (
           <li key={model.id}>
@@ -54,24 +61,31 @@ const SubjectBySlug: NextPage = () => {
                 query: { slug: subject.slug, id: model.id },
               }}
             >
-            <a>{model.name} <i>{model.state}</i> <b>{model.parent_model_code}</b>, Created: {moment(model.created).fromNow()}</a>
+              <a>
+                {model.name} <i>{model.state}</i>{" "}
+                <b>{model.parent_model_code}</b>, Created:{" "}
+                {moment(model.created).fromNow()}
+              </a>
             </Link>
           </li>
-          ))}
+        ))}
 
-        {photos.data.length >= allImages && (<li><Button>
-          <Link
-            href={{
-              pathname: "/subject/[slug]/model/new",
-              query: { slug },
-            }}
-          >
-
-              <div className="flex gap-2">
-                <PlusCircleIcon className="w-4" /> Add new model
-              </div>
-          </Link>
-        </Button></li>)}
+        {photos.data.length >= allImages && (
+          <li>
+            <Button>
+              <Link
+                href={{
+                  pathname: "/subject/[slug]/model/new",
+                  query: { slug },
+                }}
+              >
+                <div className="flex gap-2">
+                  <PlusCircleIcon className="w-4" /> Add new model
+                </div>
+              </Link>
+            </Button>
+          </li>
+        )}
       </ul>
     </Layout>
   );

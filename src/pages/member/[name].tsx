@@ -3,13 +3,13 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Layout } from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
-import {
-  ArrowLeftOnRectangleIcon,
-  PlusCircleIcon,
-} from "@heroicons/react/24/solid";
+import { ArrowLeftOnRectangleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import Button from "../../components/Button";
 import moment from "moment";
+import H2 from "../../components/H2";
+import UserLink from "../../components/UserLink";
+
 
 const Member: NextPage = () => {
   const router = useRouter();
@@ -30,9 +30,7 @@ const Member: NextPage = () => {
   return (
     <>
       <Layout>
-        <h2 className="text-2xl font-extrabold leading-normal tracking-tight">
-          User @{user.name}
-        </h2>
+        <H2><UserLink user={user} /></H2>
         {user.id === session?.user?.id && (
           <>
             <div className="flex flex-col gap-2 p-2">

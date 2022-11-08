@@ -1,13 +1,17 @@
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { z } from "zod";
 import Button from "../../components/Button";
 import { Layout } from "../../components/Layout";
 import { useDebounce } from "../../hooks/tools";
 import { subjectSchema } from "../../utils/schema";
 import { trpc } from "../../utils/trpc";
+import Form from "../../components/Form";
+import FormRow from "../../components/FormRow";
+import ErrorList from "../../components/ErrorList";
+import H1 from "../../components/H1";
 
 const SubjectNew: NextPage = () => {
   const router = useRouter();
@@ -51,46 +55,38 @@ const SubjectNew: NextPage = () => {
     setSubject({ ...subject, description: newDescription });
     setChanged(true);
   };
-
+  const extraErrors = slugExists?.exists
+    ? [
+        {
+          code: "slug-exists",
+          message: `Model with slug {debounced.slug} already exists`,
+        },
+      ]
+    : [];
   return (
     <>
       <Layout>
-        <h1>New subject</h1>
-        <form className="flex flex-col gap-2" onSubmit={handleCreateSubject}>
-          <label>
-            Slug
-            <input
-              placeholder="slug"
-              value={subject.slug}
-              onChange={(e) => handleSlugChanged(e.target.value)}
-              className="form-input mt-1 block w-full"
-            />
-            <p className="size-sm text-slate-500">url friendly name</p>
-          </label>
-          <label>
-            Description
-            <textarea
-              value={subject.description}
-              onChange={(e) => handleDescriptionChanged(e.target.value)}
-              placeholder="description"
-              className="form-input mt-1 block w-full"
-            />
-          </label>
-          <Button className="w-fit disabled:opacity-50" disabled={!canSave}>
-            Create
-          </Button>
-        </form>
-        {(!validated.success && changed) || slugExists?.exists ? (
-          <ul>
-            {!validated.success &&
-              validated.error.errors.map((error) => (
-                <li key={error.code}>{error.message}</li>
-              ))}
-            {slugExists?.exists && (
-              <li>Model with slug {debounced.slug} already exists</li>
-            )}
-          </ul>
-        ) : null}
+        <H1>New subject</H1>
+        <Form onSubmit={handleCreateSubject}>
+          <FormRow
+            label="Slug"
+            component="input"
+            helpText="url friendly name"
+            placeholder="slug"
+            value={subject.slug}
+            onChange={(e) => handleSlugChanged(e.target.value)}
+          />
+          <FormRow
+            label="Description"
+            component="textarea"
+            value={subject.description}
+            onChange={(e) => handleDescriptionChanged(e.target.value)}
+            placeholder="description"
+            className="form-input mt-1 block w-full"
+          />
+          <Button disabled={!canSave}>Create</Button>
+        </Form>
+        <ErrorList validated={validated} extra={extraErrors} />
       </Layout>
     </>
   );
