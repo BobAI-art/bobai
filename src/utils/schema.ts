@@ -36,3 +36,8 @@ export const modelCreateSchema = z.object({
   name: dbString.min(4, "Name must be at least 4 character long"),
   parentModelCode: z.enum(parentModelNames),
 });
+
+export const promptSchema = {
+  prompt: dbString.regex(/\<MODEL\>/, "Prompt must contain <MODEL>"),
+  modelId: cuidSchema,
+}

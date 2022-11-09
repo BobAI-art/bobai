@@ -9,6 +9,7 @@ import Button from "../../components/Button";
 import moment from "moment";
 import H2 from "../../components/H2";
 import UserLink from "../../components/UserLink";
+import PromptSubmit from "../../components/PromptSubmit";
 
 
 const Member: NextPage = () => {
@@ -22,6 +23,7 @@ const Member: NextPage = () => {
   const mySubjects = trpc.subject.list.useQuery(undefined, {
     enabled: user?.id === session?.user?.id,
   });
+  const myModelsQuery = trpc.model.ownedByMe.useQuery({});
 
   if (isLoading || !user) {
     return <>Loading...</>;
@@ -60,6 +62,11 @@ const Member: NextPage = () => {
                 </div>
               </Link>
             </div>
+
+            <PromptSubmit models={myModelsQuery.data} />
+
+            <div className="h-48"></div>
+            <hr />
             <div className="mt-2 flex flex-col gap-4 p-2">
               <Button onClick={() => signOut()}>
                 <ArrowLeftOnRectangleIcon className="w-4" /> Logout

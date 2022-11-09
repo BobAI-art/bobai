@@ -5,6 +5,7 @@ import { userRouter } from "./user";
 import { subjectRouter } from "./subject";
 import { subjectPhotoRouter } from "./subjectPhoto";
 import { modelRouter } from "./model";
+import { promptRouter } from "./prompt";
 
 export const appRouter = router({
   auth: authRouter,
@@ -12,6 +13,7 @@ export const appRouter = router({
   model: modelRouter,
   subject: subjectRouter,
   subjectPhoto: subjectPhotoRouter,
+  prompt: promptRouter
 });
 
 // export type definition of API

@@ -87,6 +87,7 @@ model Model {
   parent_model_code String           @db.Char(25)
   regularization    Json             @db.Json
   generated_photos  GeneratedPhoto[]
+  Prompt            Prompt[]
 }
 
 enum ModelState {
@@ -104,5 +105,13 @@ model GeneratedPhoto {
   model    Model    @relation(fields: [model_id], references: [id], onDelete: Cascade)
   prompt   String?  @db.Char(190)
   category String?  @db.Char(190)
+  created  DateTime @default(now())
+}
+
+model Prompt {
+  id       String   @id @default(cuid())
+  prompt   String   @db.Char(190)
+  model_id String   @db.Char(25)
+  model    Model    @relation(fields: [model_id], references: [id], onDelete: Cascade)
   created  DateTime @default(now())
 }

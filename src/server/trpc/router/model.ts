@@ -1,6 +1,7 @@
 import { cuidSchema, modelCreateSchema } from "../../../utils/schema";
 import { router, protectedProcedure } from "../trpc";
 import { ModelClass, modelClasses } from "../../../utils/consts";
+import { z } from "zod";
 
 const makeRegularization = (regularization: string) => {
   if (modelClasses.has(regularization as ModelClass)) {
@@ -17,6 +18,22 @@ const makeRegularization = (regularization: string) => {
 };
 
 export const modelRouter = router({
+  ownedByMe: protectedProcedure.input(z.object({})).query(async ({ ctx , input}) => {
+    return await ctx.prisma.model.findMany({
+      where: {
+        owner_id: ctx.session.user.id,
+        state: 'TRAINED'
+      },
+      orderBy: {
+        created: "desc",
+      },
+      select: {
+        id: true,
+        name: true,
+        created: true,
+      }
+    });
+  }),
   get: protectedProcedure.input(cuidSchema).query(async ({ ctx, input }) => {
     return await ctx.prisma.model.findFirst({
       where: {
