@@ -61,11 +61,9 @@ const SubjectBySlug: NextPage = () => {
                 query: { slug: subject.slug, id: model.id },
               }}
             >
-              <a>
                 {model.name} <i>{model.state}</i>{" "}
                 <b>{model.parent_model_code}</b>, Created:{" "}
                 {moment(model.created).fromNow()}
-              </a>
             </Link>
           </li>
         ))}

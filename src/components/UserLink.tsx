@@ -9,7 +9,7 @@ const UserLink: React.FC<{ user: Pick<User, "name"> }> = ({ user }) => (
       query: { name: user.name },
     }}
   >
-    <a>User @{user.name}</a>
+    User @{user.name}
   </Link>
 );
 
