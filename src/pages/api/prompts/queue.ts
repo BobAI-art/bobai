@@ -34,17 +34,23 @@ const getOldestPrompts = async (limit = 10) => {
     take: limit,
   });
 
-  return prompts.map((prompt) => ({
-    id: prompt.id,
-    model_id: prompt.model_id,
-    class: getPromptClass(
-      prompt.model.regularization as unknown as
-        | GenerateRegularization
-        | FetchRegularization
-    ),
-    prompt: prompt.prompt,
-    subject: prompt.model.subject_slug,
-  }));
+  if (!prompts) return null;
+  const firstPrompt = prompts[0];
+  if (!firstPrompt) return null;
+  return {
+    model_id: firstPrompt.model_id,
+    owner_id: firstPrompt.model.owner_id,
+    prompts: prompts.map((prompt) => ({
+      id: prompt.id,
+      class: getPromptClass(
+        prompt.model.regularization as unknown as
+          | GenerateRegularization
+          | FetchRegularization
+      ),
+      prompt: prompt.prompt,
+      subject: prompt.model.subject_slug,
+    })),
+  };
 };
 
 export default async function handler(

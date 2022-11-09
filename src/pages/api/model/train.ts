@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../server/db/client";
 import { ModelName, parentModels } from "../../../utils/consts";
 import { photoUrl } from "../../../utils/helpers";
-import { GetModelResponse } from "../../../interfaces";
+import { type GetModelResponse } from "../../../interfaces";
 
 const getOldestCreatedModel = async (): Promise<GetModelResponse | null> => {
   const model = await prisma.model.findFirst({
