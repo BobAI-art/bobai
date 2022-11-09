@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { subjectSchema } from "../../../utils/schema";
-import { router, protectedProcedure } from "../trpc";
+import { cuidSchema, subjectSchema } from "../../../utils/schema";
+import { router, protectedProcedure, publicProcedure } from "../trpc";
 
 export const subjectRouter = router({
-  get: protectedProcedure
+  get: publicProcedure
     .input(subjectSchema.slug)
     .query(async ({ ctx, input }) => {
-      const model = await ctx.prisma.subject.findUnique({
+      return await ctx.prisma.subject.findUnique({
         where: {
           slug: input,
         },
@@ -14,8 +14,6 @@ export const subjectRouter = router({
           models: true,
         },
       });
-
-      return model;
     }),
   slugExists: protectedProcedure
     .input(z.string())
@@ -42,14 +40,16 @@ export const subjectRouter = router({
         },
       });
     }),
-  list: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.subject.findMany({
-      where: {
-        owner_id: ctx.session.user.id,
-      },
-      orderBy: {
-        created: "desc",
-      },
-    });
-  }),
+  list: protectedProcedure
+    .input(z.object({ ownerId: cuidSchema }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.subject.findMany({
+        where: {
+          owner_id: input.ownerId,
+        },
+        orderBy: {
+          created: "desc",
+        },
+      });
+    }),
 });

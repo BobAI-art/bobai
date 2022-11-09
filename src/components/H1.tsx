@@ -5,7 +5,7 @@ const H1: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   className,
   ...props
 }) => (
-  <h1 className={classNames(className || "", "text-3xl font-bold")}>
+  <h1 className={classNames(className || "", "text-3xl font-bold")} {...props}>
     {children}
   </h1>
 );

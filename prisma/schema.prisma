@@ -103,15 +103,22 @@ model GeneratedPhoto {
   bucket   String   @db.Char(190)
   model_id String   @db.Char(25)
   model    Model    @relation(fields: [model_id], references: [id], onDelete: Cascade)
-  prompt   String?  @db.Char(190)
+  prompt   String?  @db.VarChar(768)
   category String?  @db.Char(190)
   created  DateTime @default(now())
 }
 
+enum PromptStatus {
+  CREATED
+  TRAINING
+  ERROR
+}
+
 model Prompt {
   id       String   @id @default(cuid())
-  prompt   String   @db.Char(190)
+  prompt   String   @db.VarChar(768)
   model_id String   @db.Char(25)
   model    Model    @relation(fields: [model_id], references: [id], onDelete: Cascade)
+  status   PromptStatus @default(CREATED)
   created  DateTime @default(now())
 }

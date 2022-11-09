@@ -10,6 +10,7 @@ const H2: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
       className || "",
       "text-2xl font-extrabold leading-normal tracking-tight"
     )}
+    {...props}
   >
     {children}
   </h2>

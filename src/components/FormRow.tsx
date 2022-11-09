@@ -1,10 +1,12 @@
-import React, { ComponentProps } from "react";
+import React from "react";
 import Input from "./Input";
 import Textarea from "./Textarea";
+import MultiSelect from "./MultiSelect";
 
 const components = {
   input: Input,
   textarea: Textarea,
+  multiselect: MultiSelect,
 };
 
 type SelectProps<C extends keyof typeof components> =
@@ -17,7 +19,6 @@ type SelectProps<C extends keyof typeof components> =
 const FormRow = <C extends keyof typeof components>({
   label,
   helpText,
-  className,
   component,
   ...props
 }: SelectProps<C>) => {

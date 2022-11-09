@@ -8,6 +8,7 @@ const makeRegularization = (regularization: string) => {
     return {
       type: "fetch",
       source: `https://github.com/djbielejeski/Stable-Diffusion-Regularization-Images-${regularization}.git`,
+      regularization: regularization,
     };
   }
   return {
@@ -18,11 +19,11 @@ const makeRegularization = (regularization: string) => {
 };
 
 export const modelRouter = router({
-  ownedByMe: protectedProcedure.input(z.object({})).query(async ({ ctx , input}) => {
+  ownedByMe: protectedProcedure.input(z.object({})).query(async ({ ctx }) => {
     return await ctx.prisma.model.findMany({
       where: {
         owner_id: ctx.session.user.id,
-        state: 'TRAINED'
+        state: "TRAINED",
       },
       orderBy: {
         created: "desc",
@@ -31,7 +32,7 @@ export const modelRouter = router({
         id: true,
         name: true,
         created: true,
-      }
+      },
     });
   }),
   get: protectedProcedure.input(cuidSchema).query(async ({ ctx, input }) => {

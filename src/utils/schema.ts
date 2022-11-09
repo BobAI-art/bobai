@@ -38,6 +38,9 @@ export const modelCreateSchema = z.object({
 });
 
 export const promptSchema = {
-  prompt: dbString.regex(/\<MODEL\>/, "Prompt must contain <MODEL>"),
-  modelId: cuidSchema,
-}
+  prompt: z
+    .string()
+    .max(768, "Prompt can be max 768 characters long")
+    .regex(/\<MODEL\>/, "Prompt must contain <MODEL>"),
+  modelIds: z.array(cuidSchema),
+};
