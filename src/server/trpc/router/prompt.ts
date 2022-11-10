@@ -1,4 +1,4 @@
-import { protectedProcedure, router } from "../trpc";
+import { adminProcedure, protectedProcedure, router } from "../trpc";
 import { z } from "zod";
 import { promptSchema } from "../../../utils/schema";
 
@@ -27,6 +27,12 @@ export const promptRouter = router({
           owner_id: ctx.session.user.id,
         },
       },
+    });
+  }),
+  stats: adminProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.prompt.groupBy({
+      by: ["status"],
+      _count: true,
     });
   }),
 });

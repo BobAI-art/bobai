@@ -54,3 +54,18 @@ resource "vercel_project_environment_variable" "aws_s3_region" {
   value      = var.variables.AWS_S3_REGION
   target     = var.targets
 }
+
+
+resource "vercel_project_environment_variable" "vast_api_key" {
+    project_id = var.project_id
+    key = "VAST_API_KEY"
+    value = var.variables.VAST_API_KEY
+    target = var.targets
+}
+
+resource "vercel_project_environment_variable" "docker_io_password" {
+    project_id = var.project_id
+    key = "DOCKER_IO_PASSWORD"
+    value = var.variables.DOCKER_IO_PASSWORD
+    target = var.targets
+}

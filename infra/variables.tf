@@ -37,3 +37,13 @@ variable "DEPLOYER_PUBLICK_KEY_PATH" {
   type     = string
   nullable = false
 }
+
+variable "VAST_API_KEY" {
+  type     = string
+  nullable = false
+}
+
+variable "DOCKER_IO_PASSWORD" {
+    type = string
+    nullable = false
+}

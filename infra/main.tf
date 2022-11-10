@@ -19,6 +19,9 @@ module "production_environment_variables" {
     EMAIL_FROM      = var.EMAIL_FROM
     EMAIL_SERVER    = var.EMAIL_SERVER
 
+    VAST_API_KEY = var.VAST_API_KEY
+    DOCKER_IO_PASSWORD = var.DOCKER_IO_PASSWORD
+
     AWS_S3_ACCESS_KEY_ID     = module.production_file_store.bucket_access_key_id
     AWS_S3_ACCESS_KEY_SECRET = module.production_file_store.bucket_secret_access_key
     AWS_S3_BUCKET            = module.production_file_store.bucket_name
@@ -36,6 +39,9 @@ module "preview_environment_variables" {
     NEXTAUTH_SECRET = var.PREVIEW_NEXTAUTH_SECRET
     EMAIL_FROM      = var.EMAIL_FROM
     EMAIL_SERVER    = var.EMAIL_SERVER
+
+    VAST_API_KEY = var.VAST_API_KEY
+    DOCKER_IO_PASSWORD = var.DOCKER_IO_PASSWORD
 
     AWS_S3_ACCESS_KEY_ID     = module.preview_file_store.bucket_access_key_id
     AWS_S3_ACCESS_KEY_SECRET = module.preview_file_store.bucket_secret_access_key
@@ -70,5 +76,5 @@ module "production_file_store" {
 module "model_store" {
   source = "./model_store"
 
-  bucket_name     = "portraits-model-store"
+  bucket_name = "portraits-model-store"
 }

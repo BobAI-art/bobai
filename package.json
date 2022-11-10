@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "eval \"$(sed -e 's/^/export /' .env)\" && next dev",
+    "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
     "infra": "cd infra && eval \"$(sed -e 's/^/export /' .env)\" && terraform init && terraform apply -auto-approve",
-    "db:push": "eval \"$(sed -e 's/^/export /' .env)\" && prisma db push",
-    "db:studio": "eval \"$(sed -e 's/^/export /' .env)\" && prisma studio",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
     "prepare": "husky install",
     "format": "prettier -u --write src/**/*.{ts,tsx,css} && eslint --fix src/**/*.{ts,tsx}"
   },

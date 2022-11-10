@@ -43,3 +43,4 @@ packer_*.zip
 .terraform.lock.hcl
 tf-packer
 id_rsa
+.env*

@@ -15,6 +15,9 @@ variable "variables" {
     AWS_S3_ACCESS_KEY_SECRET = string
     AWS_S3_BUCKET            = string
     AWS_S3_REGION            = string
+
+    VAST_API_KEY = string
+    DOCKER_IO_PASSWORD = string
   })
   nullable = false
 }

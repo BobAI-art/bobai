@@ -1,5 +1,5 @@
 import { cuidSchema, modelCreateSchema } from "../../../utils/schema";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, adminProcedure } from "../trpc";
 import { ModelClass, modelClasses } from "../../../utils/consts";
 import { z } from "zod";
 
@@ -63,4 +63,10 @@ export const modelRouter = router({
         },
       });
     }),
+  stats: adminProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.model.groupBy({
+      by: ["state"],
+      _count: true,
+    });
+  }),
 });
