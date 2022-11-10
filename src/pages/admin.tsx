@@ -10,31 +10,76 @@ import useAvailableVastInstances from "../hooks/admin/useAvailableVastInstances"
 import { classNames } from "../toolbox";
 import { trpc } from "../utils/trpc";
 import { toast } from "react-hot-toast";
+import useActiveVastInstances from "../hooks/admin/useActiveVastInstances";
 
 const MODEL_TRAINER_MIN_MEM = 25 * 1024;
 
 const FromAggregation: React.FC<{
   title: string;
-  stats: { label: string; count: number }[];
+  stats: {
+    label: string;
+    count: number;
+    action?: { label: string; onExecute: () => void };
+  }[];
 }> = ({ stats, title }) => (
   <div className="mb-2">
     <H2 className="py-1">{title}</H2>
     <ul className="grid grid-cols-2  gap-4 sm:grid-cols-3">
       {stats?.map((stat) => (
-        <li key={stat.label} className="rounded-md border bg-white p-4 shadow ">
-          <div className="capitalize">{stat.label}</div>
-          <div className="text-2xl font-extrabold">{stat.count}</div>
+        <li
+          key={stat.label}
+          className="flex rounded-md border bg-white p-4 shadow"
+        >
+          <div className="flex-grow">
+            <div className="capitalize">{stat.label}</div>
+            <div className="text-2xl font-extrabold">{stat.count}</div>
+          </div>
+          {stat.action && (
+            <button
+              onClick={stat.action.onExecute}
+              className="rounded border bg-amber-200 px-2 shadow hover:bg-amber-300"
+            >
+              {stat.action.label}
+            </button>
+          )}
         </li>
       ))}
     </ul>
   </div>
 );
 
+const TableButton: React.FC<{
+  onClick: () => void;
+  label: string;
+}> = ({ onClick, label }) => (
+  <a
+    href="#"
+    onClick={onClick}
+    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+  >
+    {label}
+  </a>
+);
+
+const instanceName = (runtype: string, args: string[]) => {
+  if (runtype === "ssh") {
+    return "SSH";
+  } else {
+    if (args[1] === "portraits.train") {
+      return "Train";
+    } else if (args[1] === "portraits.prompts") {
+      return "Prompts";
+    }
+  }
+  return "Unknown";
+};
+
 const Home: NextPage = () => {
   const router = useRouter();
   const { data: promptsStats } = usePromptsStats();
-  const { data: modelStats } = useModelsStats();
+  const { data: modelStats, refetch: modelStatsRefetch } = useModelsStats();
   const { data: instances } = useAvailableVastInstances();
+  const { data: activeInstances } = useActiveVastInstances();
   const session = useSession({
     required: true,
   });
@@ -46,6 +91,16 @@ const Home: NextPage = () => {
       toast.error(err.message);
     },
   });
+  const retrtyFailedTrainingMutation = trpc.model.retryFailed.useMutation({
+    onSuccess: () => {
+      modelStatsRefetch();
+      toast.success("Retried");
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
   if (session.status === "loading") {
     return <Layout>Loading...</Layout>;
   }
@@ -71,8 +126,46 @@ const Home: NextPage = () => {
             stats={modelStats.map((stat) => ({
               label: stat.state.toLocaleLowerCase(),
               count: stat._count,
+              action:
+                stat.state === "ERROR"
+                  ? {
+                      label: "Retry",
+                      onExecute: () => {
+                        retrtyFailedTrainingMutation.mutate();
+                      },
+                    }
+                  : undefined,
             }))}
           />
+        )}
+        {activeInstances && activeInstances.instances.length > 0 && (
+          <div className="mb-2">
+            <H2 className="py-1">Active instances</H2>
+            <ul className="grid grid-cols-2  gap-4 sm:grid-cols-3">
+              {activeInstances.instances.map((instance) => (
+                <li
+                  key={instance.id}
+                  className="flex rounded-md border bg-white p-4 shadow"
+                >
+                  <div className="flex-grow">
+                    <div className="capitalize">
+                      {instanceName(
+                        instance.image_runtype,
+                        instance.image_args
+                      )}
+                    </div>
+                    <div className="text-2xl font-extrabold">
+                      GPU: {instance.gpu_util.toFixed(2)}%
+                    </div>
+                    <div className="text-xl font-bold">{instance.gpu_name}</div>
+                    <div className="text-sm font-light text-gray-600">
+                      {instance.status_msg}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
         {instances && (
           <div>
@@ -143,33 +236,36 @@ const Home: NextPage = () => {
                       <td className="py-4 px-6">
                         ${offer.dph_total.toFixed(2)}/h
                       </td>
-                      <td className="py-4 px-6">
+                      <td className="flex gap-2 py-4 px-6">
+                        <TableButton
+                          label="ssh"
+                          onClick={() => {
+                            createInstanceMutation.mutate({
+                              instanceId: offer.id,
+                              type: "ssh",
+                            });
+                          }}
+                        />
                         {offer.gpu_ram > MODEL_TRAINER_MIN_MEM ? (
-                          <a
-                            href="#"
+                          <TableButton
+                            label="Models"
                             onClick={() => {
                               createInstanceMutation.mutate({
                                 instanceId: offer.id,
                                 type: "model",
                               });
                             }}
-                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                          >
-                            New Model Trainer
-                          </a>
+                          />
                         ) : (
-                          <a
-                            href="#"
+                          <TableButton
                             onClick={() => {
                               createInstanceMutation.mutate({
                                 instanceId: offer.id,
                                 type: "prompt",
                               });
                             }}
-                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                          >
-                            New Prompt Generator
-                          </a>
+                            label="Prompts"
+                          />
                         )}
                       </td>
                     </tr>

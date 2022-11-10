@@ -31,7 +31,7 @@ export default async function handler(
     case "DELETE":
       deletePrompt(id)
         .then(() => {
-          res.status(204);
+          res.status(204).end();
         })
         .catch(() => {
           res.status(500).json({ error: "Could not get model" });

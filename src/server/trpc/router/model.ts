@@ -69,4 +69,14 @@ export const modelRouter = router({
       _count: true,
     });
   }),
+  retryFailed: adminProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.model.updateMany({
+      where: {
+        state: "ERROR",
+      },
+      data: {
+        state: "CREATED",
+      },
+    });
+  }),
 });
