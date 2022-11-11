@@ -35,7 +35,7 @@ export const ImageUpload: React.FC<{
     <>
       <div
         className={classNames(
-          "flex aspect-square cursor-pointer items-center justify-center border text-center",
+          "flex aspect-square cursor-pointer items-center justify-center rounded border border-gray-300 text-center",
           className || ""
         )}
         onClick={() => fileInputRef.current?.click()}

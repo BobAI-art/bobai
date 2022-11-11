@@ -64,6 +64,7 @@ model SubjectPhoto {
   bucket       String  @db.Char(190)
   subject_slug String  @db.Char(190)
   subject      Subject @relation(fields: [subject_slug], references: [slug], onDelete: Cascade)
+  is_public    Boolean @default(false)
 }
 
 model Subject {
@@ -75,6 +76,8 @@ model Subject {
   owner_id       String         @db.Char(25)
   subject_photos SubjectPhoto[]
   models         Model[]
+  is_public    Boolean @default(false)
+  finished     Boolean @default(false)
 }
 
 model Model {

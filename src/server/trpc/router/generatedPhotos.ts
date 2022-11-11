@@ -6,8 +6,9 @@ export const generatedPhotosRouter = router({
   list: publicProcedure
     .input(
       z.object({
-        modelId: cuidSchema,
+        modelId: cuidSchema.optional(),
         category: z.enum(["generated-image", "training-progress"]).optional(),
+        limit: z.number().optional().default(96),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -16,6 +17,10 @@ export const generatedPhotosRouter = router({
           model_id: input.modelId,
           category: input.category,
         },
+        orderBy: {
+          created: "desc",
+        },
+        take: input.limit,
       });
     }),
 });

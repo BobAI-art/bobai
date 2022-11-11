@@ -40,6 +40,17 @@ export const subjectRouter = router({
         },
       });
     }),
+  finish: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.subject.updateMany({
+      where: {
+        owner_id: ctx.session.user.id,
+      },
+      data: {
+        finished: true,
+      },
+    });
+  }),
+
   list: protectedProcedure
     .input(z.object({ ownerId: cuidSchema }))
     .query(async ({ ctx, input }) => {

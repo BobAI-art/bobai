@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { trpc } from "../../../../utils/trpc";
 import { photoUrl } from "../../../../utils/helpers";
 import Button from "../../../../components/Button";
-import React from "react";
+import React, { useState } from "react";
 import {
   defaultModel,
   defaultModelClass,
@@ -17,12 +17,14 @@ import { modelCreateSchema } from "../../../../utils/schema";
 import toast from "react-hot-toast";
 import Form from "../../../../components/Form";
 import Image from "next/image";
+import { classNames } from "../../../../toolbox";
 
 const ModelNew: NextPage = () => {
   const [modelClass, setModelClass] = React.useState<string>(defaultModelClass);
   const [name, setName] = React.useState<string>("");
   const router = useRouter();
   const parentModelRef = React.useRef<HTMLSelectElement>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   useSession({
     required: true,
@@ -74,7 +76,6 @@ const ModelNew: NextPage = () => {
           src={photoUrl(photo)}
           width={512}
           height={512}
-          layout="responsive"
           className="rounded shadow"
         />
       </div>
@@ -97,25 +98,45 @@ const ModelNew: NextPage = () => {
             className="form-input mt-1 block w-full"
           />
         </label>
-        <ModelClassSelect
-          onChange={(newModelClass) => setModelClass(newModelClass)}
-        />
 
-        <label>Parent model</label>
-        <select
-          ref={parentModelRef}
-          name="parent"
-          id="parent"
-          className="form-select mt-1 block w-full"
-          defaultValue={defaultModel}
+        <label
+          htmlFor="checked-toggle"
+          className="relative inline-flex cursor-pointer items-center"
         >
-          {[...parentModels.keys()].map((model) => (
-            <option key={model} value={model}>
-              {model}
-            </option>
-          ))}
-        </select>
+          <input
+            type="checkbox"
+            // value={false}
+            id="checked-toggle"
+            className="peer sr-only"
+            checked={showAdvanced}
+            onClick={() => setShowAdvanced((current) => !current)}
+          />
+          <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+          <span className="ml-3 text-sm font-medium text-gray-900">
+            {showAdvanced ? "Advanced" : "Simple"}
+          </span>
+        </label>
 
+        <div className={classNames(showAdvanced ? "" : "hidden")}>
+          <ModelClassSelect
+            onChange={(newModelClass) => setModelClass(newModelClass)}
+          />
+
+          <label>Parent model</label>
+          <select
+            ref={parentModelRef}
+            name="parent"
+            id="parent"
+            className="form-select mt-1 block w-full"
+            defaultValue={defaultModel}
+          >
+            {[...parentModels.keys()].map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+        </div>
         <Button
           className="w-fit disabled:opacity-50"
           disabled={!parsed.success}

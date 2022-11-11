@@ -21,10 +21,6 @@ const TrainedModel: React.FC<{ model: Model }> = ({ model }) => {
 
   return (
     <>
-      <H2>
-        Model in training,{" "}
-        <span className="font-extrabold">Preview images:</span>
-      </H2>
       <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
         {traningPreview?.map((photo) => (
           <li key={photo.id}>

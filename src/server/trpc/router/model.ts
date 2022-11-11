@@ -24,6 +24,20 @@ const makeRegularization = (regularization: string) => {
 };
 
 export const modelRouter = router({
+  list: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().optional().default(10),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.model.findMany({
+        take: input.limit,
+        orderBy: {
+          created: "desc",
+        },
+      });
+    }),
   ownedByMe: protectedProcedure.input(z.object({})).query(async ({ ctx }) => {
     return await ctx.prisma.model.findMany({
       where: {

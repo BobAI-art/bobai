@@ -8,6 +8,11 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Button from "../../../components/Button";
 import Link from "next/link";
 import moment from "moment/moment";
+import React from "react";
+import H2 from "../../../components/H2";
+import { toast } from "react-hot-toast";
+import Image from "next/image";
+import { photoUrl } from "../../../utils/helpers";
 
 const imagesNeeded = {
   "full-body": 3,
@@ -23,18 +28,50 @@ const SubjectBySlug: NextPage = () => {
   });
   const slug = router.query.slug as string;
 
-  const subjectQuery = trpc.subject.get.useQuery(slug);
-  const photos = trpc.subjectPhoto.list.useQuery(slug);
+  const { data: subject, refetch } = trpc.subject.get.useQuery(slug);
+  const finish = trpc.subject.finish.useMutation({
+    onSuccess: async () => {
+      toast.success("Subject created");
+      await refetch();
+    },
+    onError: () => {
+      toast.error("Failed to finish subject");
+    },
+  });
+  const { data: photos, refetch: photosRefetch } =
+    trpc.subjectPhoto.list.useQuery(slug);
 
-  if (subjectQuery.isLoading || photos.isLoading) {
-    return <>Loading...</>;
-  }
-  const subject = subjectQuery.data;
-  if (!subject) {
+  if (!subject || !subject.slug) {
     return <>Model not found</>;
   }
-  if (photos.data == undefined) {
+  if (photos == undefined) {
     return <>Photos not found</>;
+  }
+
+  if (!subject.finished) {
+    return (
+      <Layout>
+        <H2>
+          Upload photos for{" "}
+          <span className="font-extrabold">{subject.slug}</span>
+        </H2>
+        <p className="text-gray-500">
+          You need to upload at least {allImages} photos for this subject.
+          Minimum photo size is 512x512px.
+        </p>
+        <SubjectPhotos
+          photos={photos}
+          subject={subject}
+          howMany={allImages}
+          onPhotosChanged={photosRefetch}
+        />
+        {photos.length >= allImages && (
+          <Button disabled={finish.isLoading} onClick={() => finish.mutate()}>
+            <PlusCircleIcon className="w-4" /> Finish adding subject
+          </Button>
+        )}
+      </Layout>
+    );
   }
 
   return (
@@ -42,13 +79,17 @@ const SubjectBySlug: NextPage = () => {
       <h2 className="text-2xl font-extrabold leading-normal tracking-tight">
         Subject {subject.slug}
       </h2>
-
-      <SubjectPhotos
-        photos={photos.data}
-        subject={subject}
-        howMany={allImages}
-        onPhotosChanged={() => photos.refetch()}
-      />
+      <div className="aspect-square w-48">
+        {photos[0] && (
+          <Image
+            alt="subject example photo"
+            src={photoUrl(photos[0])}
+            width={512}
+            height={512}
+            className="rounded shadow"
+          />
+        )}
+      </div>
       <h3 className="text-xl font-extrabold leading-normal tracking-tight">
         Models
       </h3>
@@ -67,22 +108,20 @@ const SubjectBySlug: NextPage = () => {
           </li>
         ))}
 
-        {photos.data.length >= allImages && (
-          <li>
-            <Button>
-              <Link
-                href={{
-                  pathname: "/subject/[slug]/model/new",
-                  query: { slug },
-                }}
-              >
-                <div className="flex gap-2">
-                  <PlusCircleIcon className="w-4" /> Add new model
-                </div>
-              </Link>
-            </Button>
-          </li>
-        )}
+        <li>
+          <Button>
+            <Link
+              href={{
+                pathname: "/subject/[slug]/model/new",
+                query: { slug },
+              }}
+            >
+              <div className="flex gap-2">
+                <PlusCircleIcon className="w-4" /> Add new model
+              </div>
+            </Link>
+          </Button>
+        </li>
       </ul>
     </Layout>
   );
