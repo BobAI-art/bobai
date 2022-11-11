@@ -45,6 +45,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   subjects      Subject[]
+  Model         Model[]
 }
 
 model VerificationToken {
@@ -80,6 +81,7 @@ model Model {
   id                String           @id @default(cuid()) @db.Char(25)
   name              String           @db.Char(190)
   owner_id          String           @db.Char(25)
+  owner             User             @relation(fields: [owner_id], references: [id], onDelete: Cascade)
   subject           Subject          @relation(fields: [subject_slug], references: [slug], onDelete: Cascade)
   subject_slug      String           @db.Char(190)
   created           DateTime         @default(now())
@@ -115,10 +117,10 @@ enum PromptStatus {
 }
 
 model Prompt {
-  id       String   @id @default(cuid())
-  prompt   String   @db.VarChar(768)
-  model_id String   @db.Char(25)
-  model    Model    @relation(fields: [model_id], references: [id], onDelete: Cascade)
+  id       String       @id @default(cuid())
+  prompt   String       @db.VarChar(768)
+  model_id String       @db.Char(25)
+  model    Model        @relation(fields: [model_id], references: [id], onDelete: Cascade)
   status   PromptStatus @default(CREATED)
-  created  DateTime @default(now())
+  created  DateTime     @default(now())
 }

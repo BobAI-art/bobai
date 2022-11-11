@@ -1,5 +1,10 @@
 import { cuidSchema, modelCreateSchema } from "../../../utils/schema";
-import { router, protectedProcedure, adminProcedure } from "../trpc";
+import {
+  router,
+  protectedProcedure,
+  adminProcedure,
+  publicProcedure,
+} from "../trpc";
 import { ModelClass, modelClasses } from "../../../utils/consts";
 import { z } from "zod";
 
@@ -35,16 +40,19 @@ export const modelRouter = router({
       },
     });
   }),
-  get: protectedProcedure.input(cuidSchema).query(async ({ ctx, input }) => {
-    return await ctx.prisma.model.findFirst({
+  get: publicProcedure.input(cuidSchema).query(async ({ ctx, input }) => {
+    const model = await ctx.prisma.model.findFirst({
       where: {
         id: input,
-        owner_id: ctx.session.user.id,
       },
       include: {
-        generated_photos: true,
+        subject: true,
+        owner: true,
       },
     });
+    if (!model) return model;
+
+    return model;
   }),
   create: protectedProcedure
     .input(modelCreateSchema)
@@ -52,7 +60,11 @@ export const modelRouter = router({
       return await ctx.prisma.model.create({
         data: {
           name: input.name,
-          owner_id: ctx.session.user.id,
+          owner: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
           subject: {
             connect: {
               slug: input.subjectSlug,

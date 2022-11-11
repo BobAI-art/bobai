@@ -7,6 +7,7 @@ import { subjectPhotoRouter } from "./subjectPhoto";
 import { modelRouter } from "./model";
 import { promptRouter } from "./prompt";
 import { vastRouter } from "./vast";
+import { generatedPhotosRouter } from "./generatedPhotos";
 
 export const appRouter = router({
   auth: authRouter,
@@ -16,6 +17,7 @@ export const appRouter = router({
   subjectPhoto: subjectPhotoRouter,
   prompt: promptRouter,
   vast: vastRouter,
+  generatedPhotos: generatedPhotosRouter,
 });
 
 // export type definition of API

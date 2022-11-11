@@ -86,7 +86,7 @@ interface ActiveInstancesResponse {
     label: null;
     jupyter_token: string;
     status_msg: string; // to show
-    gpu_util: number;
+    gpu_util?: number;
     disk_util: number;
     gpu_temp: number;
     local_ipaddrs: string;

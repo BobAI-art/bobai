@@ -68,8 +68,15 @@ const ModelNew: NextPage = () => {
       <h2 className="text-2xl font-extrabold leading-normal tracking-tight">
         Model for Subject {subject.data.slug}
       </h2>
-      <div className="w-48 aspect-square">
-        <Image alt="subject example photo" src={photoUrl(photo)} width={512} height={512} layout="responsive" className="rounded shadow" />
+      <div className="aspect-square w-48">
+        <Image
+          alt="subject example photo"
+          src={photoUrl(photo)}
+          width={512}
+          height={512}
+          layout="responsive"
+          className="rounded shadow"
+        />
       </div>
 
       <Form

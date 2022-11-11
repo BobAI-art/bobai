@@ -57,13 +57,12 @@ const SubjectBySlug: NextPage = () => {
           <li key={model.id}>
             <Link
               href={{
-                pathname: "/subject/[slug]/model/[id]",
-                query: { slug: subject.slug, id: model.id },
+                pathname: "/model/[id]",
+                query: { id: model.id },
               }}
             >
-                {model.name} <i>{model.state}</i>{" "}
-                <b>{model.parent_model_code}</b>, Created:{" "}
-                {moment(model.created).fromNow()}
+              {model.name} <i>{model.state}</i> <b>{model.parent_model_code}</b>
+              , Created: {moment(model.created).fromNow()}
             </Link>
           </li>
         ))}

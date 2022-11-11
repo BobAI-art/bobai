@@ -148,6 +148,7 @@ const Home: NextPage = () => {
                   className="flex rounded-md border bg-white p-4 shadow"
                 >
                   <div className="flex-grow">
+                    <div>{instance.label}</div>
                     <div className="capitalize">
                       {instanceName(
                         instance.image_runtype,
@@ -155,7 +156,7 @@ const Home: NextPage = () => {
                       )}
                     </div>
                     <div className="text-2xl font-extrabold">
-                      GPU: {instance.gpu_util.toFixed(2)}%
+                      GPU: {(instance.gpu_util || 0).toFixed(2)}%
                     </div>
                     <div className="text-xl font-bold">{instance.gpu_name}</div>
                     <div className="text-sm font-light text-gray-600">
