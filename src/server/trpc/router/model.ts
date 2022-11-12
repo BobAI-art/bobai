@@ -84,7 +84,11 @@ export const modelRouter = router({
               slug: input.subjectSlug,
             },
           },
-          parent_model_code: input.parentModelCode,
+          parent_model: {
+            connect: {
+              code: input.parentModelCode,
+            },
+          },
           regularization: makeRegularization(input.regularization),
         },
       });

@@ -76,8 +76,8 @@ model Subject {
   owner_id       String         @db.Char(25)
   subject_photos SubjectPhoto[]
   models         Model[]
-  is_public    Boolean @default(false)
-  finished     Boolean @default(false)
+  is_public      Boolean        @default(false)
+  finished       Boolean        @default(false)
 }
 
 model Model {
@@ -90,6 +90,7 @@ model Model {
   created           DateTime         @default(now())
   state             ModelState       @default(CREATED)
   parent_model_code String           @db.Char(25)
+  parent_model      ParentModel      @relation(fields: [parent_model_code], references: [code], onDelete: Cascade)
   regularization    Json             @db.Json
   generated_photos  GeneratedPhoto[]
   Prompt            Prompt[]
@@ -126,4 +127,25 @@ model Prompt {
   model    Model        @relation(fields: [model_id], references: [id], onDelete: Cascade)
   status   PromptStatus @default(CREATED)
   created  DateTime     @default(now())
+}
+
+model ParentModel {
+  code          String  @id @db.Char(24)
+  repo_id       String  @db.Char(190)
+  file_name     String  @db.Char(190)
+  order         Int     @default(0)
+  description   String  @default("") @db.Text
+  prompt_suffix String  @default("") @db.Char(190)
+  Model         Model[]
+  Style         Style[]
+}
+
+model Style {
+  id                String      @id @default(cuid())
+  name              String      @db.Char(190)
+  description       String      @db.Text
+  prompt            String      @db.VarChar(768)
+  parent_model_code String      @db.Char(190)
+  parent_model      ParentModel @relation(fields: [parent_model_code], references: [code], onDelete: Cascade)
+  order             Int         @default(0)
 }

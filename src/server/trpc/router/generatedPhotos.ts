@@ -3,6 +3,28 @@ import { z } from "zod";
 import { cuidSchema } from "../../../utils/schema";
 
 export const generatedPhotosRouter = router({
+  details: publicProcedure
+    .input(z.object({ id: cuidSchema }))
+    .query(async ({ ctx, input }) => {
+      const photo = await ctx.prisma.generatedPhoto.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          model: {
+            include: {
+              owner: true,
+              subject: true,
+              parent_model: true,
+            },
+          },
+        },
+      });
+      if (!photo) {
+        throw new Error("Photo not found");
+      }
+      return photo;
+    }),
   list: publicProcedure
     .input(
       z.object({

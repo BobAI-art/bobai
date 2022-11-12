@@ -12,6 +12,7 @@ import Image from "next/image";
 import { photoUrl } from "../../utils/helpers";
 import { mockSession } from "next-auth/client/__tests__/helpers/mocks";
 import image = mockSession.user.image;
+import { Photo } from "../../components/Photo";
 
 const TrainedModel: React.FC<{ model: Model }> = ({ model }) => {
   const { data: traningPreview } = useGeneratedPhotos({
@@ -23,15 +24,7 @@ const TrainedModel: React.FC<{ model: Model }> = ({ model }) => {
     <>
       <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
         {traningPreview?.map((photo) => (
-          <li key={photo.id}>
-            <Image
-              alt={photo.prompt || "Generated photo"}
-              src={photoUrl(photo)}
-              width={512}
-              height={512}
-              className="rounded shadow"
-            />
-          </li>
+          <Photo photo={photo} key={photo.id} />
         ))}
       </ul>
     </>

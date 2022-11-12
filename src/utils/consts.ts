@@ -24,21 +24,9 @@ export const parentModels = new Map<ModelName, ModelSource>([
       filename: "Cyberpunk-Anime-Diffusion.ckpt",
     },
   ],
-  [
-    "Anime",
-    {
-      repoId: "hakurei/waifu-diffusion",
-      filename: "diffusion_pytorch_model.bin",
-    },
-  ],
 ]);
 
-export const parentModelNames = [
-  "Default",
-  "Disney",
-  "Cyberpunk",
-  "Anime",
-] as const;
+export const parentModelNames = ["Default", "Disney", "Cyberpunk"] as const;
 
 export const defaultModel: ModelName = "Default";
 

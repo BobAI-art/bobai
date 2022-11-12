@@ -34,7 +34,7 @@ export const modelCreateSchema = z.object({
     .min(4, "Class must be at least 4 characters long")
     .regex(/^[a-zA-Z_ ]+$/, "Class can only contain letters and space."),
   name: dbString.min(4, "Name must be at least 4 character long"),
-  parentModelCode: z.enum(parentModelNames),
+  parentModelCode: dbString,
 });
 
 export const promptSchema = {
