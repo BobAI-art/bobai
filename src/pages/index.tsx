@@ -4,7 +4,7 @@ import { Layout } from "../components/Layout";
 import { trpc } from "../utils/trpc";
 import React from "react";
 
-import { Photo } from "../components/Photo";
+import Photo from "../components/Photo";
 
 const Home: NextPage = () => {
   const { data: generatedPhotos } = trpc.generatedPhotos.list.useQuery({

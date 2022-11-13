@@ -5,7 +5,6 @@ import { userRouter } from "./user";
 import { subjectRouter } from "./subject";
 import { subjectPhotoRouter } from "./subjectPhoto";
 import { modelRouter } from "./model";
-import { promptRouter } from "./prompt";
 import { vastRouter } from "./vast";
 import { generatedPhotosRouter } from "./generatedPhotos";
 import { parentModelRouter } from "./parentModel";
@@ -16,7 +15,6 @@ export const appRouter = router({
   model: modelRouter,
   subject: subjectRouter,
   subjectPhoto: subjectPhotoRouter,
-  prompt: promptRouter,
   vast: vastRouter,
   generatedPhotos: generatedPhotosRouter,
   parentModel: parentModelRouter,

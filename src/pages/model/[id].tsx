@@ -8,11 +8,7 @@ import { ModelInTrainingPreview } from "../../components/ModelInTrainingPreview"
 import { Model } from "@prisma/client";
 import useGeneratedPhotos from "../../hooks/useGeneratedPhotos";
 import H2 from "../../components/H2";
-import Image from "next/image";
-import { photoUrl } from "../../utils/helpers";
-import { mockSession } from "next-auth/client/__tests__/helpers/mocks";
-import image = mockSession.user.image;
-import { Photo } from "../../components/Photo";
+import Photo from "../../components/Photo";
 import H3 from "../../components/H3";
 import Link from "next/link";
 

@@ -3,7 +3,6 @@ import { Layout } from "../../components/Layout";
 import H1 from "../../components/H1";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import usePromptsStats from "../../hooks/admin/usePromptsStats";
 import H2 from "../../components/H2";
 import useModelsStats from "../../hooks/admin/useModelsStats";
 import useAvailableVastInstances from "../../hooks/admin/useAvailableVastInstances";
@@ -76,7 +75,6 @@ const instanceName = (runtype: string, args: string[]) => {
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { data: promptsStats } = usePromptsStats();
   const { data: modelStats, refetch: modelStatsRefetch } = useModelsStats();
   const { data: instances } = useAvailableVastInstances();
   const { data: activeInstances } = useActiveVastInstances();
@@ -110,15 +108,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <H1>Admin</H1>
-      {promptsStats && (
-        <FromAggregation
-          title="Prompts queue"
-          stats={promptsStats.map((stat) => ({
-            label: stat.status.toLocaleLowerCase(),
-            count: stat._count,
-          }))}
-        />
-      )}
+
       {modelStats && (
         <FromAggregation
           title="Models queue"
@@ -255,10 +245,10 @@ const Home: NextPage = () => {
                         onClick={() => {
                           createInstanceMutation.mutate({
                             instanceId: offer.id,
-                            type: "prompt",
+                            type: "photo",
                           });
                         }}
-                        label="Prompts"
+                        label="Photos"
                       />
                     </td>
                   </tr>

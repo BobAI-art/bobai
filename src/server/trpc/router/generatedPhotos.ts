@@ -1,8 +1,44 @@
-import { publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { z } from "zod";
-import { cuidSchema, dbStringSchema } from "../../../utils/schema";
+import {
+  cuidSchema,
+  dbStringSchema,
+  photoCategorySchema,
+  promptSchema,
+} from "../../../utils/schema";
+import cuid from "cuid";
+import { env } from "../../../env/server.mjs";
+import { s3GeneratedPhotoRoot } from "../../../utils/helpers";
 
 export const generatedPhotosRouter = router({
+  generate: protectedProcedure
+    .input(
+      z.object({
+        prompt: promptSchema,
+        category: photoCategorySchema.default("generated-image"),
+        parentModelCode: z.string(),
+        modelId: cuidSchema.optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const id = cuid();
+      const { prompt, category, parentModelCode, modelId } = input;
+
+      const data = {
+        id,
+        bucket: env.AWS_S3_BUCKET,
+        model_id: modelId ? modelId : null,
+        prompt,
+        category,
+        owner_id: ctx.session.user.id,
+        code: parentModelCode,
+      };
+
+      return await ctx.prisma.generatedPhoto.create({
+        data: { ...data, root: s3GeneratedPhotoRoot(data) },
+      });
+    }),
+
   details: publicProcedure
     .input(z.object({ id: cuidSchema }))
     .query(async ({ ctx, input }) => {
@@ -13,11 +49,11 @@ export const generatedPhotosRouter = router({
         include: {
           model: {
             include: {
-              owner: true,
               subject: true,
-              parent_model: true,
             },
           },
+          owner: true,
+          parent_model: true,
         },
       });
       if (!photo) {
@@ -41,9 +77,7 @@ export const generatedPhotosRouter = router({
           category: input.category,
           ...(input.parentModel
             ? {
-                model: {
-                  parent_model_code: input.parentModel,
-                },
+                code: input.parentModel,
               }
             : {}),
         },

@@ -1,15 +1,5 @@
-import {
-  cuidSchema,
-  dbStringSchema,
-  modelCreateSchema,
-} from "../../../utils/schema";
-import {
-  router,
-  protectedProcedure,
-  adminProcedure,
-  publicProcedure,
-} from "../trpc";
-import { ModelClass, modelClasses } from "../../../utils/consts";
+import { dbStringSchema } from "../../../utils/schema";
+import { router, publicProcedure } from "../trpc";
 import { z } from "zod";
 
 export const parentModelRouter = router({

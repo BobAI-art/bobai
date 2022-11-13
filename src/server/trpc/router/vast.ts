@@ -137,7 +137,7 @@ interface AvailableInstancesResponse {
   }[];
 }
 
-const getModelTrainerOptions = (type: "model" | "prompt" | "ssh") => {
+const getModelTrainerOptions = (type: "model" | "photo" | "ssh") => {
   return {
     client_id: "me",
     image: "portraits/model-trainer:latest",
@@ -146,7 +146,7 @@ const getModelTrainerOptions = (type: "model" | "prompt" | "ssh") => {
     },
     disk: 60.0,
     runtype: type === "ssh" ? "ssh" : "args",
-    args: ["-m", type === "model" ? "portraits.train" : "portraits.prompts"],
+    args: ["-m", type === "model" ? "portraits.train" : "portraits.photo"],
 
     image_login: `-u portraits -p ${env.DOCKER_IO_PASSWORD} docker.io`,
   };
@@ -170,7 +170,7 @@ export const vastRouter = router({
     .input(
       z.object({
         instanceId: z.number(),
-        type: z.enum(["model", "prompt", "ssh"]),
+        type: z.enum(["photo", "model", "ssh"]),
       })
     )
     .mutation(({ ctx, input }) => {

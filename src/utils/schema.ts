@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { parentModelNames } from "./consts";
 
 export const dbStringSchema = z.string().max(190);
 export const cuidSchema = z.string().regex(/^c[a-z0-9]{24}$/);
@@ -37,10 +36,20 @@ export const modelCreateSchema = z.object({
   parentModelCode: dbStringSchema,
 });
 
-export const promptSchema = {
+export const promptSchema = z
+  .string()
+  .min(4, "Prompt must be at least 4 character long")
+  .max(768, "Prompt can be max 768 characters long");
+
+export const deprecatedPromptSchema = {
   prompt: z
     .string()
     .max(768, "Prompt can be max 768 characters long")
     .regex(/\<MODEL\>/, "Prompt must contain <MODEL>"),
   modelIds: z.array(cuidSchema),
 };
+
+export const photoCategorySchema = z.enum([
+  "generated-image",
+  "training-progress",
+]);

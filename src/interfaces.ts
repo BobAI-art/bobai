@@ -10,6 +10,23 @@ export interface FetchRegularization {
   prompt: string;
 }
 
+export interface GetPhotosResponse {
+  source:
+    | {
+        source: "huggingface";
+        repo_id: string;
+        filename: string;
+      }
+    | {
+        source: "aws";
+        path: string;
+      };
+  photos: {
+    id: string;
+    prompt: string;
+  }[];
+}
+
 export interface GetModelResponse {
   id: string;
   name: string;

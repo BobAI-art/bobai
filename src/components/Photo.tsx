@@ -3,9 +3,18 @@ import { PhotoModal } from "./PhotoModal";
 import Image from "next/image";
 import { photoUrl } from "../utils/helpers";
 import { GeneratedPhoto } from "@prisma/client";
+import moment from "moment/moment";
 
-export const Photo: React.FC<{ photo: GeneratedPhoto }> = ({ photo }) => {
+const Photo: React.FC<{ photo: GeneratedPhoto }> = ({ photo }) => {
   const [show, setShow] = React.useState(false);
+  if (photo.status === "CREATED") {
+    return (
+      <div className="aspect-square overflow-hidden rounded border border-black p-2 shadow">
+        <div>Added to queue {moment(photo.created).fromNow()}</div>
+        <span className="text-sm text-gray-600">{photo.prompt}</span>
+      </div>
+    );
+  }
   return (
     <>
       {show && <PhotoModal photo={photo} onClose={() => setShow(false)} />}
@@ -22,3 +31,5 @@ export const Photo: React.FC<{ photo: GeneratedPhoto }> = ({ photo }) => {
     </>
   );
 };
+
+export default Photo;

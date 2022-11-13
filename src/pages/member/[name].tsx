@@ -11,37 +11,17 @@ import Button from "../../components/Button";
 import moment from "moment";
 import H2 from "../../components/H2";
 import UserLink from "../../components/UserLink";
-import PromptSubmit from "../../components/PromptSubmit";
-import usePromptSubmit from "../../hooks/usePromptSubmit";
 import useMyModels from "../../hooks/useMyModels";
 import useSubjects from "../../hooks/useSubjects";
 import React from "react";
 import useUserByName from "../../hooks/useUserByName";
-import useMyPrompts from "../../hooks/useMyPrompts";
 
 const MemberPrivate: React.FC = () => {
   const { data: models } = useMyModels();
-  const { data: prompts, refetch: promptsRefetch } = useMyPrompts();
-  const promptSubmit = usePromptSubmit({
-    onSuccess: () => {
-      promptsRefetch();
-    },
-  });
   return (
     <div className="">
       <hr />
-      <PromptSubmit models={models} {...promptSubmit} />
       <hr />
-      <H2>My Prompts</H2>
-      <ul>
-        {prompts?.map((prompt) => (
-          <li key={prompt.id}>
-            {prompt.status}{" "}
-            <span className="font-bold text-slate-700">{prompt.prompt}</span>{" "}
-            created: {moment(prompt.created).fromNow()}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
