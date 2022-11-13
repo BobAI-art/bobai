@@ -6,11 +6,11 @@ import { putS3Object } from "../../../server/s3";
 
 // TODO: api key
 interface ImageUploadRequest {
-  image_content: string;
+  photo_content: string;
 }
 
 const uploadImage = async (id: string, request: ImageUploadRequest) => {
-  const { image_content } = request;
+  const { photo_content } = request;
   const photo = await prisma.generatedPhoto.findUnique({
     where: {
       id,
@@ -23,7 +23,7 @@ const uploadImage = async (id: string, request: ImageUploadRequest) => {
     throw new Error("Photo already uploaded");
   }
   const path = s3GeneratedPhotoRootPath(photo);
-  const buffer = Buffer.from(image_content, "base64");
+  const buffer = Buffer.from(photo_content, "base64");
   await putS3Object(path, "image/png", buffer);
 
   return await prisma.generatedPhoto.update({
@@ -63,8 +63,9 @@ export default async function handler(
           }
           res.status(204).end();
         })
-        .catch(() => {
-          res.status(500).json({ error: "Could not get model" });
+        .catch((e) => {
+          console.error(e);
+          res.status(500).json({ error: "Could not update photo" });
         });
       break;
     default:

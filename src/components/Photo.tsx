@@ -7,10 +7,12 @@ import moment from "moment/moment";
 
 const Photo: React.FC<{ photo: GeneratedPhoto }> = ({ photo }) => {
   const [show, setShow] = React.useState(false);
-  if (photo.status === "CREATED") {
+  if (photo.status !== "GENERATED") {
     return (
       <div className="aspect-square overflow-hidden rounded border border-black p-2 shadow">
         <div>Added to queue {moment(photo.created).fromNow()}</div>
+        <div>{photo.status}</div>
+        <div>{photo.id}</div>
         <span className="text-sm text-gray-600">{photo.prompt}</span>
       </div>
     );
