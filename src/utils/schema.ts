@@ -1,14 +1,14 @@
 import { z } from "zod";
 import { parentModelNames } from "./consts";
 
-const dbString = z.string().max(190);
+export const dbStringSchema = z.string().max(190);
 export const cuidSchema = z.string().regex(/^c[a-z0-9]{24}$/);
 export const base64ImageSchema = z
   .string()
   .regex(/^data:image\/[a-z]+;base64,/);
 
 export const userSchema = {
-  name: dbString
+  name: dbStringSchema
     .min(4, "Username must be at least 4 character long")
     .regex(
       /^[a-z\-\d]+$/,
@@ -17,7 +17,7 @@ export const userSchema = {
 };
 
 export const subjectSchema = {
-  slug: dbString
+  slug: dbStringSchema
     .min(4, "Slug must be at least 4 character long")
     .regex(
       /^[a-z\-\d]+$/,
@@ -30,11 +30,11 @@ export const subjectSchema = {
 
 export const modelCreateSchema = z.object({
   subjectSlug: subjectSchema.slug,
-  regularization: dbString
+  regularization: dbStringSchema
     .min(4, "Class must be at least 4 characters long")
     .regex(/^[a-zA-Z_ ]+$/, "Class can only contain letters and space."),
-  name: dbString.min(4, "Name must be at least 4 character long"),
-  parentModelCode: dbString,
+  name: dbStringSchema.min(4, "Name must be at least 4 character long"),
+  parentModelCode: dbStringSchema,
 });
 
 export const promptSchema = {

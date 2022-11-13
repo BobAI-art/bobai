@@ -8,6 +8,7 @@ import { modelRouter } from "./model";
 import { promptRouter } from "./prompt";
 import { vastRouter } from "./vast";
 import { generatedPhotosRouter } from "./generatedPhotos";
+import { parentModelRouter } from "./parentModel";
 
 export const appRouter = router({
   auth: authRouter,
@@ -18,6 +19,7 @@ export const appRouter = router({
   prompt: promptRouter,
   vast: vastRouter,
   generatedPhotos: generatedPhotosRouter,
+  parentModel: parentModelRouter,
 });
 
 // export type definition of API

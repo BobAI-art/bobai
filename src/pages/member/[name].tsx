@@ -28,7 +28,7 @@ const MemberPrivate: React.FC = () => {
     },
   });
   return (
-    <>
+    <div className="">
       <hr />
       <PromptSubmit models={models} {...promptSubmit} />
       <hr />
@@ -42,7 +42,7 @@ const MemberPrivate: React.FC = () => {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 };
 

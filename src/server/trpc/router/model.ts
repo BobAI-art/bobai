@@ -62,6 +62,7 @@ export const modelRouter = router({
       include: {
         subject: true,
         owner: true,
+        parent_model: true,
       },
     });
     if (!model) return model;

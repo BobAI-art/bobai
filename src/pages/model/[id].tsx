@@ -13,6 +13,8 @@ import { photoUrl } from "../../utils/helpers";
 import { mockSession } from "next-auth/client/__tests__/helpers/mocks";
 import image = mockSession.user.image;
 import { Photo } from "../../components/Photo";
+import H3 from "../../components/H3";
+import Link from "next/link";
 
 const TrainedModel: React.FC<{ model: Model }> = ({ model }) => {
   const { data: traningPreview } = useGeneratedPhotos({
@@ -21,13 +23,11 @@ const TrainedModel: React.FC<{ model: Model }> = ({ model }) => {
   });
 
   return (
-    <>
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
-        {traningPreview?.map((photo) => (
-          <Photo photo={photo} key={photo.id} />
-        ))}
-      </ul>
-    </>
+    <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+      {traningPreview?.map((photo) => (
+        <Photo photo={photo} key={photo.id} />
+      ))}
+    </ul>
   );
 };
 const ModelById: NextPage = () => {
@@ -35,24 +35,34 @@ const ModelById: NextPage = () => {
 
   const id = router.query.id as string;
 
-  const modelQuery = trpc.model.get.useQuery(id);
+  const { data: model } = trpc.model.get.useQuery(id);
 
-  if (modelQuery.isLoading) {
-    return <>Loading...</>;
-  }
-  const model = modelQuery.data;
   if (!model) {
     return <>Model not found</>;
   }
 
   return (
     <Layout>
-      <h2 className="text-2xl font-bold leading-normal tracking-tight">
+      <H2>
         Model <span className="font-extrabold">{model.name}</span> trained by{" "}
         <span className="font-extrabold">
           <UserLink user={model.owner} />
         </span>
-      </h2>
+      </H2>
+      <H3>
+        Trained from{" "}
+        <span className="font-bold">
+          <Link
+            href={{
+              pathname: "/parent-model/[name]/",
+              query: { name: model.parent_model_code },
+            }}
+          >
+            {model.parent_model.code}
+          </Link>
+        </span>
+      </H3>
+
       {model.state === "TRAINING" && <ModelInTrainingPreview model={model} />}
       {model.state === "TRAINED" && <TrainedModel model={model} />}
       {/*{model.generated_photos.map((photo) => (*/}

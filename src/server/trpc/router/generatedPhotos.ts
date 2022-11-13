@@ -1,6 +1,6 @@
 import { publicProcedure, router } from "../trpc";
 import { z } from "zod";
-import { cuidSchema } from "../../../utils/schema";
+import { cuidSchema, dbStringSchema } from "../../../utils/schema";
 
 export const generatedPhotosRouter = router({
   details: publicProcedure
@@ -31,6 +31,7 @@ export const generatedPhotosRouter = router({
         modelId: cuidSchema.optional(),
         category: z.enum(["generated-image", "training-progress"]).optional(),
         limit: z.number().optional().default(96),
+        parentModel: dbStringSchema.optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -38,6 +39,13 @@ export const generatedPhotosRouter = router({
         where: {
           model_id: input.modelId,
           category: input.category,
+          ...(input.parentModel
+            ? {
+                model: {
+                  parent_model_code: input.parentModel,
+                },
+              }
+            : {}),
         },
         orderBy: {
           created: "desc",
