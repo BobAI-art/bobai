@@ -4,6 +4,11 @@ variable "project_id" {
   nullable = false
 }
 
+variable "team_id"  {
+  type     = string
+  nullable = false
+}
+
 variable "variables" {
   type = object({
     DATABASE_URL    = string

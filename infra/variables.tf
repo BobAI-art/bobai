@@ -33,10 +33,10 @@ variable "EMAIL_SERVER" {
   nullable = false
 }
 
-variable "DEPLOYER_PUBLICK_KEY_PATH" {
-  type     = string
-  nullable = false
-}
+# variable "DEPLOYER_PUBLICK_KEY_PATH" {
+#   type     = string
+#   nullable = false
+# }
 
 variable "VAST_API_KEY" {
   type     = string

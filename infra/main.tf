@@ -13,6 +13,7 @@ module "production_environment_variables" {
   source = "./environment_variables"
 
   project_id = local.vercel_project_id
+  team_id    = local.vercel_team_id
   variables = {
     DATABASE_URL    = var.PROD_DATABASE_URL
     NEXTAUTH_SECRET = var.PROD_NEXTAUTH_SECRET
@@ -34,6 +35,7 @@ module "preview_environment_variables" {
   source = "./environment_variables"
 
   project_id = local.vercel_project_id
+  team_id    = local.vercel_team_id
   variables = {
     DATABASE_URL    = var.PREVIEW_DATABASE_URL
     NEXTAUTH_SECRET = var.PREVIEW_NEXTAUTH_SECRET
@@ -76,5 +78,5 @@ module "production_file_store" {
 module "model_store" {
   source = "./model_store"
 
-  bucket_name = "portraits-model-store"
+  bucket_name = "bobai-model-store"
 }
