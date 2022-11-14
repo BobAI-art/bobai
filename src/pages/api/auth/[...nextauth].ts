@@ -27,6 +27,8 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     newUser: "/member/new",
+    signIn: "/member/signin",
+    verifyRequest: "/member/verify-request",
   },
 };
 

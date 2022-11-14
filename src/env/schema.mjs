@@ -28,6 +28,7 @@ export const serverSchema = z.object({
   // AWS_S3_MODEL_ACCESS_KEY_SECRET: z.string(),
 
   DOCKER_IO_PASSWORD: z.string(),
+  SITE_PIN: z.string().optional(),
   // HUGGINGFACE_TOKEN: z.string(),
 });
 
