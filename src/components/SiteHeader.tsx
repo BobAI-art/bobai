@@ -10,7 +10,7 @@ const SiteHeader: React.FC = () => {
   return (
     <header className="flex items-center gap-2 px-2">
       <H1>
-        <Link href="/">AI Portraits</Link>
+        <Link href="/">Bob AI</Link>
       </H1>
       <div className="flex-grow" />
       {session ? (
