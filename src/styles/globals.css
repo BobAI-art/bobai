@@ -4,5 +4,7 @@
 @tailwind forms;
 
 body {
-    @apply bg-slate-200;
+    /*@apply bg-dark-blue-500*/
+    /*@apply text-site-gray-500*/
+    @apply bg-dark-blue-500 text-site-gray-500;
 }
