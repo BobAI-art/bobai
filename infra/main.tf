@@ -20,13 +20,18 @@ module "production_environment_variables" {
     EMAIL_FROM      = var.EMAIL_FROM
     EMAIL_SERVER    = var.EMAIL_SERVER
 
-    VAST_API_KEY = var.VAST_API_KEY
+    VAST_API_KEY       = var.VAST_API_KEY
     DOCKER_IO_PASSWORD = var.DOCKER_IO_PASSWORD
+    HUGGINGFACE_TOKEN  = var.HUGGINGFACE_TOKEN
 
     AWS_S3_ACCESS_KEY_ID     = module.production_file_store.bucket_access_key_id
     AWS_S3_ACCESS_KEY_SECRET = module.production_file_store.bucket_secret_access_key
     AWS_S3_BUCKET            = module.production_file_store.bucket_name
     AWS_S3_REGION            = local.aws_s3_region
+
+    AWS_S3_MODEL_ACCESS_KEY_ID     = module.model_store.bucket_access_key_id
+    AWS_S3_MODEL_ACCESS_KEY_SECRET = module.model_store.bucket_secret_access_key
+    AWS_S3_MODEL_BUCKET_NAME       = module.model_store.bucket_name
   }
   targets = ["production"]
 }
@@ -42,13 +47,18 @@ module "preview_environment_variables" {
     EMAIL_FROM      = var.EMAIL_FROM
     EMAIL_SERVER    = var.EMAIL_SERVER
 
-    VAST_API_KEY = var.VAST_API_KEY
+    VAST_API_KEY       = var.VAST_API_KEY
     DOCKER_IO_PASSWORD = var.DOCKER_IO_PASSWORD
+    HUGGINGFACE_TOKEN  = var.HUGGINGFACE_TOKEN
 
     AWS_S3_ACCESS_KEY_ID     = module.preview_file_store.bucket_access_key_id
     AWS_S3_ACCESS_KEY_SECRET = module.preview_file_store.bucket_secret_access_key
     AWS_S3_BUCKET            = module.preview_file_store.bucket_name
     AWS_S3_REGION            = local.aws_s3_region
+
+    AWS_S3_MODEL_ACCESS_KEY_ID     = module.model_store.bucket_access_key_id
+    AWS_S3_MODEL_ACCESS_KEY_SECRET = module.model_store.bucket_secret_access_key
+    AWS_S3_MODEL_BUCKET_NAME       = module.model_store.bucket_name
   }
   targets = ["development", "preview"]
 }

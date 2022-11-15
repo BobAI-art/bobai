@@ -13,18 +13,18 @@ const ParentModels: NextPage = () => {
     <Layout>
       <Breadcrumbs
         parents={[{ href: "/", label: "Home" }]}
-        label="Parent Model"
+        label="Stylel"
       />
       <ul>
         {models.map((model) => (
           <li key={model.code}>
             <Link
               href={{
-                pathname: "/parent-model/[code]/",
+                pathname: "/style/[code]/",
                 query: { code: model.code },
               }}
             >
-              <H3>{model.repo_id.split("/")[1]}</H3>
+              <H3>{model.code}</H3>
             </Link>
           </li>
         ))}

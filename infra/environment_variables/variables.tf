@@ -4,7 +4,7 @@ variable "project_id" {
   nullable = false
 }
 
-variable "team_id"  {
+variable "team_id" {
   type     = string
   nullable = false
 }
@@ -21,8 +21,14 @@ variable "variables" {
     AWS_S3_BUCKET            = string
     AWS_S3_REGION            = string
 
-    VAST_API_KEY = string
+    VAST_API_KEY       = string
     DOCKER_IO_PASSWORD = string
+
+    HUGGINGFACE_TOKEN = string
+
+    AWS_S3_MODEL_ACCESS_KEY_ID     = string
+    AWS_S3_MODEL_ACCESS_KEY_SECRET = string
+    AWS_S3_MODEL_BUCKET_NAME       = string
   })
   nullable = false
 }

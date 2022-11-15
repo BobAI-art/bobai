@@ -24,12 +24,13 @@ export const serverSchema = z.object({
   AWS_S3_ACCESS_KEY_SECRET: z.string(),
   VAST_API_KEY: z.string(),
 
-  // AWS_S3_MODEL_ACCESS_KEY_ID: z.string(),
-  // AWS_S3_MODEL_ACCESS_KEY_SECRET: z.string(),
+  AWS_S3_MODEL_ACCESS_KEY_ID: z.string(),
+  AWS_S3_MODEL_SECRET_ACCESS_KEY: z.string(),
+  AWS_S3_MODEL_BUCKET_NAME: z.string(),
 
   DOCKER_IO_PASSWORD: z.string(),
   SITE_PIN: z.string().optional(),
-  // HUGGINGFACE_TOKEN: z.string(),
+  HUGGINGFACE_TOKEN: z.string(),
 });
 
 /**

@@ -103,6 +103,15 @@ enum ModelState {
   ERROR
 }
 
+model Prompt {
+    id       String   @id @default(cuid())
+    prompt   String  @db.VarChar(768)
+    parent_id String?  @db.Char(25)
+    parent Prompt? @relation(fields: [parent_id], references: [id], onDelete: Cascade)
+    owner_id String  @db.Char(25)
+    is_public Boolean @default(false)
+}
+
 model GeneratedPhoto {
   id       String   @id @default(cuid())
   root     String   @db.Char(190)
@@ -141,12 +150,3 @@ model ParentModel {
   GeneratedPhoto GeneratedPhoto[]
 }
 
-model Style {
-  id                String      @id @default(cuid())
-  name              String      @db.Char(190)
-  description       String      @db.Text
-  prompt            String      @db.VarChar(768)
-  parent_model_code String      @db.Char(190)
-  parent_model      ParentModel @relation(fields: [parent_model_code], references: [code], onDelete: Cascade)
-  order             Int         @default(0)
-}

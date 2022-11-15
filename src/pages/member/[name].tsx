@@ -55,16 +55,16 @@ const Member: NextPage = () => {
               </h3>
               {subjects?.map((subject) => (
                 <div key={subject.id} className="flex gap-2 ">
-                  <Button>
+
                     <Link
                       href={{
                         pathname: "/subject/[slug]",
                         query: { slug: subject.slug },
                       }}
                     >
-                      {subject.slug}
+                      <Button>{subject.slug}</Button>
                     </Link>
-                  </Button>
+
                   <div>{moment(subject.created).fromNow()}</div>
                 </div>
               ))}

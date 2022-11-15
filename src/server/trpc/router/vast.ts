@@ -145,9 +145,16 @@ const getModelTrainerOptions = (type: "model" | "photo" | "ssh") => {
       "-p 2222:22": "1",
     },
     disk: 60.0,
-    runtype: type === "ssh" ? "ssh" : "args",
-    args: ["-m", type === "model" ? "portraits.train" : "portraits.photo"],
-
+    runtype: "ssh",
+    onstart: `
+export AWS_ACCESS_KEY_ID=${env.AWS_S3_MODEL_ACCESS_KEY_ID}
+export AWS_SECRET_ACCESS_KEY=${env.AWS_S3_MODEL_SECRET_ACCESS_KEY}
+export HUGGINGFACE_TOKEN=${env.HUGGINGFACE_TOKEN}
+export PORTRAITS_BASE_URL=https://www.bobai.art/
+export MODEL_STORE_BUCKET_NAME=${env.AWS_S3_MODEL_BUCKET_NAME}
+cd /app
+PYTHONUNBUFFERED=1 python -m ${type === "model" ? "portraits.train" : "portraits.photos"}
+`,
     image_login: `-u portraits -p ${env.DOCKER_IO_PASSWORD} docker.io`,
   };
 };

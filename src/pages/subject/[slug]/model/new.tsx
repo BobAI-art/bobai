@@ -89,9 +89,9 @@ const ModelNew: NextPage = () => {
           createModel.mutate(currentModel);
         }}
       >
-        <FormRow label="Model name" component="input" value={name}
+        <FormRow label="Depiction name" component="input" value={name}
                  onChange={(e) => setName(e.target.value)}
-                 placeholder="Model name"
+                 placeholder="Joe Doe"
                  name="name"
                  id="name"/>
         <label
@@ -117,7 +117,7 @@ const ModelNew: NextPage = () => {
             onChange={(newModelClass) => setModelClass(newModelClass)}
           />
 
-          <label>Parent model</label>
+          <label>Style</label>
           <select
             ref={parentModelRef}
             name="parent"

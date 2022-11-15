@@ -11,7 +11,19 @@ import { env } from "../../../env/server.mjs";
 import { s3GeneratedPhotoRoot } from "../../../utils/helpers";
 
 export const generatedPhotosRouter = router({
-  generate: protectedProcedure
+  generate: protectedProcedure.input(
+    z.object({
+      prompt: promptSchema,
+      howMany: z.number().min(1).max(24),
+      style: dbStringSchema,
+      modelId: cuidSchema.optional(),
+
+    })
+  ).mutation(async ({ ctx, input }) => {
+    return input;
+  }),
+
+  generateOld: protectedProcedure
     .input(
       z.object({
         prompt: promptSchema,

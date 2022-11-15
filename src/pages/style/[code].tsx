@@ -41,11 +41,11 @@ const ParentModelByCode: NextPage = () => {
         parents={[
           { href: "/", label: "Home" },
           {
-            href: "/parent-model/",
-            label: "Parent Model",
+            href: "/style/",
+            label: "Style",
           },
         ]}
-        label={model.repo_id.split("/")[1] || ""}
+        label={model.code}
       />
       <GeneratePhotos
         onNewPrompt={(prompt) => {

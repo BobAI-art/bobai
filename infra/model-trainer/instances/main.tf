@@ -95,7 +95,7 @@ data "aws_ami" "trainer" {
 
 resource "aws_instance" "trainer" {
   #ami                         = data.aws_ami.trainer.id
-  ami                         = "ami-0b0bfed132e8ff9c1" 
+  ami = "ami-0b0bfed132e8ff9c1"
   # instance_type               = "t2.micro"
   instance_type               = "g5.xlarge"
   subnet_id                   = aws_subnet.subnet_public.id
