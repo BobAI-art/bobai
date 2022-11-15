@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { prisma } from "../../../server/db/client";
-import { ModelName, parentModels } from "../../../utils/consts";
 import { photoUrl } from "../../../utils/helpers";
 import { type GetModelResponse } from "../../../interfaces";
 
@@ -11,6 +10,7 @@ const getOldestCreatedModel = async (): Promise<GetModelResponse | null> => {
       state: "CREATED",
     },
     include: {
+      parent_model: true,
       subject: {
         include: {
           subject_photos: true,
@@ -20,8 +20,6 @@ const getOldestCreatedModel = async (): Promise<GetModelResponse | null> => {
     orderBy: { created: "desc" },
   });
   if (!model) return null;
-  const parentModel = parentModels.get(model.parent_model_code as ModelName);
-  if (!parentModel) return null;
 
   return {
     id: model.id,
@@ -37,8 +35,8 @@ const getOldestCreatedModel = async (): Promise<GetModelResponse | null> => {
       ),
     },
     parent_model: {
-      repo_id: parentModel.repoId,
-      filename: parentModel.filename,
+      repo_id: model.parent_model.repo_id,
+      filename: model.parent_model.file_name,
     },
   };
 };

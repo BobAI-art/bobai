@@ -8,7 +8,7 @@ export const base64ImageSchema = z
 
 export const userSchema = {
   name: dbStringSchema
-    .min(4, "Username must be at least 4 character long")
+    .min(3, "Username must be at least 4 character long")
     .regex(
       /^[a-z\-\d]+$/,
       "Username can only contain lowercase letters, digits and dashes."
@@ -17,7 +17,7 @@ export const userSchema = {
 
 export const subjectSchema = {
   slug: dbStringSchema
-    .min(4, "Slug must be at least 4 character long")
+    .min(3, "Slug must be at least 4 character long")
     .regex(
       /^[a-z\-\d]+$/,
       "Slug can only contain lowercase letters, digits and dashes."

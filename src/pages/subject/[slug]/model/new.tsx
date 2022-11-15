@@ -7,10 +7,7 @@ import { photoUrl } from "../../../../utils/helpers";
 import Button from "../../../../components/Button";
 import React, { useState } from "react";
 import {
-  defaultModel,
   defaultModelClass,
-  ModelName,
-  parentModels,
 } from "../../../../utils/consts";
 import { ModelClassSelect } from "../../../../components/ModelClassSelect";
 import { modelCreateSchema } from "../../../../utils/schema";
@@ -18,6 +15,7 @@ import toast from "react-hot-toast";
 import Form from "../../../../components/Form";
 import Image from "next/image";
 import { classNames } from "../../../../toolbox";
+import FormRow from "../../../../components/FormRow";
 
 const ModelNew: NextPage = () => {
   const [modelClass, setModelClass] = React.useState<string>(defaultModelClass);
@@ -42,6 +40,8 @@ const ModelNew: NextPage = () => {
       toast.error("Failed to create model");
     },
   });
+  const { data: parentModels} = trpc.parentModel.list.useQuery({});
+  const defaultModel = parentModels?.[0];
 
   if (subject.isLoading || photos.isLoading) {
     return <>Loading...</>;
@@ -61,9 +61,12 @@ const ModelNew: NextPage = () => {
     subjectSlug: subject.data.slug,
     regularization: modelClass,
     name,
-    parentModelCode: (parentModelRef.current?.value || "") as ModelName,
+    parentModelCode: parentModelRef.current?.value || ""
   };
   const parsed = modelCreateSchema.safeParse(currentModel);
+  if(!parentModels) {
+    return <Layout>Loading...</Layout>;
+  }
 
   return (
     <Layout>
@@ -86,19 +89,11 @@ const ModelNew: NextPage = () => {
           createModel.mutate(currentModel);
         }}
       >
-        <label>
-          Model name
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Model name"
-            type="text"
-            name="name"
-            id="name"
-            className="form-input mt-1 block w-full"
-          />
-        </label>
-
+        <FormRow label="Model name" component="input" value={name}
+                 onChange={(e) => setName(e.target.value)}
+                 placeholder="Model name"
+                 name="name"
+                 id="name"/>
         <label
           htmlFor="checked-toggle"
           className="relative inline-flex cursor-pointer items-center"
@@ -128,11 +123,11 @@ const ModelNew: NextPage = () => {
             name="parent"
             id="parent"
             className="form-select mt-1 block w-full"
-            defaultValue={defaultModel}
+            defaultValue={defaultModel?.code}
           >
-            {[...parentModels.keys()].map((model) => (
-              <option key={model} value={model}>
-                {model}
+            {parentModels.map((model) => (
+              <option key={model.code} value={model.code}>
+                {model.code}
               </option>
             ))}
           </select>
