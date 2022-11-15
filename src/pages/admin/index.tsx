@@ -102,7 +102,8 @@ const Home: NextPage = () => {
   if (session.status === "loading") {
     return <Layout>Loading...</Layout>;
   }
-  if (session.data?.user?.email !== "damian@swistowski.org") {
+  if (!session.data?.user?.email?.endsWith("bobai.art") ) {
+    console.log("wrong email of admin: ", session.data?.user?.email);
     router.push("/");
   }
   return (

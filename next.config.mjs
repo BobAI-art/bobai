@@ -24,10 +24,10 @@ export default defineNextConfig({
   images: {
     remotePatterns: [{
       protocol: "https",
-      hostname: "portraits-preview.s3.eu-west-2.amazonaws.com",
+      hostname: "bobai-preview.s3.eu-west-2.amazonaws.com",
     },{
       protocol: "https",
-      hostname: "portraits-production.s3.eu-west-2.amazonaws.com",
+      hostname: "bobai.s3.eu-west-2.amazonaws.com",
     }]
   }
 });

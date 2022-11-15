@@ -33,7 +33,7 @@ const isAuthed = t.middleware(({ ctx, next }) => {
 });
 
 const isAdmin = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user || !ctx.session.user.email || !ctx.session.user.email.endsWith("swistowski.org")) {
+  if (!ctx.session || !ctx.session.user || !ctx.session.user.email || !ctx.session.user.email.endsWith("bobai.art")) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next();

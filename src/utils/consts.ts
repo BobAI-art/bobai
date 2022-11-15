@@ -3,32 +3,6 @@ type ModelSource = {
   filename: string;
 };
 
-export type ModelName = "Default" | "Disney" | "Cyberpunk" | "Anime";
-
-export const parentModels = new Map<ModelName, ModelSource>([
-  [
-    "Default",
-    {
-      repoId: "runwayml/stable-diffusion-v1-5",
-      filename: "v1-5-pruned-emaonly.ckpt",
-    },
-  ],
-  [
-    "Disney",
-    { repoId: "nitrosocke/mo-di-diffusion", filename: "moDi-v1-pruned.ckpt" },
-  ],
-  [
-    "Cyberpunk",
-    {
-      repoId: "DGSpitzer/Cyberpunk-Anime-Diffusion",
-      filename: "Cyberpunk-Anime-Diffusion.ckpt",
-    },
-  ],
-]);
-
-export const parentModelNames = ["Default", "Disney", "Cyberpunk"] as const;
-
-export const defaultModel: ModelName = "Default";
 
 export type ModelClass =
   | "person_ddim"
