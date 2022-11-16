@@ -4,9 +4,10 @@
 @tailwind forms;
 
 body {
-    @apply bg-dark-blue-500 text-site-gray-500;
+  @apply bg-dark-blue-500 text-site-gray-500;
 }
 
-body input, body select {
-    @apply text-black appearance-none;;
+body input,
+body select {
+  @apply appearance-none text-black;
 }

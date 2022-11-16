@@ -20,7 +20,7 @@ const slugSchema = dbStringSchema
   .regex(
     /^[a-z\-\d]+$/,
     "Slug can only contain lowercase letters, digits and dashes."
-  )
+  );
 export const subjectSchema = {
   slug: slugSchema,
   description: z
@@ -41,7 +41,6 @@ export const promptSchema = z
   .string()
   .min(4, "Prompt must be at least 4 character long")
   .max(768, "Prompt can be max 768 characters long");
-
 
 export const photoCategorySchema = z.enum([
   "generated-image",

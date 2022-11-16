@@ -1,9 +1,3 @@
-type ModelSource = {
-  repoId: string;
-  filename: string;
-};
-
-
 export type ModelClass =
   | "person_ddim"
   | "man_euler"

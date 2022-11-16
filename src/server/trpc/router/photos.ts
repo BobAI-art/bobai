@@ -1,4 +1,9 @@
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import {
+  adminProcedure,
+  protectedProcedure,
+  publicProcedure,
+  router,
+} from "../trpc";
 import { z } from "zod";
 import {
   cuidSchema,
@@ -11,43 +16,61 @@ import { env } from "../../../env/server.mjs";
 import { s3PhotoRoot } from "../../../utils/helpers";
 
 export const photosRouter = router({
-  generate: protectedProcedure.input(
-    z.object({
-      prompt: promptSchema,
-      howMany: z.number().min(1).max(24),
-      style: dbStringSchema,
-      depictionId: cuidSchema.optional(),
-    })
-  ).mutation(async ({ ctx, input }) => {
-    return input;
-  }),
-
-  generateOld: protectedProcedure
+  generate: protectedProcedure
     .input(
       z.object({
         prompt: promptSchema,
-        category: photoCategorySchema.default("generated-image"),
-        parentModelCode: z.string(),
+        howMany: z.number().min(1).max(24),
+        style: dbStringSchema,
         depictionId: cuidSchema.optional(),
       })
     )
-    .mutation(async ({ input, ctx }) => {
-      const id = cuid();
-      const { prompt, category, parentModelCode, depictionId } = input;
+    .mutation(async ({ ctx, input }) => {
+      const { prompt, howMany, style, depictionId } = input;
+      const { user } = ctx.session;
 
-      const data = {
-        id,
-        bucket: env.AWS_S3_BUCKET,
-        depiction_id: depictionId ? depictionId : null,
-        prompt,
-        category,
-        owner_id: ctx.session.user.id,
-        style_slug: parentModelCode,
-      };
-
-      return await ctx.prisma.photo.create({
-        data: { ...data, root: s3PhotoRoot(data) },
+      const promptModel = await ctx.prisma.prompt.create({
+        data: {
+          content: prompt,
+          owner: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
       });
+      try {
+        await Promise.all(
+          Array.from({ length: howMany }).map(async () => {
+            const id = cuid();
+            const data = {
+              id,
+              owner_id: user.id,
+              style_slug: style,
+              depiction_id: depictionId || null,
+            };
+            const root = s3PhotoRoot(data);
+            return await ctx.prisma.photo.create({
+              data: {
+                ...data,
+                root: root,
+                prompt_id: promptModel.id,
+                bucket: env.AWS_S3_BUCKET,
+                prompt,
+              },
+            });
+          })
+        );
+      } catch (error) {
+        await ctx.prisma.prompt.delete({
+          where: {
+            id: promptModel.id,
+          },
+        });
+        throw error;
+      }
+
+      return input;
     }),
 
   details: publicProcedure
@@ -97,4 +120,20 @@ export const photosRouter = router({
         take: input.limit,
       });
     }),
+  stats: adminProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.photo.groupBy({
+      by: ["status"],
+      _count: true,
+    });
+  }),
+  retryFailed: adminProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.photo.updateMany({
+      where: {
+        status: "GENERATING",
+      },
+      data: {
+        status: "CREATED",
+      },
+    });
+  }),
 });

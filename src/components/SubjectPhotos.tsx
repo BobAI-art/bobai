@@ -5,7 +5,7 @@ import cuid from "cuid";
 import toast from "react-hot-toast";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { photoUrl } from "../utils/helpers";
-import H2 from "./H2";
+
 export const SubjectPhotos: React.FC<{
   subject: NonNullable<AppRouterTypes["subject"]["get"]["output"]>;
   photos: NonNullable<AppRouterTypes["subjectPhoto"]["list"]["output"]>;
