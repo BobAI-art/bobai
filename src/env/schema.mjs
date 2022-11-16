@@ -25,7 +25,7 @@ export const serverSchema = z.object({
   VAST_API_KEY: z.string(),
 
   AWS_S3_MODEL_ACCESS_KEY_ID: z.string(),
-  AWS_S3_MODEL_SECRET_ACCESS_KEY: z.string(),
+  AWS_S3_MODEL_ACCESS_KEY_SECRET: z.string(),
   AWS_S3_MODEL_BUCKET_NAME: z.string(),
 
   DOCKER_IO_PASSWORD: z.string(),
