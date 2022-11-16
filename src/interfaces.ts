@@ -23,7 +23,7 @@ export interface GetPhotosResponse {
       };
   photos: {
     id: string;
-    prompt: string;
+    prompts: string[];
   }[];
 }
 

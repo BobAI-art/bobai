@@ -8,7 +8,8 @@ export const DepictionInTraining: React.FC<{ depiction: Depiction }> = ({
   return (
     <>
       <H2>
-        Working on a depiction of {depiction.name} in the style of {depiction.style_slug}
+        Working on a depiction of {depiction.name} in the style of{" "}
+        {depiction.style_slug}
       </H2>
     </>
   );

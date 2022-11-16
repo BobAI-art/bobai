@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import Button from "./Button";
 import { Dialog } from "@headlessui/react";
-import { ImageCutter } from "./ImageCutter";
-import { toast } from "react-hot-toast";
 import H2 from "./H2";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
-import { photoUrl } from "../utils/helpers";
-import Link from "next/link";
 import FormRow from "./FormRow";
 import ErrorList from "./ErrorList";
-import { z } from "zod";
-import { promptSchema, subjectSchema } from "../utils/schema";
+import { promptSchema } from "../utils/schema";
 
 const GeneratePhotos: React.FC<{
   onNewPrompt: (prompt: string) => void;

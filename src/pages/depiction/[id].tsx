@@ -18,17 +18,21 @@ import { type Depiction } from "@prisma/client";
 
 const AddPhoto: React.FC<{
   depiction: Depiction;
-}> = ({depiction}) => {
+  onSuccess: () => void;
+}> = ({depiction, onSuccess}) => {
+  const formRef = React.useRef<HTMLFormElement>(null);
   const generateMutation = trpc.photos.generate.useMutation({
     onSuccess: () => {
       toast.success("Walking to studio to paint as requested, pleas give me a sec. Wof wof!");
+      onSuccess();
+      formRef.current?.reset();
     },
     onError: (err) => {
       toast.error("Oh, I'm sorry, I can't paint that. Wof wof!");
     }
   });
 
-  return <form onSubmit={e => {
+  return <form ref={formRef} onSubmit={e => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
@@ -38,6 +42,7 @@ const AddPhoto: React.FC<{
       style: depiction.style_slug,
       depictionId: depiction.id,
     })
+
   }
   }>
     <H2>Hey Bob! please paint a really nice portrait of  <span className="font-extrabold">{depiction.name}</span></H2>
@@ -49,7 +54,7 @@ const AddPhoto: React.FC<{
 
 const TrainedDeciption: React.FC<{ depiction: Depiction }> = ({ depiction }) => {
   const session = useSession();
-  const { data: traningPreview } = usePhotos({
+  const { data: traningPreview , refetch} = usePhotos({
     modelId: depiction.id,
     category: "generated-image",
   });
@@ -57,7 +62,7 @@ const TrainedDeciption: React.FC<{ depiction: Depiction }> = ({ depiction }) => 
 
   return (
     <>
-      {canAdd && <AddPhoto depiction={depiction} />}
+      {canAdd && <AddPhoto depiction={depiction} onSuccess={refetch}/>}
     <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
       {traningPreview?.map((photo) => (
         <Photo photo={photo} key={photo.id} />

@@ -47,6 +47,7 @@ model User {
   subjects      Subject[]
   depiction     Depiction[]
   photos        Photo[]
+  Prompt        Prompt[]
 }
 
 model VerificationToken {
@@ -75,6 +76,8 @@ model Photo {
   style_slug   String      @db.Char(24)
   depiction    Depiction?  @relation(fields: [depiction_id], references: [id])
   depiction_id String?     @db.Char(25)
+  Prompt       Prompt     @relation(fields: [prompt_id], references: [id])
+  prompt_id    String
 }
 
 enum PhotoStatus {
@@ -121,6 +124,8 @@ model Prompt {
   children  Prompt[] @relation("PromptTree")
   owner_id  String   @db.Char(25)
   is_public Boolean  @default(false)
+  owner     User     @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  photos    Photo[]
 }
 
 model Style {

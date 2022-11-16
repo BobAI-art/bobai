@@ -13,18 +13,20 @@ const SiteHeader: React.FC = () => {
         <Link href="/">Bob AI</Link>
       </H1>
       <div className="flex-grow" />
-      <Link href="/style"><Button >Styles</Button></Link>
+      <Link href="/style">
+        <Button>Styles</Button>
+      </Link>
       {session ? (
-          <Link
-            href={{
-              pathname: "/member/[name]",
-              query: { name: session?.user?.name },
-            }}
-          >
-            <Button>
-              <UserIcon className="w-4" /> {session?.user?.name}
-            </Button>
-          </Link>
+        <Link
+          href={{
+            pathname: "/member/[name]",
+            query: { name: session?.user?.name },
+          }}
+        >
+          <Button>
+            <UserIcon className="w-4" /> {session?.user?.name}
+          </Button>
+        </Link>
       ) : (
         <Button onClick={() => signIn()} className="text-lg">
           <UserIcon className="w-4" /> Sign in

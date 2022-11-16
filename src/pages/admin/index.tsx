@@ -10,6 +10,7 @@ import { classNames } from "../../toolbox";
 import { trpc } from "../../utils/trpc";
 import { toast } from "react-hot-toast";
 import useActiveVastInstances from "../../hooks/admin/useActiveVastInstances";
+import usePhotosStats from "../../hooks/admin/usePhotosStats";
 
 const MODEL_TRAINER_MIN_MEM = 25 * 1024;
 
@@ -76,6 +77,7 @@ const instanceName = (runtype: string, args: string[]) => {
 const Home: NextPage = () => {
   const router = useRouter();
   const { data: modelStats, refetch: modelStatsRefetch } = useDepictionsStats();
+  const { data: photosStats, refetch: photosStatsRefetch } = usePhotosStats();
   const { data: instances } = useAvailableVastInstances();
   const { data: activeInstances } = useActiveVastInstances();
   const session = useSession({
@@ -84,6 +86,15 @@ const Home: NextPage = () => {
   const createInstanceMutation = trpc.vast.create.useMutation({
     onSuccess: () => {
       toast.success("Instance created");
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+  const retryPhotosTrainingMutation = trpc.photos.retryFailed.useMutation({
+    onSuccess: () => {
+      photosStatsRefetch();
+      toast.success("Retried");
     },
     onError: (err) => {
       toast.error(err.message);
@@ -102,14 +113,31 @@ const Home: NextPage = () => {
   if (session.status === "loading") {
     return <Layout>Loading...</Layout>;
   }
-  if (!session.data?.user?.email?.endsWith("bobai.art") ) {
+  if (!session.data?.user?.email?.endsWith("bobai.art")) {
     console.log("wrong email of admin: ", session.data?.user?.email);
     router.push("/");
   }
   return (
     <Layout>
       <H1>Admin</H1>
-
+      {photosStats && (
+        <FromAggregation
+          title="Photos queue"
+          stats={photosStats.map((stat) => ({
+            label: stat.status.toLocaleLowerCase(),
+            count: stat._count,
+            action:
+              stat.status === "GENERATING"
+                ? {
+                    label: "Retry",
+                    onExecute: () => {
+                      retryPhotosTrainingMutation.mutate();
+                    },
+                  }
+                : undefined,
+          }))}
+        />
+      )}
       {modelStats && (
         <FromAggregation
           title="Models queue"
