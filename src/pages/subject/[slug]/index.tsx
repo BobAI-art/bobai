@@ -91,36 +91,36 @@ const SubjectBySlug: NextPage = () => {
         )}
       </div>
       <h3 className="text-xl font-extrabold leading-normal tracking-tight">
-        Models
+        Depictions
       </h3>
       <ul>
-        {subject.models.map((model) => (
-          <li key={model.id}>
+        {subject.depiction.map((depiction) => (
+          <li key={depiction.id}>
             <Link
               href={{
-                pathname: "/model/[id]",
-                query: { id: model.id },
+                pathname: "/depiction/[id]",
+                query: { id: depiction.id },
               }}
             >
-              {model.name} <i>{model.state}</i> <b>{model.parent_model_code}</b>
-              , Created: {moment(model.created).fromNow()}
+              {depiction.name} <i>{depiction.state}</i> <b>{depiction.style_slug}</b>
+              , Created: {moment(depiction.created).fromNow()}
             </Link>
           </li>
         ))}
 
         <li>
+          <Link
+            href={{
+              pathname: "/subject/[slug]/model/new",
+              query: { slug },
+            }}
+          >
           <Button>
-            <Link
-              href={{
-                pathname: "/subject/[slug]/model/new",
-                query: { slug },
-              }}
-            >
               <div className="flex gap-2">
-                <PlusCircleIcon className="w-4" /> Add new model
+                <PlusCircleIcon className="w-4" /> Hey Bob, lets learn you a new <span className="font-bold">{subject.slug}&apos</span> depiction
               </div>
-            </Link>
           </Button>
+          </Link>
         </li>
       </ul>
     </Layout>

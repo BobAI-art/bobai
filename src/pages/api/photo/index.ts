@@ -14,21 +14,22 @@ const getPromptClass = (
 };
 
 const getPhotoQueue = async (limit = 10) => {
-  const oldestGroup = await prisma.generatedPhoto.findFirst({
+  const oldestGroup = await prisma.photo.findFirst({
     where: {
       status: "CREATED",
     },
     include: {
-      model: true,
-      parent_model: true,
+      style: true,
+      depiction: true,
     },
     orderBy: { created: "asc" },
   });
   if (!oldestGroup) return null;
-  const photos = await prisma.generatedPhoto.findMany({
+
+  const photos = await prisma.photo.findMany({
     where: {
-      model_id: oldestGroup.model_id,
-      code: oldestGroup.code,
+      depiction_id: oldestGroup.depiction_id,
+      style_slug: oldestGroup.style_slug,
       status: "CREATED",
     },
     orderBy: { created: "asc" },
@@ -37,24 +38,24 @@ const getPhotoQueue = async (limit = 10) => {
     source: getSource(oldestGroup),
     photos: photos.map((photo) => ({
       id: photo.id,
-      prompt: oldestGroup.parent_model.prompt_suffix
-        ? `${photo.prompt} ${oldestGroup.parent_model.prompt_suffix}`
+      prompt: oldestGroup.style.prompt_suffix
+        ? `${photo.prompt} ${oldestGroup.style.prompt_suffix}`
         : photo.prompt,
     })),
   };
 };
 
 const getSource = ({
-  model,
-  parent_model,
+  depiction,
+  style,
 }: {
-  model: unknown;
-  parent_model: {
+  depiction: unknown;
+  style: {
     repo_id: string;
     file_name: string;
   };
 }): GetPhotosResponse["source"] => {
-  if (model) {
+  if (depiction) {
     return {
       source: "aws",
       path: "TO-BE-IMPLEMENTED",
@@ -62,8 +63,8 @@ const getSource = ({
   }
   return {
     source: "huggingface",
-    repo_id: parent_model.repo_id,
-    filename: parent_model.file_name,
+    repo_id: style.repo_id,
+    file_name: style.file_name,
   };
 };
 
@@ -71,7 +72,7 @@ const processPhotoQueue = async (): Promise<GetPhotosResponse | null> => {
   const photos = await getPhotoQueue();
   if (photos === null) return null;
 
-  const updateCount = await prisma.generatedPhoto.updateMany({
+  const updateCount = await prisma.photo.updateMany({
     where: {
       id: {
         in: photos.photos.map((photo) => photo.id),

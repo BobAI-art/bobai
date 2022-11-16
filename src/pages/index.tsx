@@ -7,9 +7,7 @@ import React from "react";
 import Photo from "../components/Photo";
 
 const Home: NextPage = () => {
-  const { data: generatedPhotos } = trpc.generatedPhotos.list.useQuery({
-    category: "generated-image",
-  });
+  const { data: generatedPhotos } = trpc.photos.list.useQuery({});
   return (
     <>
       <Head>

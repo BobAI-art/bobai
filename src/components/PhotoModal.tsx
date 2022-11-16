@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { GeneratedPhoto } from "@prisma/client";
+import { type Photo } from "@prisma/client";
 import usePhotoDetails from "../hooks/usePhotoDetails";
 import H2 from "./H2";
 import { photoUrl } from "../utils/helpers";
@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Dialog } from "@headlessui/react";
 
 export const PhotoModal: React.FC<{
-  photo: GeneratedPhoto;
+  photo: Photo;
   onClose: () => void;
 }> = ({ photo, onClose }) => {
   const photoDetails = usePhotoDetails(photo);
@@ -23,7 +23,7 @@ export const PhotoModal: React.FC<{
               <Dialog.Panel className="mx-auto max-w-[512px] rounded bg-white p-2">
                 <Dialog.Title className="flex">
                   <H2 className="flex-1">
-                    {photoDetails?.model?.name || "Generated photo"}
+                    {photoDetails?.depiction?.name || "Generated photo"}
                   </H2>
                   <XMarkIcon className="w-8 cursor-pointer" onClick={onClose} />
                 </Dialog.Title>
@@ -33,29 +33,29 @@ export const PhotoModal: React.FC<{
                   height={512}
                   alt={photo.prompt || "Generated photo"}
                 />
-                {photoDetails?.model && (
+                {photoDetails?.depiction && (
                   <div>
                     Model{" "}
                     <Link
                       href={{
                         pathname: "/model/[id]",
-                        query: { id: photoDetails?.model.id },
+                        query: { id: photoDetails?.depiction.id },
                       }}
                     >
-                      {photoDetails?.model.name}
+                      {photoDetails?.depiction.name}
                     </Link>
                   </div>
                 )}
-                {photoDetails?.model && (
+                {photoDetails?.depiction && (
                   <div>
                     Subject{" "}
                     <Link
                       href={{
                         pathname: "/subject/[slug]",
-                        query: { slug: photoDetails?.model.subject.slug },
+                        query: { slug: photoDetails?.depiction.subject.slug },
                       }}
                     >
-                      {photoDetails?.model.subject.slug}
+                      {photoDetails?.depiction.subject.slug}
                     </Link>
                   </div>
                 )}

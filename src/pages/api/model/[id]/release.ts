@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { prisma } from "../../../../server/db/client";
 
-const releaseModel = async (id: string, errored: boolean) => {
-  const updateCount = await prisma.model.updateMany({
+const releaseDepiction = async (id: string, errored: boolean) => {
+  const updateCount = await prisma.depiction.updateMany({
     where: {
       id,
       state: "TRAINING",
@@ -35,9 +35,9 @@ export default async function handler(
 
   switch (method) {
     case "POST":
-      releaseModel(id, error != undefined)
-        .then((model) => {
-          res.status(200).json(model);
+      releaseDepiction(id, error != undefined)
+        .then((depiction) => {
+          res.status(200).json(depiction);
         })
         .catch(() => {
           res.status(500).json({ error: "Could not get model" });

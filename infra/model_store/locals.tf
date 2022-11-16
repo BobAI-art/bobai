@@ -1,5 +1,5 @@
 locals {
   tags = {
-    Name        = var.bucket_name
+    Name = var.bucket_name
   }
 }

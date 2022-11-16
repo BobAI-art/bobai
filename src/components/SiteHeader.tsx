@@ -13,19 +13,18 @@ const SiteHeader: React.FC = () => {
         <Link href="/">Bob AI</Link>
       </H1>
       <div className="flex-grow" />
+      <Link href="/style"><Button >Styles</Button></Link>
       {session ? (
-        <Button className="text-lg">
           <Link
             href={{
               pathname: "/member/[name]",
               query: { name: session?.user?.name },
             }}
           >
-            <div className="flex gap-2">
+            <Button>
               <UserIcon className="w-4" /> {session?.user?.name}
-            </div>
+            </Button>
           </Link>
-        </Button>
       ) : (
         <Button onClick={() => signIn()} className="text-lg">
           <UserIcon className="w-4" /> Sign in

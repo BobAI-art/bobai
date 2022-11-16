@@ -10,7 +10,7 @@ import {
   defaultModelClass,
 } from "../../../../utils/consts";
 import { ModelClassSelect } from "../../../../components/ModelClassSelect";
-import { modelCreateSchema } from "../../../../utils/schema";
+import { depictionCreateSchema } from "../../../../utils/schema";
 import toast from "react-hot-toast";
 import Form from "../../../../components/Form";
 import Image from "next/image";
@@ -24,24 +24,29 @@ const ModelNew: NextPage = () => {
   const parentModelRef = React.useRef<HTMLSelectElement>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  useSession({
+  const session = useSession({
     required: true,
   });
   const slug = router.query.slug as string;
 
   const subject = trpc.subject.get.useQuery(slug);
   const photos = trpc.subjectPhoto.list.useQuery(slug);
-  const createModel = trpc.model.create.useMutation({
+  const createDepiction = trpc.depiction.create.useMutation({
     onSuccess: () => {
       router.push(`/subject/${slug}`);
       return false;
     },
     onError: () => {
-      toast.error("Failed to create model");
+      toast.error("Failed to create depiction");
     },
   });
-  const { data: parentModels} = trpc.parentModel.list.useQuery({});
-  const defaultModel = parentModels?.[0];
+  if(!session.data?.user?.id) {
+    return <Layout>Loading...</Layout>
+  }
+  const { data: subjects} = trpc.subject.list.useQuery({
+    ownerId: session.data.user.id,
+  });
+  const defaultModel = subjects?.[0];
 
   if (subject.isLoading || photos.isLoading) {
     return <>Loading...</>;
@@ -57,14 +62,14 @@ const ModelNew: NextPage = () => {
     return <>No photos</>;
   }
 
-  const currentModel = {
+  const currentDepiction = {
     subjectSlug: subject.data.slug,
     regularization: modelClass,
     name,
-    parentModelCode: parentModelRef.current?.value || ""
+    styleSlug: parentModelRef.current?.value || ""
   };
-  const parsed = modelCreateSchema.safeParse(currentModel);
-  if(!parentModels) {
+  const parsed = depictionCreateSchema.safeParse(currentDepiction);
+  if(!subjects) {
     return <Layout>Loading...</Layout>;
   }
 
@@ -86,12 +91,12 @@ const ModelNew: NextPage = () => {
       <Form
         onSubmit={(e) => {
           e.preventDefault();
-          createModel.mutate(currentModel);
+          createDepiction.mutate(currentDepiction);
         }}
       >
-        <FormRow label="Model name" component="input" value={name}
+        <FormRow label="Depiction name" component="input" value={name}
                  onChange={(e) => setName(e.target.value)}
-                 placeholder="Model name"
+                 placeholder="Joe Doe"
                  name="name"
                  id="name"/>
         <label
@@ -117,17 +122,17 @@ const ModelNew: NextPage = () => {
             onChange={(newModelClass) => setModelClass(newModelClass)}
           />
 
-          <label>Parent model</label>
+          <label>Style</label>
           <select
             ref={parentModelRef}
             name="parent"
             id="parent"
             className="form-select mt-1 block w-full"
-            defaultValue={defaultModel?.code}
+            defaultValue={defaultModel?.slug}
           >
-            {parentModels.map((model) => (
-              <option key={model.code} value={model.code}>
-                {model.code}
+            {subjects.map((model) => (
+              <option key={model.slug} value={model.slug}>
+                {model.slug}
               </option>
             ))}
           </select>

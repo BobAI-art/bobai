@@ -2,11 +2,13 @@ import React from "react";
 import Input from "./Input";
 import Textarea from "./Textarea";
 import MultiSelect from "./MultiSelect";
+import NumberInput from "./NumberInput";
 
 const components = {
   input: Input,
   textarea: Textarea,
   multiselect: MultiSelect,
+  number: NumberInput,
 };
 
 type SelectProps<C extends keyof typeof components> =

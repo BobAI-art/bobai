@@ -44,6 +44,16 @@ variable "VAST_API_KEY" {
 }
 
 variable "DOCKER_IO_PASSWORD" {
-    type = string
+  type     = string
+  nullable = false
+}
+
+variable "HUGGINGFACE_TOKEN" {
+  type     = string
+  nullable = false
+}
+
+variable "SITE_PIN" {
+    type     = string
     nullable = false
 }

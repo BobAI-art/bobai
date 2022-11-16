@@ -65,17 +65,58 @@ resource "vercel_project_environment_variable" "aws_s3_region" {
 
 
 resource "vercel_project_environment_variable" "vast_api_key" {
-    project_id = var.project_id
+  project_id = var.project_id
   team_id    = var.team_id
-    key = "VAST_API_KEY"
-    value = var.variables.VAST_API_KEY
-    target = var.targets
+  key        = "VAST_API_KEY"
+  value      = var.variables.VAST_API_KEY
+  target     = var.targets
 }
 
 resource "vercel_project_environment_variable" "docker_io_password" {
-    project_id = var.project_id
+  project_id = var.project_id
   team_id    = var.team_id
-    key = "DOCKER_IO_PASSWORD"
-    value = var.variables.DOCKER_IO_PASSWORD
-    target = var.targets
+  key        = "DOCKER_IO_PASSWORD"
+  value      = var.variables.DOCKER_IO_PASSWORD
+  target     = var.targets
+}
+
+resource "vercel_project_environment_variable" "huggingface_token" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "HUGGINGFACE_TOKEN"
+  value      = var.variables.HUGGINGFACE_TOKEN
+  target     = var.targets
+}
+
+resource "vercel_project_environment_variable" "AWS_S3_MODEL_ACCESS_KEY_ID" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "AWS_S3_MODEL_ACCESS_KEY_ID"
+  value      = var.variables.AWS_S3_MODEL_ACCESS_KEY_ID
+  target     = var.targets
+}
+
+resource "vercel_project_environment_variable" "aws_s3_model_access_key_secret" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "AWS_S3_MODEL_ACCESS_KEY_SECRET"
+  value      = var.variables.AWS_S3_MODEL_ACCESS_KEY_SECRET
+  target     = var.targets
+}
+
+resource "vercel_project_environment_variable" "aws_s3_model_bucket" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "AWS_S3_MODEL_BUCKET_NAME"
+  value      = var.variables.AWS_S3_MODEL_BUCKET_NAME
+  target     = var.targets
+}
+
+
+resource "vercel_project_environment_variable" "site_pin" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "SITE_PIN"
+  value      = var.variables.SITE_PIN
+  target     = var.targets
 }

@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
 
@@ -9,7 +9,7 @@ const UserLink: React.FC<{ user: Pick<User, "name"> }> = ({ user }) => (
       query: { name: user.name },
     }}
   >
-    @{user.name}
+    {user.name}
   </Link>
 );
 

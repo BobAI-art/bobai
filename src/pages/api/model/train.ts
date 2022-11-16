@@ -2,15 +2,15 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { prisma } from "../../../server/db/client";
 import { photoUrl } from "../../../utils/helpers";
-import { type GetModelResponse } from "../../../interfaces";
+import { type GetDeciptionResponse } from "../../../interfaces";
 
-const getOldestCreatedModel = async (): Promise<GetModelResponse | null> => {
-  const model = await prisma.model.findFirst({
+const getOldes = async (): Promise<GetDeciptionResponse | null> => {
+  const deciption = await prisma.depiction.findFirst({
     where: {
       state: "CREATED",
     },
     include: {
-      parent_model: true,
+      style: true,
       subject: {
         include: {
           subject_photos: true,
@@ -19,33 +19,33 @@ const getOldestCreatedModel = async (): Promise<GetModelResponse | null> => {
     },
     orderBy: { created: "desc" },
   });
-  if (!model) return null;
+  if (!deciption) return null;
 
   return {
-    id: model.id,
-    name: model.name,
-    owner_id: model.owner_id,
-    parent_model_code: model.parent_model_code,
+    id: deciption.id,
+    name: deciption.name,
+    owner_id: deciption.owner_id,
+    style_slug: deciption.style_slug,
     regularization:
-      model.regularization as unknown as GetModelResponse["regularization"],
+      deciption.regularization as unknown as GetDeciptionResponse["regularization"],
     subject: {
-      slug: model.subject.slug,
-      subject_photos: model.subject.subject_photos.map((photo) =>
+      slug: deciption.subject.slug,
+      subject_photos: deciption.subject.subject_photos.map((photo) =>
         photoUrl(photo)
       ),
     },
-    parent_model: {
-      repo_id: model.parent_model.repo_id,
-      filename: model.parent_model.file_name,
+    style: {
+      repo_id: deciption.style.repo_id,
+      filename: deciption.style.file_name,
     },
   };
 };
 
-const getModel = async (): Promise<GetModelResponse | null> => {
-  const model = await getOldestCreatedModel();
+const getModel = async (): Promise<GetDeciptionResponse | null> => {
+  const model = await getOldes();
   if (model === null) return null;
 
-  const updateCount = await prisma.model.updateMany({
+  const updateCount = await prisma.depiction.updateMany({
     where: {
       id: model.id,
       state: "CREATED",
@@ -74,7 +74,7 @@ export default async function handler(
         });
       break;
     case "GET":
-      getOldestCreatedModel()
+      getOldes()
         .then((model) => {
           res.status(200).json(model);
         })
