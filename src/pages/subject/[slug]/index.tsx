@@ -94,16 +94,16 @@ const SubjectBySlug: NextPage = () => {
         Depictions
       </h3>
       <ul>
-        {subject.models.map((model) => (
-          <li key={model.id}>
+        {subject.depiction.map((depiction) => (
+          <li key={depiction.id}>
             <Link
               href={{
                 pathname: "/depiction/[id]",
-                query: { id: model.id },
+                query: { id: depiction.id },
               }}
             >
-              {model.name} <i>{model.state}</i> <b>{model.parent_model_code}</b>
-              , Created: {moment(model.created).fromNow()}
+              {depiction.name} <i>{depiction.state}</i> <b>{depiction.style_slug}</b>
+              , Created: {moment(depiction.created).fromNow()}
             </Link>
           </li>
         ))}

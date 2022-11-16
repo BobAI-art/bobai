@@ -1,4 +1,4 @@
-import { cuidSchema, modelCreateSchema } from "../../../utils/schema";
+import { cuidSchema, depictionCreateSchema } from "../../../utils/schema";
 import {
   router,
   protectedProcedure,
@@ -23,7 +23,7 @@ const makeRegularization = (regularization: string) => {
   };
 };
 
-export const modelRouter = router({
+export const depictionRouter = router({
   list: publicProcedure
     .input(
       z.object({
@@ -31,7 +31,7 @@ export const modelRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.model.findMany({
+      return await ctx.prisma.depiction.findMany({
         take: input.limit,
         orderBy: {
           created: "desc",
@@ -39,7 +39,7 @@ export const modelRouter = router({
       });
     }),
   ownedByMe: protectedProcedure.input(z.object({})).query(async ({ ctx }) => {
-    return await ctx.prisma.model.findMany({
+    return await ctx.prisma.depiction.findMany({
       where: {
         owner_id: ctx.session.user.id,
         state: "TRAINED",
@@ -55,14 +55,14 @@ export const modelRouter = router({
     });
   }),
   get: publicProcedure.input(cuidSchema).query(async ({ ctx, input }) => {
-    const model = await ctx.prisma.model.findFirst({
+    const model = await ctx.prisma.depiction.findFirst({
       where: {
         id: input,
       },
       include: {
         subject: true,
         owner: true,
-        parent_model: true,
+        style: true,
       },
     });
     if (!model) return model;
@@ -70,9 +70,9 @@ export const modelRouter = router({
     return model;
   }),
   create: protectedProcedure
-    .input(modelCreateSchema)
+    .input(depictionCreateSchema)
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.model.create({
+      return await ctx.prisma.depiction.create({
         data: {
           name: input.name,
           owner: {
@@ -85,9 +85,9 @@ export const modelRouter = router({
               slug: input.subjectSlug,
             },
           },
-          parent_model: {
+          style: {
             connect: {
-              code: input.parentModelCode,
+              slug: input.styleSlug,
             },
           },
           regularization: makeRegularization(input.regularization),
@@ -95,13 +95,13 @@ export const modelRouter = router({
       });
     }),
   stats: adminProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.model.groupBy({
+    return await ctx.prisma.depiction.groupBy({
       by: ["state"],
       _count: true,
     });
   }),
   retryFailed: adminProcedure.mutation(async ({ ctx }) => {
-    return await ctx.prisma.model.updateMany({
+    return await ctx.prisma.depiction.updateMany({
       where: {
         state: "ERROR",
       },

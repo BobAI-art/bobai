@@ -7,24 +7,24 @@ import { trpc } from "../../utils/trpc";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
 const ParentModels: NextPage = () => {
-  const { data: models } = trpc.parentModel.list.useQuery({});
-  if (!models) return <Layout>Loading...</Layout>;
+  const { data: styles } = trpc.style.list.useQuery({});
+  if (!styles) return <Layout>Loading...</Layout>;
   return (
     <Layout>
       <Breadcrumbs
         parents={[{ href: "/", label: "Home" }]}
-        label="Stylel"
+        label="Style"
       />
       <ul>
-        {models.map((model) => (
-          <li key={model.code}>
+        {styles.map((style) => (
+          <li key={style.slug}>
             <Link
               href={{
-                pathname: "/style/[code]/",
-                query: { code: model.code },
+                pathname: "/style/[slug]/",
+                query: { slug: style.slug },
               }}
             >
-              <H3>{model.code}</H3>
+              <H3>{style.slug}</H3>
             </Link>
           </li>
         ))}

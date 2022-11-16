@@ -15,7 +15,7 @@ export interface GetPhotosResponse {
     | {
         source: "huggingface";
         repo_id: string;
-        filename: string;
+        file_name: string;
       }
     | {
         source: "aws";
@@ -27,17 +27,17 @@ export interface GetPhotosResponse {
   }[];
 }
 
-export interface GetModelResponse {
+export interface GetDeciptionResponse {
   id: string;
   name: string;
   owner_id: string;
-  parent_model_code: string;
+  style_slug: string;
   regularization: GenerateRegularization | FetchRegularization;
   subject: {
     slug: string;
     subject_photos: string[];
   };
-  parent_model: {
+  style: {
     repo_id: string;
     filename: string;
   };

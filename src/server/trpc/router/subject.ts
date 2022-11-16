@@ -11,22 +11,22 @@ export const subjectRouter = router({
           slug: input,
         },
         include: {
-          models: true,
+          depiction: true,
         },
       });
     }),
   slugExists: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
-      const model = await ctx.prisma.subject.findFirst({
+      const subject = await ctx.prisma.subject.findFirst({
         where: {
           slug: input,
         },
       });
       return {
-        exists: model?.slug ? true : false,
-        slug: model?.slug,
-        id: model?.id,
+        exists: subject?.slug ? true : false,
+        slug: subject?.slug,
+        id: subject?.id,
       };
     }),
   create: protectedProcedure

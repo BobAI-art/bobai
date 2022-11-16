@@ -8,16 +8,15 @@ import {
 } from "../../../utils/schema";
 import cuid from "cuid";
 import { env } from "../../../env/server.mjs";
-import { s3GeneratedPhotoRoot } from "../../../utils/helpers";
+import { s3PhotoRoot } from "../../../utils/helpers";
 
-export const generatedPhotosRouter = router({
+export const photosRouter = router({
   generate: protectedProcedure.input(
     z.object({
       prompt: promptSchema,
       howMany: z.number().min(1).max(24),
       style: dbStringSchema,
-      modelId: cuidSchema.optional(),
-
+      depictionId: cuidSchema.optional(),
     })
   ).mutation(async ({ ctx, input }) => {
     return input;
@@ -29,43 +28,43 @@ export const generatedPhotosRouter = router({
         prompt: promptSchema,
         category: photoCategorySchema.default("generated-image"),
         parentModelCode: z.string(),
-        modelId: cuidSchema.optional(),
+        depictionId: cuidSchema.optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const id = cuid();
-      const { prompt, category, parentModelCode, modelId } = input;
+      const { prompt, category, parentModelCode, depictionId } = input;
 
       const data = {
         id,
         bucket: env.AWS_S3_BUCKET,
-        model_id: modelId ? modelId : null,
+        depiction_id: depictionId ? depictionId : null,
         prompt,
         category,
         owner_id: ctx.session.user.id,
-        code: parentModelCode,
+        style_slug: parentModelCode,
       };
 
-      return await ctx.prisma.generatedPhoto.create({
-        data: { ...data, root: s3GeneratedPhotoRoot(data) },
+      return await ctx.prisma.photo.create({
+        data: { ...data, root: s3PhotoRoot(data) },
       });
     }),
 
   details: publicProcedure
     .input(z.object({ id: cuidSchema }))
     .query(async ({ ctx, input }) => {
-      const photo = await ctx.prisma.generatedPhoto.findUnique({
+      const photo = await ctx.prisma.photo.findUnique({
         where: {
           id: input.id,
         },
         include: {
-          model: {
+          depiction: {
             include: {
               subject: true,
             },
           },
           owner: true,
-          parent_model: true,
+          style: true,
         },
       });
       if (!photo) {
@@ -83,10 +82,9 @@ export const generatedPhotosRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.generatedPhoto.findMany({
+      return await ctx.prisma.photo.findMany({
         where: {
-          model_id: input.modelId,
-          category: input.category,
+          depiction_id: input.modelId,
           ...(input.parentModel
             ? {
                 code: input.parentModel,

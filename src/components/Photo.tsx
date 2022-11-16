@@ -2,10 +2,10 @@ import React from "react";
 import { PhotoModal } from "./PhotoModal";
 import Image from "next/image";
 import { photoUrl } from "../utils/helpers";
-import { GeneratedPhoto } from "@prisma/client";
+import { type Photo as PhotoModel } from "@prisma/client";
 import moment from "moment/moment";
 
-const Photo: React.FC<{ photo: GeneratedPhoto }> = ({ photo }) => {
+const Photo: React.FC<{ photo: PhotoModel }> = ({ photo }) => {
   const [show, setShow] = React.useState(false);
   if (photo.status !== "GENERATED") {
     return (

@@ -11,13 +11,13 @@ import Button from "../../components/Button";
 import moment from "moment";
 import H2 from "../../components/H2";
 import UserLink from "../../components/UserLink";
-import useMyModels from "../../hooks/useMyModels";
+import useMyDepictions from "../../hooks/useMyDepictions";
 import useSubjects from "../../hooks/useSubjects";
 import React from "react";
 import useUserByName from "../../hooks/useUserByName";
 
 const MemberPrivate: React.FC = () => {
-  const { data: models } = useMyModels();
+  const { data: models } = useMyDepictions();
   return (
     <div className="">
       <hr />

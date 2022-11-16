@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../server/db/client";
-import { s3GeneratedPhotoRootPath } from "../../../utils/helpers";
+import { s3PhotoRootPath } from "../../../utils/helpers";
 import { number } from "zod";
 import { putS3Object } from "../../../server/s3";
 
@@ -11,7 +11,7 @@ interface ImageUploadRequest {
 
 const uploadImage = async (id: string, request: ImageUploadRequest) => {
   const { photo_content } = request;
-  const photo = await prisma.generatedPhoto.findUnique({
+  const photo = await prisma.photo.findUnique({
     where: {
       id,
     },
@@ -22,11 +22,11 @@ const uploadImage = async (id: string, request: ImageUploadRequest) => {
   if (photo.status === "GENERATED") {
     throw new Error("Photo already uploaded");
   }
-  const path = s3GeneratedPhotoRootPath(photo);
+  const path = s3PhotoRootPath(photo);
   const buffer = Buffer.from(photo_content, "base64");
   await putS3Object(path, "image/png", buffer);
 
-  return await prisma.generatedPhoto.update({
+  return await prisma.photo.update({
     where: {
       id,
     },

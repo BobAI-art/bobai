@@ -1,4 +1,4 @@
-import { GeneratedPhoto } from "@prisma/client";
+import { Photo } from "@prisma/client";
 
 export const photoUrl = (photo: {
   bucket: string;
@@ -13,11 +13,11 @@ const s3UserPath = (userId: string) => `user/${userId}`;
 const s3SubjectPath = (userId: string, subjectId: string) =>
   `${s3UserPath(userId)}/subject/${subjectId}`;
 
-const s3ParentModelPath = (userId: string, parentModelCode: string) =>
-  `${s3UserPath(userId)}/parent-model/${parentModelCode}`;
+const s3StylePath = (userId: string, styleSlug: string) =>
+  `${s3UserPath(userId)}/style/${styleSlug}`;
 
-const s3ModelPath = (userId: string, modelId: string) =>
-  `${s3UserPath(userId)}/model/${modelId}`;
+const s3DepictionPath = (userId: string, modelId: string) =>
+  `${s3UserPath(userId)}/depiction/${modelId}`;
 
 export const s3SubjectPhotoRoot = (userId: string, subjectId: string) =>
   `${s3SubjectPath(userId, subjectId)}/photo`;
@@ -28,21 +28,21 @@ export const s3SubjectPhotoPath = (
   photoId: string
 ) => `${s3SubjectPhotoRoot(userId, subjectId)}/${photoId}.png`;
 
-export const s3GeneratedPhotoRoot = (
-  photo: Pick<GeneratedPhoto, "id" | "model_id" | "code" | "owner_id">
+export const s3PhotoRoot = (
+  photo: Pick<Photo, "id" | "owner_id" | "depiction_id" | "style_slug">
 ) => {
   if (!photo.owner_id) {
     throw new Error("Photo must have an owner_id");
   }
-  if (photo.model_id) {
-    return `${s3ModelPath(photo.owner_id, photo.model_id)}/photo`;
+  if (photo.depiction_id) {
+    return `${s3DepictionPath(photo.owner_id, photo.depiction_id)}/photo`;
   }
-  if (photo.code) {
-    return `${s3ParentModelPath(photo.owner_id, photo.code)}/photo`;
+  if (photo.style_slug) {
+    return `${s3StylePath(photo.owner_id, photo.style_slug)}/photo`;
   }
   return `${s3UserPath(photo.owner_id)}/photo`;
 };
 
-export const s3GeneratedPhotoRootPath = (
-  photo: Pick<GeneratedPhoto, "id" | "model_id" | "code" | "owner_id">
-) => `${s3GeneratedPhotoRoot(photo)}/${photo.id}.png`;
+export const s3PhotoRootPath = (
+  photo: Pick<Photo, "id" | "owner_id" | "depiction_id" | "style_slug">
+) => `${s3PhotoRoot(photo)}/${photo.id}.png`;

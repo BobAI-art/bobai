@@ -15,25 +15,26 @@ export const userSchema = {
     ),
 };
 
+const slugSchema = dbStringSchema
+  .min(3, "Slug must be at least 3 character long")
+  .regex(
+    /^[a-z\-\d]+$/,
+    "Slug can only contain lowercase letters, digits and dashes."
+  )
 export const subjectSchema = {
-  slug: dbStringSchema
-    .min(3, "Slug must be at least 4 character long")
-    .regex(
-      /^[a-z\-\d]+$/,
-      "Slug can only contain lowercase letters, digits and dashes."
-    ),
+  slug: slugSchema,
   description: z
     .string()
     .max(2000, "Description must be at most 2000 characters long"),
 };
 
-export const modelCreateSchema = z.object({
+export const depictionCreateSchema = z.object({
   subjectSlug: subjectSchema.slug,
   regularization: dbStringSchema
     .min(4, "Class must be at least 4 characters long")
     .regex(/^[a-zA-Z_ ]+$/, "Class can only contain letters and space."),
   name: dbStringSchema.min(4, "Name must be at least 4 character long"),
-  parentModelCode: dbStringSchema,
+  styleSlug: slugSchema,
 });
 
 export const promptSchema = z
@@ -41,13 +42,6 @@ export const promptSchema = z
   .min(4, "Prompt must be at least 4 character long")
   .max(768, "Prompt can be max 768 characters long");
 
-export const deprecatedPromptSchema = {
-  prompt: z
-    .string()
-    .max(768, "Prompt can be max 768 characters long")
-    .regex(/\<MODEL\>/, "Prompt must contain <MODEL>"),
-  modelIds: z.array(cuidSchema),
-};
 
 export const photoCategorySchema = z.enum([
   "generated-image",

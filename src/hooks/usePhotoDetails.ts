@@ -1,7 +1,7 @@
 import { trpc } from "../utils/trpc";
-import { GeneratedPhoto } from "@prisma/client";
-const usePhotoDetails = (photo: GeneratedPhoto, enabled = true) => {
-  return trpc.generatedPhotos.details.useQuery(
+import { type Photo } from "@prisma/client";
+const usePhotoDetails = (photo: Photo, enabled = true) => {
+  return trpc.photos.details.useQuery(
     {
       id: photo.id,
     },

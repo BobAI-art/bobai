@@ -4,7 +4,7 @@ import H1 from "../../components/H1";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import H2 from "../../components/H2";
-import useModelsStats from "../../hooks/admin/useModelsStats";
+import useDepictionsStats from "../../hooks/admin/useDepictionsStats";
 import useAvailableVastInstances from "../../hooks/admin/useAvailableVastInstances";
 import { classNames } from "../../toolbox";
 import { trpc } from "../../utils/trpc";
@@ -75,7 +75,7 @@ const instanceName = (runtype: string, args: string[]) => {
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { data: modelStats, refetch: modelStatsRefetch } = useModelsStats();
+  const { data: modelStats, refetch: modelStatsRefetch } = useDepictionsStats();
   const { data: instances } = useAvailableVastInstances();
   const { data: activeInstances } = useActiveVastInstances();
   const session = useSession({
@@ -89,7 +89,7 @@ const Home: NextPage = () => {
       toast.error(err.message);
     },
   });
-  const retrtyFailedTrainingMutation = trpc.model.retryFailed.useMutation({
+  const retrtyFailedTrainingMutation = trpc.depiction.retryFailed.useMutation({
     onSuccess: () => {
       modelStatsRefetch();
       toast.success("Retried");

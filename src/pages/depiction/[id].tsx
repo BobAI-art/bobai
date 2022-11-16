@@ -4,9 +4,8 @@ import { NextPage } from "next";
 import { trpc } from "../../utils/trpc";
 import { Layout } from "../../components/Layout";
 import UserLink from "../../components/UserLink";
-import { ModelInTraining } from "../../components/ModelInTraining";
-import { Model } from "@prisma/client";
-import useGeneratedPhotos from "../../hooks/useGeneratedPhotos";
+import { DepictionInTraining } from "../../components/DepictionInTraining";
+import usePhotos from "../../hooks/usePhotos";
 import H2 from "../../components/H2";
 import Photo from "../../components/Photo";
 import H3 from "../../components/H3";
@@ -15,11 +14,12 @@ import { useSession } from "next-auth/react";
 import FormRow from "../../components/FormRow";
 import Button from "../../components/Button";
 import { toast } from "react-hot-toast";
+import { type Depiction } from "@prisma/client";
 
 const AddPhoto: React.FC<{
-  model: Model;
-}> = ({model}) => {
-  const generateMutation = trpc.generatedPhotos.generate.useMutation({
+  depiction: Depiction;
+}> = ({depiction}) => {
+  const generateMutation = trpc.photos.generate.useMutation({
     onSuccess: () => {
       toast.success("Walking to studio to paint as requested, pleas give me a sec. Wof wof!");
     },
@@ -35,29 +35,29 @@ const AddPhoto: React.FC<{
     generateMutation.mutate({
       prompt: formData.get("prompt") as string,
       howMany: parseInt(formData.get("count") as string),
-      style: model.parent_model_code,
-      modelId: model.id,
+      style: depiction.style_slug,
+      depictionId: depiction.id,
     })
   }
   }>
-    <H2>Hey Bob! please paint a really nice portrait of  <span className="font-extrabold">{model.name}</span></H2>
+    <H2>Hey Bob! please paint a really nice portrait of  <span className="font-extrabold">{depiction.name}</span></H2>
     <FormRow name="prompt" component="input" label="Here are my instructions: " placeholder="looking to the right, riding on the duck" />
     <FormRow name="count" component="number" label="I need this many portraits: " defaultValue={4} min={1} max={24} />
     <Button  disabled={generateMutation.isLoading}>Go to work!</Button>
   </form>
 }
 
-const TrainedDeciption: React.FC<{ model: Model }> = ({ model }) => {
+const TrainedDeciption: React.FC<{ depiction: Depiction }> = ({ depiction }) => {
   const session = useSession();
-  const { data: traningPreview } = useGeneratedPhotos({
-    modelId: model.id,
+  const { data: traningPreview } = usePhotos({
+    modelId: depiction.id,
     category: "generated-image",
   });
-  const canAdd = session?.data?.user?.id === model.owner_id
+  const canAdd = session?.data?.user?.id === depiction.owner_id
 
   return (
     <>
-      {canAdd && <AddPhoto model={model} />}
+      {canAdd && <AddPhoto depiction={depiction} />}
     <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
       {traningPreview?.map((photo) => (
         <Photo photo={photo} key={photo.id} />
@@ -71,18 +71,18 @@ const ModelById: NextPage = () => {
 
   const id = router.query.id as string;
 
-  const { data: model } = trpc.model.get.useQuery(id);
+  const { data: depiction } = trpc.depiction.get.useQuery(id);
 
-  if (!model) {
+  if (!depiction) {
     return <>Depiction not found</>;
   }
 
   return (
     <Layout>
       <H2>
-        Depiction of <span className="font-extrabold">{model.name}</span> asked to paint by{" "}
+        Depiction of <span className="font-extrabold">{depiction.name}</span> asked to paint by{" "}
         <span className="font-extrabold">
-          <UserLink user={model.owner} />
+          <UserLink user={depiction.owner} />
         </span>
       </H2>
       <H3>
@@ -91,16 +91,16 @@ const ModelById: NextPage = () => {
           <Link
             href={{
               pathname: "/style/[name]/",
-              query: { name: model.parent_model_code },
+              query: { name: depiction.style_slug },
             }}
           >
-            {model.parent_model.code}
+            {depiction.style_slug}
           </Link>
         </span>
       </H3>
 
-      {model.state === "TRAINING" && <ModelInTraining model={model} />}
-      {model.state === "TRAINED" && <TrainedDeciption model={model} />}
+      {depiction.state === "TRAINING" && <DepictionInTraining depiction={depiction} />}
+      {depiction.state === "TRAINED" && <TrainedDeciption depiction={depiction} />}
       {/*{model.generated_photos.map((photo) => (*/}
       {/*  <picture key={photo.id}>*/}
       {/*    <source srcSet={photoUrl(photo)} type="image/png" />*/}
