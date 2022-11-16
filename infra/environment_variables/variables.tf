@@ -29,6 +29,7 @@ variable "variables" {
     AWS_S3_MODEL_ACCESS_KEY_ID     = string
     AWS_S3_MODEL_ACCESS_KEY_SECRET = string
     AWS_S3_MODEL_BUCKET_NAME       = string
+    SITE_PIN           = string
   })
   nullable = false
 }

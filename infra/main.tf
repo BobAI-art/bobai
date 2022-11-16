@@ -32,6 +32,7 @@ module "production_environment_variables" {
     AWS_S3_MODEL_ACCESS_KEY_ID     = module.model_store.bucket_access_key_id
     AWS_S3_MODEL_ACCESS_KEY_SECRET = module.model_store.bucket_secret_access_key
     AWS_S3_MODEL_BUCKET_NAME       = module.model_store.bucket_name
+    SITE_PIN = var.SITE_PIN
   }
   targets = ["production"]
 }
@@ -59,6 +60,7 @@ module "preview_environment_variables" {
     AWS_S3_MODEL_ACCESS_KEY_ID     = module.model_store.bucket_access_key_id
     AWS_S3_MODEL_ACCESS_KEY_SECRET = module.model_store.bucket_secret_access_key
     AWS_S3_MODEL_BUCKET_NAME       = module.model_store.bucket_name
+    SITE_PIN = var.SITE_PIN
   }
   targets = ["development", "preview"]
 }

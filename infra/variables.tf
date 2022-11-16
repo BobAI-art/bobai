@@ -52,3 +52,8 @@ variable "HUGGINGFACE_TOKEN" {
   type     = string
   nullable = false
 }
+
+variable "SITE_PIN" {
+    type     = string
+    nullable = false
+}

@@ -111,3 +111,12 @@ resource "vercel_project_environment_variable" "aws_s3_model_bucket" {
   value      = var.variables.AWS_S3_MODEL_BUCKET_NAME
   target     = var.targets
 }
+
+
+resource "vercel_project_environment_variable" "site_pin" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "SITE_PIN"
+  value      = var.variables.SITE_PIN
+  target     = var.targets
+}

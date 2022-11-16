@@ -148,7 +148,7 @@ const getModelTrainerOptions = (type: "model" | "photo" | "ssh") => {
     runtype: "ssh",
     onstart: `
 export AWS_ACCESS_KEY_ID=${env.AWS_S3_MODEL_ACCESS_KEY_ID}
-export AWS_SECRET_ACCESS_KEY=${env.AWS_S3_MODEL_SECRET_ACCESS_KEY}
+export AWS_SECRET_ACCESS_KEY=${env.AWS_S3_MODEL_ACCESS_KEY_SECRET}
 export HUGGINGFACE_TOKEN=${env.HUGGINGFACE_TOKEN}
 export PORTRAITS_BASE_URL=https://www.bobai.art/
 export MODEL_STORE_BUCKET_NAME=${env.AWS_S3_MODEL_BUCKET_NAME}
