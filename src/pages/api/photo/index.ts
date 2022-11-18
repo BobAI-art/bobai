@@ -12,7 +12,11 @@ import { Depiction, Prompt } from "@prisma/client";
 const getPromptClass = (
   regularization: GenerateRegularization | FetchRegularization
 ) => {
-  return regularization.prompt;
+  if (regularization.type === "generate") {
+    return regularization.prompt;
+  } else {
+    return regularization.regularization;
+  }
 };
 
 const getPhotoQueue = async (limit = 10) => {
@@ -39,7 +43,14 @@ const getPhotoQueue = async (limit = 10) => {
       Prompt: true,
     },
   });
-
+  const regularization = oldestGroup.depiction?.regularization as unknown as
+    | FetchRegularization
+    | GenerateRegularization;
+  const promptClass = getPromptClass(regularization);
+  console.log(oldestGroup.depiction?.regularization);
+  const model = oldestGroup.depiction
+    ? `${oldestGroup.depiction.subject_slug} ${promptClass}`
+    : "";
   const postfix = oldestGroup.style.prompt_suffix
     ? ` ${oldestGroup.style.prompt_suffix}`
     : "";
@@ -47,8 +58,7 @@ const getPhotoQueue = async (limit = 10) => {
     source: getSource(oldestGroup),
     photos: photos.map((photo) => ({
       id: photo.id,
-      prompt: `${photo.Prompt.content}${postfix}`,
-      // prompts: [...prefix, ...flatPrompts(photo.prompt_id), ...postfix],
+      prompt: `${photo.Prompt.content}${postfix}`.replace("<MODEL>", model),
     })),
   };
 };

@@ -7,7 +7,7 @@ export interface GenerateRegularization {
 export interface FetchRegularization {
   type: "fetch";
   source: string;
-  prompt: string;
+  regularization: string;
 }
 
 export interface GetPhotosResponse {
