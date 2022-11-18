@@ -102,8 +102,9 @@ const SubjectBySlug: NextPage = () => {
                 query: { id: depiction.id },
               }}
             >
-              {depiction.name} <i>{depiction.state}</i> <b>{depiction.style_slug}</b>
-              , Created: {moment(depiction.created).fromNow()}
+              {depiction.name} <i>{depiction.state}</i>{" "}
+              <b>{depiction.style_slug}</b>, Created:{" "}
+              {moment(depiction.created).fromNow()}
             </Link>
           </li>
         ))}
@@ -115,11 +116,13 @@ const SubjectBySlug: NextPage = () => {
               query: { slug },
             }}
           >
-          <Button>
+            <Button>
               <div className="flex gap-2">
-                <PlusCircleIcon className="w-4" /> Hey Bob, lets learn you a new <span className="font-bold">{subject.slug}&apos</span> depiction
+                <PlusCircleIcon className="w-4" /> Hey Bob, lets learn you a new{" "}
+                <span className="font-bold">{subject.slug}&apos;s</span>{" "}
+                depiction
               </div>
-          </Button>
+            </Button>
           </Link>
         </li>
       </ul>

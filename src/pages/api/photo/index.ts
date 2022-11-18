@@ -35,52 +35,20 @@ const getPhotoQueue = async (limit = 10) => {
       status: "CREATED",
     },
     orderBy: { created: "asc" },
+    include: {
+      Prompt: true,
+    },
   });
 
-  const foundPrompts = new Map<string, Prompt>();
-  const promptsId = photos.map((photo) => photo.prompt_id);
-  while (promptsId.length > 0) {
-    const result = await prisma.prompt.findMany({
-      where: {
-        id: {
-          in: promptsId,
-        },
-      },
-    });
-
-    promptsId.length = 0;
-    result.map((prompt) => {
-      foundPrompts.set(prompt.id, prompt);
-      if (prompt.parent_id) {
-        promptsId.push(prompt.parent_id);
-      }
-    });
-  }
-
-  const flatPrompts = (promptId: string): string[] => {
-    const prompt = foundPrompts.get(promptId);
-    if (!prompt) return [];
-    if (prompt.parent_id) {
-      return [...flatPrompts(prompt.parent_id), prompt.content];
-    }
-    return [prompt.content];
-  };
-  const prefix = oldestGroup.depiction
-    ? [
-        `portrait of ${oldestGroup.depiction?.subject_slug} ${
-          (oldestGroup.depiction?.regularization as { prompt: string }).prompt
-        }`,
-      ]
-    : [];
-
   const postfix = oldestGroup.style.prompt_suffix
-    ? [oldestGroup.style.prompt_suffix]
-    : [];
+    ? ` ${oldestGroup.style.prompt_suffix}`
+    : "";
   return {
     source: getSource(oldestGroup),
     photos: photos.map((photo) => ({
       id: photo.id,
-      prompts: [...prefix, ...flatPrompts(photo.prompt_id), ...postfix],
+      prompt: `${photo.Prompt.content}${postfix}`,
+      // prompts: [...prefix, ...flatPrompts(photo.prompt_id), ...postfix],
     })),
   };
 };

@@ -28,48 +28,53 @@ export const photosRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { prompt, howMany, style, depictionId } = input;
       const { user } = ctx.session;
-
-      const promptModel = await ctx.prisma.prompt.create({
-        data: {
+      const promptModel = await ctx.prisma.prompt.upsert({
+        where: {
           content: prompt,
-          owner: {
-            connect: {
-              id: user.id,
-            },
-          },
+        },
+        update: {},
+        create: {
+          content: prompt,
         },
       });
-      try {
-        await Promise.all(
-          Array.from({ length: howMany }).map(async () => {
-            const id = cuid();
-            const data = {
-              id,
-              owner_id: user.id,
-              style_slug: style,
-              depiction_id: depictionId || null,
-            };
-            const root = s3PhotoRoot(data);
-            return await ctx.prisma.photo.create({
-              data: {
-                ...data,
-                root: root,
-                prompt_id: promptModel.id,
-                bucket: env.AWS_S3_BUCKET,
-                prompt,
+      await Promise.all(
+        prompt
+          .split(",")
+          .map((part) => part.trim())
+          .map(async (part) => {
+            return await ctx.prisma.promptFragment.upsert({
+              where: {
+                content: part,
+              },
+              update: {},
+              create: {
+                content: part,
               },
             });
           })
-        );
-      } catch (error) {
-        await ctx.prisma.prompt.delete({
-          where: {
-            id: promptModel.id,
-          },
-        });
-        throw error;
-      }
+      );
 
+      await Promise.all(
+        Array.from({ length: howMany }).map(async () => {
+          const id = cuid();
+          const data = {
+            id,
+            owner_id: user.id,
+            style_slug: style,
+            depiction_id: depictionId || null,
+          };
+          const root = s3PhotoRoot(data);
+          return await ctx.prisma.photo.create({
+            data: {
+              ...data,
+              root: root,
+              prompt_id: promptModel.id,
+              bucket: env.AWS_S3_BUCKET,
+              prompt,
+            },
+          });
+        })
+      );
       return input;
     }),
 
@@ -102,6 +107,7 @@ export const photosRouter = router({
         category: z.enum(["generated-image", "training-progress"]).optional(),
         limit: z.number().optional().default(96),
         parentModel: dbStringSchema.optional(),
+        skip: z.number().optional().default(0),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -118,6 +124,7 @@ export const photosRouter = router({
           created: "desc",
         },
         take: input.limit,
+        skip: input.skip,
       });
     }),
   stats: adminProcedure.query(async ({ ctx }) => {

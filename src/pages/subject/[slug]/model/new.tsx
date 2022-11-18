@@ -6,9 +6,7 @@ import { trpc } from "../../../../utils/trpc";
 import { photoUrl } from "../../../../utils/helpers";
 import Button from "../../../../components/Button";
 import React, { useState } from "react";
-import {
-  defaultModelClass,
-} from "../../../../utils/consts";
+import { defaultModelClass } from "../../../../utils/consts";
 import { ModelClassSelect } from "../../../../components/ModelClassSelect";
 import { depictionCreateSchema } from "../../../../utils/schema";
 import toast from "react-hot-toast";
@@ -40,14 +38,24 @@ const ModelNew: NextPage = () => {
       toast.error("Failed to create depiction");
     },
   });
-  if(!session.data?.user?.id) {
-    return <Layout>Loading...</Layout>
-  }
-  const { data: subjects} = trpc.subject.list.useQuery({
-    ownerId: session.data.user.id,
-  });
-  const defaultModel = subjects?.[0];
 
+  const { data: subjects } = trpc.subject.list.useQuery(
+    {
+      ownerId: session.data?.user?.id as string,
+    },
+    { enabled: !!session?.data?.user?.id }
+  );
+  const { data: styles } = trpc.style.list.useQuery({});
+
+  if (!session.data?.user?.id) {
+    return <Layout>Loading...</Layout>;
+  }
+
+  const defaultStyle = styles?.[0];
+
+  if (!styles) {
+    return <Layout>Loading...</Layout>;
+  }
   if (subject.isLoading || photos.isLoading) {
     return <>Loading...</>;
   }
@@ -66,10 +74,10 @@ const ModelNew: NextPage = () => {
     subjectSlug: subject.data.slug,
     regularization: modelClass,
     name,
-    styleSlug: parentModelRef.current?.value || ""
+    styleSlug: parentModelRef.current?.value || "",
   };
   const parsed = depictionCreateSchema.safeParse(currentDepiction);
-  if(!subjects) {
+  if (!subjects) {
     return <Layout>Loading...</Layout>;
   }
 
@@ -94,11 +102,15 @@ const ModelNew: NextPage = () => {
           createDepiction.mutate(currentDepiction);
         }}
       >
-        <FormRow label="Depiction name" component="input" value={name}
-                 onChange={(e) => setName(e.target.value)}
-                 placeholder="Joe Doe"
-                 name="name"
-                 id="name"/>
+        <FormRow
+          label="Depiction name"
+          component="input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Joe Doe"
+          name="name"
+          id="name"
+        />
         <label
           htmlFor="checked-toggle"
           className="relative inline-flex cursor-pointer items-center"
@@ -128,11 +140,11 @@ const ModelNew: NextPage = () => {
             name="parent"
             id="parent"
             className="form-select mt-1 block w-full"
-            defaultValue={defaultModel?.slug}
+            defaultValue={defaultStyle?.slug}
           >
-            {subjects.map((model) => (
-              <option key={model.slug} value={model.slug}>
-                {model.slug}
+            {styles.map((style) => (
+              <option key={style.slug} value={style.slug}>
+                {style.slug}
               </option>
             ))}
           </select>
