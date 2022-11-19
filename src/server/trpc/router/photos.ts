@@ -71,6 +71,7 @@ export const photosRouter = router({
               prompt_id: promptModel.id,
               bucket: env.AWS_S3_BUCKET,
               prompt,
+              seed: Math.floor(Math.random() * 4294967295),
             },
           });
         })
