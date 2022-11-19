@@ -66,6 +66,12 @@ model Photo {
   prompt  String   @db.VarChar(768)
   created DateTime @default(now())
 
+  ddim     Int     @default(50)
+  width    Int     @default(512)
+  height   Int     @default(512)
+  guidance Decimal @default(10) @db.Decimal(3, 1)
+  seed     Int     @db.UnsignedInt
+
   owner_id String @db.Char(25)
   owner    User   @relation(fields: [owner_id], references: [id], onDelete: Cascade)
 
@@ -120,9 +126,16 @@ model PromptFragment {
 }
 
 model Prompt {
-  id      String  @id @default(cuid())
-  content String  @db.VarChar(768) @unique
-  photos  Photo[]
+  id         String           @id @default(cuid())
+  content    String           @unique @db.VarChar(768)
+  photos     Photo[]
+  categories PromptCategory[]
+}
+
+model PromptCategory {
+  id      String   @id @default(cuid())
+  name    String   @db.Char(190)
+  prompts Prompt[]
 }
 
 model Style {

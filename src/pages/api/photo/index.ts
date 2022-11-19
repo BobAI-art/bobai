@@ -59,6 +59,11 @@ const getPhotoQueue = async (limit = 10) => {
     photos: photos.map((photo) => ({
       id: photo.id,
       prompt: `${photo.Prompt.content}${postfix}`.replace("<MODEL>", model),
+      ddim: photo.ddim,
+      width: photo.width,
+      height: photo.height,
+      guidance: photo.guidance,
+      seed: photo.seed,
     })),
   };
 };
