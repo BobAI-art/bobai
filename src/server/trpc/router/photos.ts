@@ -71,6 +71,7 @@ export const photosRouter = router({
               prompt_id: promptModel.id,
               bucket: env.AWS_S3_BUCKET,
               prompt,
+              seed: Math.floor(Math.random() * 4294967295),
             },
           });
         })
@@ -103,6 +104,7 @@ export const photosRouter = router({
   list: publicProcedure
     .input(
       z.object({
+        promptId: cuidSchema.optional(),
         modelId: cuidSchema.optional(),
         category: z.enum(["generated-image", "training-progress"]).optional(),
         limit: z.number().optional().default(96),
@@ -117,6 +119,11 @@ export const photosRouter = router({
           ...(input.parentModel
             ? {
                 code: input.parentModel,
+              }
+            : {}),
+          ...(input.promptId
+            ? {
+                prompt_id: input.promptId,
               }
             : {}),
         },

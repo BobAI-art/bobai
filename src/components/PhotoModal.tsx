@@ -35,10 +35,10 @@ export const PhotoModal: React.FC<{
                 />
                 {photoDetails?.depiction && (
                   <div>
-                    Model{" "}
+                    Depiction{" "}
                     <Link
                       href={{
-                        pathname: "/model/[id]",
+                        pathname: "/depiction/[id]",
                         query: { id: photoDetails?.depiction.id },
                       }}
                     >
@@ -60,7 +60,14 @@ export const PhotoModal: React.FC<{
                   </div>
                 )}
                 <span className="text-sm font-light text-gray-600">
-                  {photo.prompt}
+                  <Link
+                    href={{
+                      pathname: "/prompt/[id]",
+                      query: { id: photo.prompt_id },
+                    }}
+                  >
+                    {photo.prompt}
+                  </Link>
                 </span>
               </Dialog.Panel>
             </div>
