@@ -17,7 +17,7 @@ const ParentModelByCode: NextPage = () => {
   });
   const { data: generatedPhotos, refetch } = trpc.photos.list.useQuery(
     {
-      parentModel: code,
+      subjectSlug: code,
     },
     {
       enabled: !!code,
