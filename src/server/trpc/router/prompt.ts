@@ -1,6 +1,8 @@
 import { cuidSchema, dbStringSchema } from "../../../utils/schema";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import cuid from "cuid";
+import { env } from "../../../env/server.mjs";
 
 const makePrompts = () => {
   const movieCharacters = [
@@ -92,7 +94,45 @@ export const promptRouter = router({
       if (!category) {
         throw new Error("Category not found");
       }
-      const prompts = category.prompts.map((p) => p.content);
-      console.log(prompts);
+      const prompts = category.prompts;
+      const seed = Math.floor(Math.random() * 4294967295);
+      const photoOpts = [
+        { ddim: 50, width: 512, height: 512, guide: 5, seed: seed },
+        { ddim: 50, width: 512, height: 512, guide: 7.5, seed: seed },
+        { ddim: 50, width: 512, height: 512, guide: 10, seed: seed },
+        { ddim: 50, width: 512, height: 512, guide: 12.5, seed: seed },
+        { ddim: 50, width: 768, height: 512, guide: 7.5, seed: seed },
+        { ddim: 50, width: 512, height: 768, guide: 7.5, seed: seed },
+      ];
+      const depictions = await ctx.prisma.depiction.findMany({});
+      const data = prompts
+        .flatMap((prompt) =>
+          photoOpts.map((photoOpt) => ({
+            prompt,
+            photoOpt,
+          }))
+        )
+        .flatMap((data) =>
+          depictions.map((depiction) => ({ ...data, depiction }))
+        )
+        .map((data) => ({ ...data, id: cuid() }))
+        .map(({ depiction, prompt, photoOpt }) => ({
+          root: `user/${depiction.owner_id}/depiction/${depiction.id}/photo`,
+          bucket: env.AWS_S3_BUCKET,
+          prompt: prompt.content,
+          ddim: photoOpt.ddim,
+          width: photoOpt.width,
+          height: photoOpt.height,
+          guidance: photoOpt.guide,
+          seed: photoOpt.seed,
+          owner_id: ctx.session.user.id,
+          style_slug: depiction.style_slug,
+          depiction_id: depiction.id,
+          prompt_id: prompt.id,
+        }));
+      // await ctx.prisma.photo.createMany({
+      //   data: data,
+      // });
+      console.log(data[0]);
     }),
 });

@@ -118,6 +118,7 @@ export const photosRouter = router({
             subject_slug: input.subjectSlug,
           },
           prompt_id: input.promptId,
+          status: "GENERATED",
         },
         orderBy: {
           created: "desc",
