@@ -29,8 +29,8 @@ export const PhotoModal: React.FC<{
                 </Dialog.Title>
                 <Image
                   src={photoUrl(photo)}
-                  width={512}
-                  height={512}
+                  width={photo.width}
+                  height={photo.width}
                   alt={photo.prompt || "Generated photo"}
                 />
                 {photoDetails?.depiction && (
@@ -69,6 +69,7 @@ export const PhotoModal: React.FC<{
                     {photo.prompt}
                   </Link>
                 </span>
+                <div>{`${photo.guidance}`}</div>
               </Dialog.Panel>
             </div>
           </div>

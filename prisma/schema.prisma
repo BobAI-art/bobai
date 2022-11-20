@@ -134,7 +134,7 @@ model Prompt {
 
 model PromptCategory {
   id      String   @id @default(cuid())
-  name    String   @db.Char(190)
+  name    String   @db.Char(190) @unique
   prompts Prompt[]
 }
 

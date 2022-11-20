@@ -13,6 +13,10 @@ import H2 from "../../../components/H2";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { photoUrl } from "../../../utils/helpers";
+import PhotosGrid from "../../../components/PhotosGrid";
+import useNavigation from "../../../hooks/useNavigation";
+import usePhotos from "../../../hooks/usePhotos";
+import Navigation from "../../../components/Navigation";
 
 const imagesNeeded = {
   "full-body": 3,
@@ -29,6 +33,7 @@ const SubjectBySlug: NextPage = () => {
   const slug = router.query.slug as string;
 
   const { data: subject, refetch } = trpc.subject.get.useQuery(slug);
+
   const finish = trpc.subject.finish.useMutation({
     onSuccess: async () => {
       toast.success("Subject created");
@@ -40,6 +45,12 @@ const SubjectBySlug: NextPage = () => {
   });
   const { data: photos, refetch: photosRefetch } =
     trpc.subjectPhoto.list.useQuery(slug);
+
+  const navigation = useNavigation();
+  const { data: gridPhotos } = usePhotos({
+    ...navigation,
+    subjectSlug: slug,
+  });
 
   if (!subject || !subject.slug) {
     return <>Model not found</>;
@@ -126,6 +137,10 @@ const SubjectBySlug: NextPage = () => {
           </Link>
         </li>
       </ul>
+
+      <PhotosGrid photos={gridPhotos}>
+        <Navigation {...navigation} />
+      </PhotosGrid>
     </Layout>
   );
 };

@@ -25,8 +25,8 @@ const Photo: React.FC<{ photo: PhotoModel }> = ({ photo }) => {
           onClick={() => setShow(true)}
           alt={photo.prompt || "Generated photo"}
           src={photoUrl(photo)}
-          width={512}
-          height={512}
+          width={photo.width}
+          height={photo.height}
           className="scale-100 cursor-pointer rounded shadow transition-transform duration-200 hover:scale-105"
         />
       </div>

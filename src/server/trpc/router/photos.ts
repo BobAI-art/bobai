@@ -8,7 +8,6 @@ import { z } from "zod";
 import {
   cuidSchema,
   dbStringSchema,
-  photoCategorySchema,
   promptSchema,
 } from "../../../utils/schema";
 import cuid from "cuid";
@@ -105,27 +104,21 @@ export const photosRouter = router({
     .input(
       z.object({
         promptId: cuidSchema.optional(),
-        modelId: cuidSchema.optional(),
-        category: z.enum(["generated-image", "training-progress"]).optional(),
+        depictionId: cuidSchema.optional(),
         limit: z.number().optional().default(96),
-        parentModel: dbStringSchema.optional(),
+        subjectSlug: dbStringSchema.optional(),
         skip: z.number().optional().default(0),
       })
     )
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.photo.findMany({
         where: {
-          depiction_id: input.modelId,
-          ...(input.parentModel
-            ? {
-                code: input.parentModel,
-              }
-            : {}),
-          ...(input.promptId
-            ? {
-                prompt_id: input.promptId,
-              }
-            : {}),
+          depiction_id: input.depictionId,
+          depiction: {
+            subject_slug: input.subjectSlug,
+          },
+          prompt_id: input.promptId,
+          status: "GENERATED",
         },
         orderBy: {
           created: "desc",

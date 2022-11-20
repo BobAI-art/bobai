@@ -19,7 +19,7 @@ const getPromptClass = (
   }
 };
 
-const getPhotoQueue = async (limit = 10) => {
+const getPhotoQueue = async (limit = 100) => {
   const oldestGroup = await prisma.photo.findFirst({
     where: {
       status: "CREATED",
