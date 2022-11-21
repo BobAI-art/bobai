@@ -166,6 +166,9 @@ export const photosRouter = router({
             lt: input.maxVotes,
           },
         },
+        include: {
+          depiction: true,
+        },
         take: input.count * 1000,
       });
       return shuffle(photos).slice(0, input.count);

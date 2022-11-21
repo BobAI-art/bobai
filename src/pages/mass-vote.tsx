@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { Layout } from "../components/Layout";
 import React, { useEffect } from "react";
-import { trpc } from "../utils/trpc";
+import { AppRouterTypes, trpc } from "../utils/trpc";
 import { type Photo as PhotoModel } from "@prisma/client";
 import Photo from "../components/Photo";
 import Button from "../components/Button";
@@ -10,7 +10,9 @@ import { toast } from "react-hot-toast";
 const ranking = ["💩", "🤷🏼‍♂️", "👌", "❤️", "🔥"];
 
 const MassVote: NextPage = () => {
-  const [photos, setPhotos] = React.useState<PhotoModel[]>([]);
+  const [photos, setPhotos] = React.useState<
+    AppRouterTypes["photos"]["toVote"]["output"]
+  >([]);
   const voting = trpc.photos.vote.useMutation({
     onSuccess: (data) => {
       if (data) {
@@ -41,6 +43,14 @@ const MassVote: NextPage = () => {
     <Layout>
       {photos[0] && (
         <div className="m-auto flex w-fit flex-col items-center p-2">
+          <div className="flex gap-2">
+            <div className="rounded bg-site-pink-600 p-2 shadow">
+              Style: {photos[0].style_slug}
+            </div>
+            <div className="rounded bg-site-pink-600 p-2 shadow">
+              Model: {photos[0].depiction?.name || ""}
+            </div>
+          </div>
           <div className="w-fit w-[512px]">{photos[0].prompt}</div>
           <Photo photo={photos[0]} />
           <div className="flex w-full justify-between py-2">
