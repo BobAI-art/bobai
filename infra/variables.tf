@@ -53,7 +53,17 @@ variable "HUGGINGFACE_TOKEN" {
   nullable = false
 }
 
-variable "SITE_PIN" {
+variable "UPSTASH_REDIS_REST_URL" {
     type     = string
     nullable = false
+}
+
+variable "UPSTASH_REDIS_REST_TOKEN" {
+  type     = string
+  nullable = false
+}
+
+variable "SITE_PIN" {
+  type     = string
+  nullable = false
 }

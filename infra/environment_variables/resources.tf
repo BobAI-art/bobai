@@ -120,3 +120,20 @@ resource "vercel_project_environment_variable" "site_pin" {
   value      = var.variables.SITE_PIN
   target     = var.targets
 }
+
+resource "vercel_project_environment_variable" "upstash_redis_rest_url" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "UPSTASH_REDIS_REST_URL"
+  value      = var.variables.UPSTASH_REDIS_REST_URL
+  target     = var.targets
+}
+
+
+resource "vercel_project_environment_variable" "upstash_redis_rest_token" {
+  project_id = var.project_id
+  team_id    = var.team_id
+  key        = "UPSTASH_REDIS_REST_TOKEN"
+  value      = var.variables.UPSTASH_REDIS_REST_TOKEN
+  target     = var.targets
+}

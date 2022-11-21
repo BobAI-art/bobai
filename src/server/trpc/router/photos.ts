@@ -122,6 +122,11 @@ export const photosRouter = router({
   vote: protectedProcedure
     .input(z.object({ id: cuidSchema, vote: z.number().min(0).max(5) }))
     .mutation(async ({ ctx, input }) => {
+      const redisKey = `vote:${ctx.session.user.id}:${input.id}`;
+      const isVoted = await ctx.redis.get(redisKey);
+      if (isVoted !== null) {
+        throw new Error("Already voted today");
+      }
       const photo = await ctx.prisma.photo.findUnique({
         where: {
           id: input.id,
@@ -141,6 +146,9 @@ export const photosRouter = router({
             increment: 1,
           },
         },
+      });
+      await ctx.redis.set(redisKey, "1", {
+        ex: 60 * 60 * 24,
       });
       return photo;
     }),

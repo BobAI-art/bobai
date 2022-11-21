@@ -33,6 +33,8 @@ module "production_environment_variables" {
     AWS_S3_MODEL_ACCESS_KEY_SECRET = module.model_store.bucket_secret_access_key
     AWS_S3_MODEL_BUCKET_NAME       = module.model_store.bucket_name
     SITE_PIN = var.SITE_PIN
+    UPSTASH_REDIS_REST_URL = var.UPSTASH_REDIS_REST_URL
+    UPSTASH_REDIS_REST_TOKEN = var.UPSTASH_REDIS_REST_TOKEN
   }
   targets = ["production"]
 }
@@ -61,6 +63,8 @@ module "preview_environment_variables" {
     AWS_S3_MODEL_ACCESS_KEY_SECRET = module.model_store.bucket_secret_access_key
     AWS_S3_MODEL_BUCKET_NAME       = module.model_store.bucket_name
     SITE_PIN = var.SITE_PIN
+    UPSTASH_REDIS_REST_URL = var.UPSTASH_REDIS_REST_URL
+    UPSTASH_REDIS_REST_TOKEN = var.UPSTASH_REDIS_REST_TOKEN
   }
   targets = ["development", "preview"]
 }

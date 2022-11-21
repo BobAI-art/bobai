@@ -5,6 +5,7 @@ import { trpc } from "../utils/trpc";
 import { type Photo as PhotoModel } from "@prisma/client";
 import Photo from "../components/Photo";
 import Button from "../components/Button";
+import { toast } from "react-hot-toast";
 
 const ranking = ["💩", "🤷🏼‍♂️", "👌", "❤️", "🔥"];
 
@@ -12,10 +13,13 @@ const MassVote: NextPage = () => {
   const [photos, setPhotos] = React.useState<PhotoModel[]>([]);
   const voting = trpc.photos.vote.useMutation({
     onSuccess: (data) => {
-      console.log("data", data);
       if (data) {
         setPhotos((photos) => photos.filter((p) => p.id !== data.id));
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
+      setPhotos(photos.slice(1));
     },
   });
   const { refetch, isLoading } = trpc.photos.toVote.useQuery(
