@@ -83,6 +83,10 @@ model Photo {
   depiction_id String?     @db.Char(25)
   Prompt       Prompt      @relation(fields: [prompt_id], references: [id])
   prompt_id    String
+
+  score         Int    @default(0)
+  votes         Int    @default(0)
+  average_score Float? @db.Float
 }
 
 enum PhotoStatus {
@@ -134,7 +138,7 @@ model Prompt {
 
 model PromptCategory {
   id      String   @id @default(cuid())
-  name    String   @db.Char(190) @unique
+  name    String   @unique @db.Char(190)
   prompts Prompt[]
 }
 

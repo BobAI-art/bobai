@@ -31,6 +31,8 @@ export const serverSchema = z.object({
   DOCKER_IO_PASSWORD: z.string(),
   SITE_PIN: z.string().optional(),
   HUGGINGFACE_TOKEN: z.string(),
+  UPSTASH_REDIS_REST_URL: z.string(),
+  UPSTASH_REDIS_REST_TOKEN: z.string(),
 });
 
 /**

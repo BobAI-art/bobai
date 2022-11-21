@@ -30,6 +30,8 @@ variable "variables" {
     AWS_S3_MODEL_ACCESS_KEY_SECRET = string
     AWS_S3_MODEL_BUCKET_NAME       = string
     SITE_PIN           = string
+    UPSTASH_REDIS_REST_URL = string
+    UPSTASH_REDIS_REST_TOKEN = string
   })
   nullable = false
 }

@@ -14,6 +14,25 @@ import cuid from "cuid";
 import { env } from "../../../env/server.mjs";
 import { s3PhotoRoot } from "../../../utils/helpers";
 
+function shuffle<T>(array: T[]): T[] {
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    if (array[randomIndex] && array[currentIndex])
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex]!,
+        array[currentIndex]!,
+      ];
+  }
+
+  return array;
+}
 export const photosRouter = router({
   generate: protectedProcedure
     .input(
@@ -100,6 +119,58 @@ export const photosRouter = router({
       }
       return photo;
     }),
+  vote: protectedProcedure
+    .input(z.object({ id: cuidSchema, vote: z.number().min(0).max(5) }))
+    .mutation(async ({ ctx, input }) => {
+      const redisKey = `vote:${ctx.session.user.id}:${input.id}`;
+      const isVoted = await ctx.redis.get(redisKey);
+      if (isVoted !== null) {
+        throw new Error("Already voted today");
+      }
+      const photo = await ctx.prisma.photo.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+      await ctx.prisma.photo.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          score: {
+            increment: input.vote,
+          },
+          average_score:
+            (photo?.score || 0) + input.vote / ((photo?.votes || 0) + 1),
+          votes: {
+            increment: 1,
+          },
+        },
+      });
+      await ctx.redis.set(redisKey, "1", {
+        ex: 60 * 60 * 24,
+      });
+      return photo;
+    }),
+  toVote: protectedProcedure
+    .input(
+      z.object({
+        count: z.number().min(1).max(512),
+        maxVotes: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const photos = await ctx.prisma.photo.findMany({
+        where: {
+          votes: {
+            lt: input.maxVotes,
+          },
+        },
+        take: input.count * 1000,
+      });
+      return shuffle(photos).slice(0, input.count);
+    }),
+
   list: publicProcedure
     .input(
       z.object({
