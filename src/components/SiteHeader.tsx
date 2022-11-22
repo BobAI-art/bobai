@@ -8,7 +8,7 @@ import H1 from "./H1";
 const SiteHeader: React.FC = () => {
   const { data: session } = useSession();
   return (
-    <header className="flex items-center gap-2 px-2">
+    <header className="flex items-center gap-2 px-2 py-2 md:px-0">
       <H1>
         <Link href="/">Bob AI</Link>
       </H1>

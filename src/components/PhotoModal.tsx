@@ -7,6 +7,7 @@ import { photoUrl } from "../utils/helpers";
 import Link from "next/link";
 import Image from "next/image";
 import { Dialog } from "@headlessui/react";
+import Button from "./Button";
 
 export const PhotoModal: React.FC<{
   photo: Photo;
@@ -21,20 +22,30 @@ export const PhotoModal: React.FC<{
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
               <Dialog.Panel className="mx-auto max-w-[512px] rounded bg-white p-2">
-                <Dialog.Title className="flex">
-                  <H2 className="flex-1">
-                    {photoDetails?.depiction?.name || "Generated photo"}
-                  </H2>
+                <Dialog.Title
+                  className="flex justify-between text-gray-900"
+                  as={H2}
+                >
+                  {photoDetails?.depiction?.name || "Generated photo"}
                   <XMarkIcon className="w-8 cursor-pointer" onClick={onClose} />
                 </Dialog.Title>
-                <Image
-                  src={photoUrl(photo)}
-                  width={photo.width}
-                  height={photo.width}
-                  alt={photo.prompt || "Generated photo"}
-                />
+                <Link
+                  href={{
+                    pathname: "/photo/[id]",
+                    query: {
+                      id: photo.id,
+                    },
+                  }}
+                >
+                  <Image
+                    src={photoUrl(photo)}
+                    width={photo.width}
+                    height={photo.width}
+                    alt={photo.prompt || "Generated photo"}
+                  />
+                </Link>
                 {photoDetails?.depiction && (
-                  <div>
+                  <div className="text-gray-900">
                     Depiction{" "}
                     <Link
                       href={{
@@ -47,7 +58,7 @@ export const PhotoModal: React.FC<{
                   </div>
                 )}
                 {photoDetails?.depiction && (
-                  <div>
+                  <div className="text-gray-900">
                     Subject{" "}
                     <Link
                       href={{
@@ -59,17 +70,27 @@ export const PhotoModal: React.FC<{
                     </Link>
                   </div>
                 )}
-                <span className="text-sm font-light text-gray-600">
-                  <Link
-                    href={{
-                      pathname: "/prompt/[id]",
-                      query: { id: photo.prompt_id },
-                    }}
-                  >
-                    {photo.prompt}
-                  </Link>
-                </span>
+                {/*<span className="text-sm font-light text-gray-900">*/}
+                {/*  <Link*/}
+                {/*    href={{*/}
+                {/*      pathname: "/prompt/[id]",*/}
+                {/*      query: { id: photo.prompt_id },*/}
+                {/*    }}*/}
+                {/*  >*/}
+                {/*    {photo.prompt}*/}
+                {/*  </Link>*/}
+                {/*</span>*/}
                 <div>{`${photo.guidance}`}</div>
+                <Link
+                  href={{
+                    pathname: "/photo/[id]",
+                    query: {
+                      id: photo.id,
+                    },
+                  }}
+                >
+                  <Button>More</Button>
+                </Link>
               </Dialog.Panel>
             </div>
           </div>

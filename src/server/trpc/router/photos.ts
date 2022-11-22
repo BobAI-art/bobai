@@ -13,6 +13,7 @@ import {
 import cuid from "cuid";
 import { env } from "../../../env/server.mjs";
 import { s3PhotoRoot } from "../../../utils/helpers";
+import { TRPCError } from "@trpc/server";
 
 function shuffle<T>(array: T[]): T[] {
   let currentIndex = array.length,
@@ -185,6 +186,12 @@ export const photosRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
+      const canShow =
+        ctx.session?.user?.id !== undefined
+          ? { OR: [{ owner_id: ctx.session.user.id }, { is_public: true }] }
+          : {
+              is_public: true,
+            };
       return await ctx.prisma.photo.findMany({
         where: {
           depiction_id: input.depictionId,
@@ -193,6 +200,7 @@ export const photosRouter = router({
           },
           prompt_id: input.promptId,
           status: "GENERATED",
+          ...canShow,
         },
         orderBy: {
           created: "desc",
