@@ -180,9 +180,9 @@ export const photosRouter = router({
       z.object({
         promptId: cuidSchema.optional(),
         depictionId: cuidSchema.optional(),
-        limit: z.number().optional().default(96),
+        take: z.number().min(1).default(96),
         subjectSlug: dbStringSchema.optional(),
-        skip: z.number().optional().default(0),
+        cursor: cuidSchema.optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -192,7 +192,7 @@ export const photosRouter = router({
           : {
               is_public: true,
             };
-      return await ctx.prisma.photo.findMany({
+      const photos = await ctx.prisma.photo.findMany({
         where: {
           depiction_id: input.depictionId,
           depiction: {
@@ -202,12 +202,27 @@ export const photosRouter = router({
           status: "GENERATED",
           ...canShow,
         },
+        // cursor: input.cursor ? { created: input.cursor } : undefined,
+        cursor: input.cursor
+          ? {
+              id: input.cursor,
+            }
+          : undefined,
         orderBy: {
           created: "desc",
         },
-        take: input.limit,
-        skip: input.skip,
+        take: input.take + 1,
+        // skip: input.skip,
       });
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (photos.length > input.take) {
+        const nextItem = photos.pop();
+        nextCursor = nextItem!.id;
+      }
+      return {
+        photos,
+        nextCursor,
+      };
     }),
   stats: adminProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.photo.groupBy({

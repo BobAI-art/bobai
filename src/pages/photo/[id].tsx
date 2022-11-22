@@ -37,11 +37,11 @@ const PhotoDetails: NextPage = () => {
   return (
     <Layout>
       <div className="flex justify-center">
-        <div className="flex w-[512px] flex-col rounded-lg bg-white shadow-lg lg:w-full lg:flex-row">
+        <div className="flex flex-col rounded-lg bg-white shadow-lg lg:w-full lg:flex-row">
           <Photo
             photo={photo}
             showModal={false}
-            className="w-full min-w-[512px] rounded-t-lg object-cover md:w-48 lg:h-auto lg:rounded-none lg:rounded-l-lg"
+            className="w-full min-w-full rounded-t-lg lg:w-[512px] lg:min-w-[512px] lg:rounded-none lg:rounded-l-lg"
           />
 
           <div className="flex flex-col justify-start p-6">
