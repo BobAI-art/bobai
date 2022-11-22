@@ -14,7 +14,6 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { photoUrl } from "../../../utils/helpers";
 import PhotosGrid from "../../../components/PhotosGrid";
-import usePhotos from "../../../hooks/usePhotos";
 import usePageScrollPhotos from "../../../hooks/usePageScrollPhotos";
 
 const imagesNeeded = {

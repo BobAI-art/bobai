@@ -182,6 +182,7 @@ export const photosRouter = router({
         depictionId: cuidSchema.optional(),
         take: z.number().min(1).default(96),
         subjectSlug: dbStringSchema.optional(),
+        styleSlug: dbStringSchema.optional(),
         cursor: cuidSchema.optional(),
       })
     )
@@ -198,6 +199,7 @@ export const photosRouter = router({
           depiction: {
             subject_slug: input.subjectSlug,
           },
+          style_slug: input.styleSlug,
           prompt_id: input.promptId,
           status: "GENERATED",
           ...canShow,

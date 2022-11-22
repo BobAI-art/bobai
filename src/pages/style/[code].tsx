@@ -4,10 +4,11 @@ import { NextPage } from "next";
 import { Layout } from "../../components/Layout";
 import useStyle from "../../hooks/useStyle";
 import { trpc } from "../../utils/trpc";
-import Photo from "../../components/Photo";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import GeneratePhotos from "../../components/GeneratePhotos";
 import { toast } from "react-hot-toast";
+import PhotosGrid from "../../components/PhotosGrid";
+import usePageScrollPhotos from "../../hooks/usePageScrollPhotos";
 
 const ParentModelByCode: NextPage = () => {
   const router = useRouter();
@@ -15,9 +16,9 @@ const ParentModelByCode: NextPage = () => {
   const { data: model } = useStyle(code, {
     enabled: !!code,
   });
-  const { data: generatedPhotos, refetch } = trpc.photos.list.useQuery(
+  const { data: generatedPhotos, refetch } = usePageScrollPhotos(
     {
-      subjectSlug: code,
+      styleSlug: code,
     },
     {
       enabled: !!code,
@@ -55,13 +56,7 @@ const ParentModelByCode: NextPage = () => {
           // });
         }}
       />
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
-        {generatedPhotos?.map((photo) => (
-          <li key={photo.id}>
-            <Photo photo={photo} />
-          </li>
-        ))}
-      </ul>
+      <PhotosGrid photos={generatedPhotos}></PhotosGrid>
     </Layout>
   );
 };
