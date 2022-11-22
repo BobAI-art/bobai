@@ -2,13 +2,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { Layout } from "../components/Layout";
 import React from "react";
-import PhotosGrid from "../components/PhotosGrid";
 import H1 from "../components/H1";
-import usePageScrollPhotos from "../hooks/usePageScrollPhotos";
 import { useSession } from "next-auth/react";
 
 const Home: NextPage = () => {
-  const session = useSession({});
+  const session = useSession();
 
   return (
     <>
