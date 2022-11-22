@@ -2,10 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { Layout } from "../components/Layout";
 import React from "react";
-import usePhotos from "../hooks/usePhotos";
-import useNavigation from "../hooks/useNavigation";
 import { trpc } from "../utils/trpc";
-import H2 from "../components/H2";
 import Button from "../components/Button";
 
 const Home: NextPage = () => {

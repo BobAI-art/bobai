@@ -49,6 +49,7 @@ export const promptRouter = router({
   list: publicProcedure
     .input(
       z.object({
+        sentence: dbStringSchema.optional(),
         limit: z.number().optional().default(10),
       })
     )
@@ -57,6 +58,13 @@ export const promptRouter = router({
         take: input.limit,
         orderBy: {
           content: "asc",
+        },
+        where: {
+          ...(input.sentence && {
+            content: {
+              contains: input.sentence,
+            },
+          }),
         },
       });
     }),
