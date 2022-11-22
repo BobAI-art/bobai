@@ -1,10 +1,13 @@
-export type FirstArgument<F> = F extends (arg: infer A, ...args: any[]) => any
+export type FirstArgument<F> = F extends (
+  arg: infer A,
+  ...args: unknown[]
+) => unknown
   ? A
   : never;
 export type SecondArgument<F> = F extends (
-  arg: any,
+  arg: unknown,
   arg2: infer A,
-  ...args: any[]
-) => any
+  ...args: unknown[]
+) => unknown
   ? A
   : never;
