@@ -13,6 +13,14 @@ const SiteHeader: React.FC = () => {
         <Link href="/">Bob AI</Link>
       </H1>
       <div className="flex-grow" />
+      <Link href="/">
+        <Button>
+          <span>Bob, please paint</span>
+        </Button>
+      </Link>
+      <Link href="/explore">
+        <Button>Bob, show me your work</Button>
+      </Link>
       <Link href="/style">
         <Button>Styles</Button>
       </Link>
@@ -24,7 +32,7 @@ const SiteHeader: React.FC = () => {
           }}
         >
           <Button>
-            <UserIcon className="w-4" /> {session?.user?.name}
+            <UserIcon className="h-6 w-4" />
           </Button>
         </Link>
       ) : (

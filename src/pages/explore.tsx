@@ -5,10 +5,9 @@ import React from "react";
 import PhotosGrid from "../components/PhotosGrid";
 import H1 from "../components/H1";
 import usePageScrollPhotos from "../hooks/usePageScrollPhotos";
-import { useSession } from "next-auth/react";
 
-const Home: NextPage = () => {
-  const session = useSession({});
+const Explore: NextPage = () => {
+  const { data: photos } = usePageScrollPhotos();
 
   return (
     <>
@@ -21,15 +20,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <H1 className="my-4">Hi, I&apos;m Bob!</H1>
-        {session.data?.user ? (
-          <div>Logged user: {session.data.user?.name}</div>
-        ) : (
-          <div>Not logged in</div>
-        )}
+        <H1 className="my-4">
+          Here is my recent work I&apos;m really proud of, feel free to look
+        </H1>
+        <PhotosGrid photos={photos}></PhotosGrid>
       </Layout>
     </>
   );
 };
 
-export default Home;
+export default Explore;
