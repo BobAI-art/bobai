@@ -1,15 +1,15 @@
 import { trpc } from "../utils/trpc";
 import { type AppRouterTypes } from "../utils/trpc";
 
-type Input = { page: number } & AppRouterTypes["photos"]["list"]["input"];
+type Input = AppRouterTypes["photos"]["list"]["input"];
 type Opts = {
   enabled?: boolean;
 };
 
-function usePhotos({ page, ...input }: Input, opts: Opts = {}) {
+function usePhotos({ ...input }: Input = {}, opts: Opts = {}) {
   const perPage = 2 * 4 * 6 * 2;
 
-  return trpc.photos.list.useInfiniteQuery(
+  const results = trpc.photos.list.useInfiniteQuery(
     {
       ...input,
       take: perPage,
@@ -19,6 +19,10 @@ function usePhotos({ page, ...input }: Input, opts: Opts = {}) {
       ...opts,
     }
   );
+  return {
+    ...results,
+    data: results.data?.pages.flatMap((page) => page.photos),
+  };
 }
 
 export default usePhotos;

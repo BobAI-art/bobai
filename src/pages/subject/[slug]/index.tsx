@@ -14,9 +14,8 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { photoUrl } from "../../../utils/helpers";
 import PhotosGrid from "../../../components/PhotosGrid";
-import useNavigation from "../../../hooks/useNavigation";
 import usePhotos from "../../../hooks/usePhotos";
-import Navigation from "../../../components/Navigation";
+import usePageScrollPhotos from "../../../hooks/usePageScrollPhotos";
 
 const imagesNeeded = {
   "full-body": 3,
@@ -46,9 +45,7 @@ const SubjectBySlug: NextPage = () => {
   const { data: photos, refetch: photosRefetch } =
     trpc.subjectPhoto.list.useQuery(slug);
 
-  const navigation = useNavigation();
-  const { data: gridPhotos } = usePhotos({
-    ...navigation,
+  const { data: gridPhotos } = usePageScrollPhotos({
     subjectSlug: slug,
   });
 
@@ -138,9 +135,7 @@ const SubjectBySlug: NextPage = () => {
         </li>
       </ul>
 
-      <PhotosGrid photos={gridPhotos}>
-        <Navigation {...navigation} />
-      </PhotosGrid>
+      <PhotosGrid photos={gridPhotos}></PhotosGrid>
     </Layout>
   );
 };

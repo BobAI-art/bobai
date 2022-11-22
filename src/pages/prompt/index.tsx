@@ -3,16 +3,10 @@ import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { Layout } from "../../components/Layout";
 import { trpc } from "../../utils/trpc";
-import H2 from "../../components/H2";
-import PhotosGrid from "../../components/PhotosGrid";
-import Navigation from "../../components/Navigation";
-import useNavigation from "../../hooks/useNavigation";
-import usePhotos from "../../hooks/usePhotos";
 import Link from "next/link";
+import usePageScrollPhotos from "../../hooks/usePageScrollPhotos";
 
 const ParentModelByCode: NextPage = () => {
-  const navigation = useNavigation();
-
   const router = useRouter();
   // router.query.
   const sentence = router.query.sentence as string;
