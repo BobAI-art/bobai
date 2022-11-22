@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../server/db/client";
 import { s3PhotoRootPath } from "../../../utils/helpers";
-import { number } from "zod";
 import { putS3Object } from "../../../server/s3";
 
 // TODO: api key

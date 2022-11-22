@@ -6,7 +6,7 @@ const usePhoto = (photoId: string) =>
     { id: photoId },
     {
       enabled: photoId !== undefined,
-      onError: (err) => {
+      onError: () => {
         toast.error("Error loading photo");
       },
     }
