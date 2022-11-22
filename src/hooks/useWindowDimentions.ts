@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
+
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 function getWindowDimensions() {
   if (typeof window !== "undefined") {
@@ -22,7 +25,7 @@ const useWindowDimensions = () => {
     getWindowDimensions()
   );
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
     }

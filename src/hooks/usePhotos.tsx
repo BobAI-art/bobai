@@ -1,23 +1,28 @@
 import { trpc } from "../utils/trpc";
 import { type AppRouterTypes } from "../utils/trpc";
-import { number } from "zod";
 
-type Input = { page: number } & AppRouterTypes["photos"]["list"]["input"];
+type Input = AppRouterTypes["photos"]["list"]["input"];
 type Opts = {
   enabled?: boolean;
 };
 
-function usePhotos({ page, ...input }: Input, opts: Opts = {}) {
+function usePhotos({ ...input }: Input = {}, opts: Opts = {}) {
   const perPage = 2 * 4 * 6 * 2;
 
-  return trpc.photos.list.useQuery(
+  const results = trpc.photos.list.useInfiniteQuery(
     {
       ...input,
-      skip: page * perPage,
-      limit: perPage,
+      take: perPage,
     },
-    opts
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      ...opts,
+    }
   );
+  return {
+    ...results,
+    data: results.data?.pages.flatMap((page) => page.photos),
+  };
 }
 
 export default usePhotos;

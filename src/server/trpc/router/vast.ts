@@ -153,7 +153,9 @@ export HUGGINGFACE_TOKEN=${env.HUGGINGFACE_TOKEN}
 export PORTRAITS_BASE_URL=https://www.bobai.art/
 export MODEL_STORE_BUCKET_NAME=${env.AWS_S3_MODEL_BUCKET_NAME}
 cd /app
-PYTHONUNBUFFERED=1 python -m ${type === "model" ? "portraits.train" : "portraits.photos"}
+PYTHONUNBUFFERED=1 python -m ${
+      type === "model" ? "portraits.train" : "portraits.photos"
+    }
 `,
     image_login: `-u portraits -p ${env.DOCKER_IO_PASSWORD} docker.io`,
   };
@@ -180,7 +182,7 @@ export const vastRouter = router({
         type: z.enum(["photo", "model", "ssh"]),
       })
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(({ input }) => {
       const { instanceId } = input;
       const url = `https://vast.ai/api/v0/asks/${instanceId}/?api_key=${env.VAST_API_KEY}`;
       return fetch(url, {

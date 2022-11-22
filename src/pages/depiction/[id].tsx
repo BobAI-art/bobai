@@ -13,10 +13,9 @@ import FormRow from "../../components/FormRow";
 import Button from "../../components/Button";
 import { toast } from "react-hot-toast";
 import { type Depiction } from "@prisma/client";
-import Navigation from "../../components/Navigation";
 import PhotosGrid from "../../components/PhotosGrid";
-import useNavigation from "../../hooks/useNavigation";
 import usePhotos from "../../hooks/usePhotos";
+import usePageScrollPhotos from "../../hooks/usePageScrollPhotos";
 
 const AddPhoto: React.FC<{
   depiction: Depiction;
@@ -88,11 +87,9 @@ const ModelById: NextPage = () => {
   const router = useRouter();
   const id = router.query.id as string;
   const { data: depiction } = trpc.depiction.get.useQuery(id);
-  const navigation = useNavigation();
   const showPhotos = !!depiction && depiction.state === "TRAINED";
-  const { data: photos } = usePhotos(
+  const { data: photos } = usePageScrollPhotos(
     {
-      ...navigation,
       depictionId: depiction?.id,
     },
     {
@@ -133,11 +130,7 @@ const ModelById: NextPage = () => {
       {depiction.state === "TRAINED" && (
         <TrainedDeciption depiction={depiction} />
       )}
-      {showPhotos && (
-        <PhotosGrid photos={photos}>
-          <Navigation {...navigation} />
-        </PhotosGrid>
-      )}
+      {showPhotos && <PhotosGrid photos={photos}></PhotosGrid>}
     </Layout>
   );
 };

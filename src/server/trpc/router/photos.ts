@@ -13,7 +13,6 @@ import {
 import cuid from "cuid";
 import { env } from "../../../env/server.mjs";
 import { s3PhotoRoot } from "../../../utils/helpers";
-import { TRPCError } from "@trpc/server";
 
 function shuffle<T>(array: T[]): T[] {
   let currentIndex = array.length,
@@ -24,16 +23,19 @@ function shuffle<T>(array: T[]): T[] {
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    if (array[randomIndex] && array[currentIndex])
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex]!,
-        array[currentIndex]!,
-      ];
+    // And swap it with the current element.
+    const first = array[randomIndex];
+    const second = array[currentIndex];
+    if (first && second) {
+      // always true but typescript doesn't know that
+      array[currentIndex] = first;
+      array[randomIndex] = second;
+    }
   }
 
   return array;
 }
+
 export const photosRouter = router({
   generate: protectedProcedure
     .input(
@@ -180,9 +182,10 @@ export const photosRouter = router({
       z.object({
         promptId: cuidSchema.optional(),
         depictionId: cuidSchema.optional(),
-        limit: z.number().optional().default(96),
+        take: z.number().min(1).default(96),
         subjectSlug: dbStringSchema.optional(),
-        skip: z.number().optional().default(0),
+        styleSlug: dbStringSchema.optional(),
+        cursor: cuidSchema.optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -192,22 +195,38 @@ export const photosRouter = router({
           : {
               is_public: true,
             };
-      return await ctx.prisma.photo.findMany({
+      const photos = await ctx.prisma.photo.findMany({
         where: {
           depiction_id: input.depictionId,
           depiction: {
             subject_slug: input.subjectSlug,
           },
+          style_slug: input.styleSlug,
           prompt_id: input.promptId,
           status: "GENERATED",
           ...canShow,
         },
+        // cursor: input.cursor ? { created: input.cursor } : undefined,
+        cursor: input.cursor
+          ? {
+              id: input.cursor,
+            }
+          : undefined,
         orderBy: {
           created: "desc",
         },
-        take: input.limit,
-        skip: input.skip,
+        take: input.take + 1,
+        // skip: input.skip,
       });
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (photos.length > input.take) {
+        const nextItem = photos.pop();
+        nextCursor = nextItem!.id;
+      }
+      return {
+        photos,
+        nextCursor,
+      };
     }),
   stats: adminProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.photo.groupBy({

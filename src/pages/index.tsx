@@ -3,13 +3,11 @@ import Head from "next/head";
 import { Layout } from "../components/Layout";
 import React from "react";
 import PhotosGrid from "../components/PhotosGrid";
-import usePhotos from "../hooks/usePhotos";
-import useNavigation from "../hooks/useNavigation";
-import Navigation from "../components/Navigation";
+import usePageScrollPhotos from "../hooks/usePageScrollPhotos";
 
 const Home: NextPage = () => {
-  const navigation = useNavigation();
-  const { data: photos } = usePhotos(navigation);
+  const { data: photos } = usePageScrollPhotos();
+
   return (
     <>
       <Head>
@@ -21,9 +19,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <PhotosGrid photos={photos}>
-          <Navigation {...navigation} />
-        </PhotosGrid>
+        <PhotosGrid photos={photos}></PhotosGrid>
       </Layout>
     </>
   );

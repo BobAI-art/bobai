@@ -13,7 +13,12 @@ const Voting: React.FC<{
     className={classNames("flex w-full justify-between py-2", className || "")}
   >
     {ranking.map((v, i) => (
-      <Button disabled={disabled} onClick={() => onVote(i)} key={i}>
+      <Button
+        className={classNames(i % 2 == 1 ? "hidden md:block" : "")}
+        disabled={disabled}
+        onClick={() => onVote(i)}
+        key={i}
+      >
         {v}
       </Button>
     ))}

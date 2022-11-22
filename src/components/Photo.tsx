@@ -32,6 +32,7 @@ const Photo: React.FC<{
       {show && <PhotoModal photo={photo} onClose={() => setShow(false)} />}
       <div className={classNames("overflow-hidden", className || "")}>
         <Image
+          style={{ minWidth: "100%" }}
           onClick={showModal ? () => setShow(true) : undefined}
           alt={photo.prompt || "Generated photo"}
           src={photoUrl(photo)}
@@ -39,7 +40,7 @@ const Photo: React.FC<{
           height={photo.height}
           className={classNames(
             showModal
-              ? "scale-100 rounded shadow transition-transform duration-200 hover:scale-105"
+              ? "min-w-full scale-100 rounded shadow transition-transform duration-200 hover:scale-105"
               : ""
           )}
         />
