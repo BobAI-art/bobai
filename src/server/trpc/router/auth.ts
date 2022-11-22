@@ -9,11 +9,13 @@ export const authRouter = router({
   getSecretMessage: protectedProcedure.query(() => {
     return "You are logged in and can see this secret message!";
   }),
-  checkPin: publicProcedure.input(z.object({pin: z.string()})).mutation(async ({ ctx, input }) => {
-    const { pin } = input;
-    if ( pin == env.SITE_PIN || !env.SITE_PIN ) {
-      return true;
-    }
-    return false;
-  })
+  checkPin: publicProcedure
+    .input(z.object({ pin: z.string() }))
+    .mutation(async ({ input }) => {
+      const { pin } = input;
+      if (pin == env.SITE_PIN || !env.SITE_PIN) {
+        return true;
+      }
+      return false;
+    }),
 });

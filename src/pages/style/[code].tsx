@@ -24,15 +24,6 @@ const ParentModelByCode: NextPage = () => {
       enabled: !!code,
     }
   );
-  const generetePhotoMutation = trpc.photos.generate.useMutation({
-    onSuccess: () => {
-      toast.success("Added your new generation to queue");
-      refetch();
-    },
-    onError: (err) => {
-      toast.error("Failed to generate photo");
-    },
-  });
 
   if (!model) return <Layout>Loading...</Layout>;
   return (
@@ -50,10 +41,6 @@ const ParentModelByCode: NextPage = () => {
       <GeneratePhotos
         onNewPrompt={(prompt) => {
           toast.success("... TODO");
-          // generetePhotoMutation.mutate({
-          //   prompt,
-          //   style: code,
-          // });
         }}
       />
       <PhotosGrid photos={generatedPhotos}></PhotosGrid>

@@ -13,7 +13,6 @@ import {
 import cuid from "cuid";
 import { env } from "../../../env/server.mjs";
 import { s3PhotoRoot } from "../../../utils/helpers";
-import { TRPCError } from "@trpc/server";
 
 function shuffle<T>(array: T[]): T[] {
   let currentIndex = array.length,
@@ -24,16 +23,19 @@ function shuffle<T>(array: T[]): T[] {
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    if (array[randomIndex] && array[currentIndex])
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex]!,
-        array[currentIndex]!,
-      ];
+    // And swap it with the current element.
+    const first = array[randomIndex];
+    const second = array[currentIndex];
+    if (first && second) {
+      // always true but typescript doesn't know that
+      array[currentIndex] = first;
+      array[randomIndex] = second;
+    }
   }
 
   return array;
 }
+
 export const photosRouter = router({
   generate: protectedProcedure
     .input(
