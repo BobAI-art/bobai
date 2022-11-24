@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Dialog } from "@headlessui/react";
 import Button from "./Button";
+import { Prompt } from "./Prompt";
 
 export const PhotoModal: React.FC<{
   photo: Photo;
@@ -38,12 +39,18 @@ export const PhotoModal: React.FC<{
                   }}
                 >
                   <Image
+                    className="rounded"
                     src={photoUrl(photo)}
                     width={photo.width}
                     height={photo.width}
                     alt={photo.prompt || "Generated photo"}
                   />
                 </Link>
+                <Prompt
+                  className="mt-1"
+                  content={photo.prompt}
+                  id={photo.prompt_id}
+                />
                 {photoDetails?.depiction && (
                   <div className="text-gray-900">
                     Depiction{" "}

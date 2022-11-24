@@ -10,6 +10,7 @@ import moment from "moment/moment";
 import { toast } from "react-hot-toast";
 import Button from "../../components/Button";
 import Link from "next/link";
+import { Prompt } from "../../components/Prompt";
 
 const PhotoDetails: NextPage = () => {
   const router = useRouter();
@@ -45,23 +46,7 @@ const PhotoDetails: NextPage = () => {
           />
 
           <div className="flex flex-col justify-start p-6">
-            <h5 className="mb-2 text-xl font-medium text-gray-900">
-              {photo.prompt.split(",").map((sentence, i) => (
-                <span
-                  key={i}
-                  className="after:content-[','] last:after:content-['']"
-                >
-                  <Link
-                    href={{
-                      pathname: "/prompt/",
-                      query: { sentence: sentence.trim() },
-                    }}
-                  >
-                    {sentence}
-                  </Link>
-                </span>
-              ))}
-            </h5>
+            <Prompt id={photo.prompt_id} content={photo.prompt} />
             {photo.depiction && (
               <Link
                 href={{

@@ -169,6 +169,8 @@ model Depiction {
   style          Style      @relation(fields: [style_slug], references: [slug], onDelete: Cascade)
   regularization Json       @db.Json
   photos         Photo[]
+
+  // photoUrl       String?   @db.Char(190)
 }
 
 enum TimelineAction {
