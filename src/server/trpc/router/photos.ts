@@ -37,68 +37,68 @@ function shuffle<T>(array: T[]): T[] {
 }
 
 export const photosRouter = router({
-  generate: protectedProcedure
-    .input(
-      z.object({
-        prompt: promptSchema,
-        howMany: z.number().min(1).max(24),
-        style: dbStringSchema,
-        depictionId: cuidSchema.optional(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { prompt, howMany, style, depictionId } = input;
-      const { user } = ctx.session;
-      const promptModel = await ctx.prisma.prompt.upsert({
-        where: {
-          content: prompt,
-        },
-        update: {},
-        create: {
-          content: prompt,
-        },
-      });
-      await Promise.all(
-        prompt
-          .split(",")
-          .map((part) => part.trim())
-          .map(async (part) => {
-            return await ctx.prisma.promptFragment.upsert({
-              where: {
-                content: part,
-              },
-              update: {},
-              create: {
-                content: part,
-              },
-            });
-          })
-      );
-
-      await Promise.all(
-        Array.from({ length: howMany }).map(async () => {
-          const id = cuid();
-          const data = {
-            id,
-            owner_id: user.id,
-            style_slug: style,
-            depiction_id: depictionId || null,
-          };
-          const root = s3PhotoRoot(data);
-          return await ctx.prisma.photo.create({
-            data: {
-              ...data,
-              root: root,
-              prompt_id: promptModel.id,
-              bucket: env.AWS_S3_BUCKET,
-              prompt,
-              seed: Math.floor(Math.random() * 4294967295),
-            },
-          });
-        })
-      );
-      return input;
-    }),
+  // generate: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       prompt: promptSchema,
+  //       howMany: z.number().min(1).max(24),
+  //       style: dbStringSchema,
+  //       depictionId: cuidSchema.optional(),
+  //     })
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const { prompt, howMany, style, depictionId } = input;
+  //     const { user } = ctx.session;
+  //     const promptModel = await ctx.prisma.prompt.upsert({
+  //       where: {
+  //         content: prompt,
+  //       },
+  //       update: {},
+  //       create: {
+  //         content: prompt,
+  //       },
+  //     });
+  //     await Promise.all(
+  //       prompt
+  //         .split(",")
+  //         .map((part) => part.trim())
+  //         .map(async (part) => {
+  //           return await ctx.prisma.promptFragment.upsert({
+  //             where: {
+  //               content: part,
+  //             },
+  //             update: {},
+  //             create: {
+  //               content: part,
+  //             },
+  //           });
+  //         })
+  //     );
+  //
+  //     await Promise.all(
+  //       Array.from({ length: howMany }).map(async () => {
+  //         const id = cuid();
+  //         const data = {
+  //           id,
+  //           owner_id: user.id,
+  //           style_slug: style,
+  //           depiction_id: depictionId || null,
+  //         };
+  //         const root = s3PhotoRoot(data);
+  //         return await ctx.prisma.photo.create({
+  //           data: {
+  //             ...data,
+  //             root: root,
+  //             prompt_id: promptModel.id,
+  //             bucket: env.AWS_S3_BUCKET,
+  //             prompt,
+  //             seed: Math.floor(Math.random() * 4294967295),
+  //           },
+  //         });
+  //       })
+  //     );
+  //     return input;
+  //   }),
 
   details: publicProcedure
     .input(z.object({ id: cuidSchema }))

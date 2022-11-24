@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-
 import { prisma } from "../../../../server/db/client";
 
 const releaseDepiction = async (id: string, errored: boolean) => {

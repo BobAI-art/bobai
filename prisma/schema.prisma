@@ -47,6 +47,7 @@ model User {
   subjects      Subject[]
   depiction     Depiction[]
   photos        Photo[]
+  timeline      Timeline[]
 }
 
 model VerificationToken {
@@ -125,8 +126,10 @@ enum ModelState {
   ERROR
 }
 
-model PromptFragment {
-  content String @id @db.Char(255)
+model AutocompletePrompt {
+    content    String   @id @db.Char(190)
+    photoUrl   String   @db.Char(190)
+    score      Decimal  @db.Decimal(5, 2)
 }
 
 model Prompt {
@@ -166,4 +169,18 @@ model Depiction {
   style          Style      @relation(fields: [style_slug], references: [slug], onDelete: Cascade)
   regularization Json       @db.Json
   photos         Photo[]
+}
+
+enum TimelineAction {
+  PAINTING
+}
+
+model Timeline {
+  id       String         @id @default(cuid())
+  owner_id String         @db.Char(25)
+  owner    User           @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  created  DateTime       @default(now())
+  action   TimelineAction
+  payload  Json           @db.Json
+  finished Boolean        @default(false)
 }

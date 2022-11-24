@@ -88,6 +88,42 @@ export const promptRouter = router({
       });
       // return makePrompts();
     }),
+  autocomplete: publicProcedure
+    .input(
+      z.object({
+        query: z.string().min(1).max(180),
+        excludeModel: z.boolean().optional().default(false),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      console.log(input);
+      return await ctx.prisma.autocompletePrompt.findMany({
+        where: {
+          AND: [
+            {
+              content: {
+                contains: input.query,
+              },
+            },
+            ...(input.excludeModel
+              ? [
+                  {
+                    content: {
+                      not: {
+                        contains: "<model>",
+                      },
+                    },
+                  },
+                ]
+              : []),
+          ],
+        },
+        orderBy: {
+          score: "desc",
+        },
+        take: 12,
+      });
+    }),
   generateAndSave: protectedProcedure
     .input(z.object({ category: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -108,9 +144,6 @@ export const promptRouter = router({
         { ddim: 50, width: 512, height: 512, guide: 5, seed: seed },
         { ddim: 50, width: 512, height: 512, guide: 7.5, seed: seed },
         { ddim: 50, width: 512, height: 512, guide: 10, seed: seed },
-        { ddim: 50, width: 512, height: 512, guide: 12.5, seed: seed },
-        { ddim: 50, width: 768, height: 512, guide: 7.5, seed: seed },
-        { ddim: 50, width: 512, height: 768, guide: 7.5, seed: seed },
       ];
       const depictions = await ctx.prisma.depiction.findMany({});
       const data = prompts
