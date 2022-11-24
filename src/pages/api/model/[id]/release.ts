@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-
-1;
+import { prisma } from "../../../../server/db/client";
 
 const releaseDepiction = async (id: string, errored: boolean) => {
   const updateCount = await prisma.depiction.updateMany({
