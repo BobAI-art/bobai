@@ -22,18 +22,18 @@ const AddPhoto: React.FC<{
   onSuccess: () => void;
 }> = ({ depiction, onSuccess }) => {
   const formRef = React.useRef<HTMLFormElement>(null);
-  const generateMutation = trpc.photos.generate.useMutation({
-    onSuccess: () => {
-      toast.success(
-        "Walking to studio to paint as requested, pleas give me a sec. Wof wof!"
-      );
-      onSuccess();
-      formRef.current?.reset();
-    },
-    onError: (err) => {
-      toast.error("Oh, I'm sorry, I can't paint that. Wof wof!");
-    },
-  });
+  // const generateMutation = trpc.photos.generate.useMutation({
+  //   onSuccess: () => {
+  //     toast.success(
+  //       "Walking to studio to paint as requested, pleas give me a sec. Wof wof!"
+  //     );
+  //     onSuccess();
+  //     formRef.current?.reset();
+  //   },
+  //   onError: (err) => {
+  //     toast.error("Oh, I'm sorry, I can't paint that. Wof wof!");
+  //   },
+  // });
 
   return (
     <form
@@ -42,12 +42,12 @@ const AddPhoto: React.FC<{
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
-        generateMutation.mutate({
-          prompt: formData.get("prompt") as string,
-          howMany: parseInt(formData.get("count") as string),
-          style: depiction.style_slug,
-          depictionId: depiction.id,
-        });
+        // generateMutation.mutate({
+        //   prompt: formData.get("prompt") as string,
+        //   howMany: parseInt(formData.get("count") as string),
+        //   style: depiction.style_slug,
+        //   depictionId: depiction.id,
+        // });
       }}
     >
       <H2>
@@ -68,7 +68,7 @@ const AddPhoto: React.FC<{
         min={1}
         max={24}
       />
-      <Button disabled={generateMutation.isLoading}>Go to work!</Button>
+      {/*<Button disabled={generateMutation.isLoading}>Go to work!</Button>*/}
     </form>
   );
 };
