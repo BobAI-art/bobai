@@ -29,17 +29,17 @@ export default async function handler(
   });
   const seed = Math.floor(Math.random() * 4294967295);
   const photoOpts = [
-    { ddim: 50, width: 512, height: 512, guide: 2.5, seed: seed },
-    { ddim: 50, width: 512, height: 512, guide: 5, seed: seed },
+    // { ddim: 50, width: 512, height: 512, guide: 2.5, seed: seed },
+    // { ddim: 50, width: 512, height: 512, guide: 5, seed: seed },
     { ddim: 50, width: 512, height: 512, guide: 7.5, seed: seed },
-    { ddim: 50, width: 512, height: 512, guide: 10, seed: seed },
-    { ddim: 50, width: 512, height: 512, guide: 12.5, seed: seed },
+    // { ddim: 50, width: 512, height: 512, guide: 10, seed: seed },
+    // { ddim: 50, width: 512, height: 512, guide: 12.5, seed: seed },
 
-    { ddim: 50, width: 512, height: 768, guide: 2.5, seed: seed },
-    { ddim: 50, width: 512, height: 768, guide: 5, seed: seed },
+    // { ddim: 50, width: 512, height: 768, guide: 2.5, seed: seed },
+    // { ddim: 50, width: 512, height: 768, guide: 5, seed: seed },
     { ddim: 50, width: 512, height: 768, guide: 7.5, seed: seed },
-    { ddim: 50, width: 512, height: 768, guide: 10, seed: seed },
-    { ddim: 50, width: 512, height: 768, guide: 12.5, seed: seed },
+    // { ddim: 50, width: 512, height: 768, guide: 10, seed: seed },
+    // { ddim: 50, width: 512, height: 768, guide: 12.5, seed: seed },
   ];
   const data = prompts
     .flatMap((prompt) =>
