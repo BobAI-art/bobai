@@ -10,9 +10,14 @@ import {
   dbStringSchema,
   promptSchema,
 } from "../../../utils/schema";
-import cuid from "cuid";
-import { env } from "../../../env/server.mjs";
-import { s3PhotoRoot } from "../../../utils/helpers";
+import { TRPCError } from "@trpc/server";
+
+const canShow = (id?: string) =>
+  id !== undefined
+    ? { OR: [{ owner_id: id }, { is_public: true }] }
+    : {
+        is_public: true,
+      };
 
 function shuffle<T>(array: T[]): T[] {
   let currentIndex = array.length,
@@ -120,7 +125,48 @@ export const photosRouter = router({
       if (!photo) {
         throw new Error("Photo not found");
       }
-      return photo;
+      if (photo.is_public || photo.owner_id === ctx.session?.user?.id) {
+        return photo;
+      }
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Photo is not public",
+      });
+    }),
+  changePublicStatus: protectedProcedure
+    .input(
+      z.object({
+        id: cuidSchema,
+        isPublic: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, isPublic } = input;
+      const photo = await ctx.prisma.photo.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!photo) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Photo not found",
+        });
+      }
+      if (photo.owner_id !== ctx.session?.user?.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Photo is not public",
+        });
+      }
+      return await ctx.prisma.photo.update({
+        where: {
+          id,
+        },
+        data: {
+          is_public: isPublic,
+        },
+      });
     }),
   vote: protectedProcedure
     .input(z.object({ id: cuidSchema, vote: z.number().min(0).max(5) }))
@@ -189,12 +235,6 @@ export const photosRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      const canShow =
-        ctx.session?.user?.id !== undefined
-          ? { OR: [{ owner_id: ctx.session.user.id }, { is_public: true }] }
-          : {
-              is_public: true,
-            };
       const photos = await ctx.prisma.photo.findMany({
         where: {
           depiction_id: input.depictionId,
@@ -204,7 +244,7 @@ export const photosRouter = router({
           style_slug: input.styleSlug,
           prompt_id: input.promptId,
           status: "GENERATED",
-          ...canShow,
+          ...canShow(ctx.session?.user?.id),
         },
         // cursor: input.cursor ? { created: input.cursor } : undefined,
         cursor: input.cursor

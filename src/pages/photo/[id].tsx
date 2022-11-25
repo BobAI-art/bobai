@@ -11,21 +11,35 @@ import { toast } from "react-hot-toast";
 import Button from "../../components/Button";
 import Link from "next/link";
 import { Prompt } from "../../components/Prompt";
+import { Toggle } from "../../components/Toggle";
+import { useSession } from "next-auth/react";
+import { trpc } from "../../utils/trpc";
 
 const PhotoDetails: NextPage = () => {
+  const session = useSession();
   const router = useRouter();
   const photoId = router.query.id as string;
-  const { data: photo, isLoading } = usePhoto(photoId);
+  const { data: photo, isLoading, error, refetch } = usePhoto(photoId);
   const voteMutation = useVote({
     onSuccessfulVote: (id: string) => {
       toast.success("Thanks for voting!");
     },
   });
-
+  const changePublicStatus = trpc.photos.changePublicStatus.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
   if (isLoading)
     return (
       <Layout>
         <div>Loading...</div>
+      </Layout>
+    );
+  if (error)
+    return (
+      <Layout>
+        <div>{error.message}</div>
       </Layout>
     );
   if (!photo)
@@ -34,6 +48,9 @@ const PhotoDetails: NextPage = () => {
         <div>Photo not found</div>
       </Layout>
     );
+
+  const isOwner =
+    session.data?.user?.id && photo.owner_id == session.data.user.id;
 
   return (
     <Layout>
@@ -103,6 +120,24 @@ const PhotoDetails: NextPage = () => {
                 Download
               </Button>
             </div>
+            {isOwner && (
+              <div className="p-2">
+                <Toggle
+                  value={photo.is_public}
+                  disabled={changePublicStatus.isLoading}
+                  onChange={(value) =>
+                    changePublicStatus.mutate({
+                      id: photo.id,
+                      isPublic: value,
+                    })
+                  }
+                >
+                  <span className="mb-4 text-base text-gray-700">
+                    {photo.is_public ? "Public" : "Private"}
+                  </span>
+                </Toggle>
+              </div>
+            )}
           </div>
         </div>
       </div>
