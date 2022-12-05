@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from "react";
 import Image, { StaticImageData } from "next/image";
-import { classNames } from "../../toolbox";
-import defaultImage from "../../assets/default.webp";
+import { classNames } from "../toolbox";
+import defaultImage from "../assets/default.webp";
 const photoCompensation = (width: number, height: number) => ({
   ...(width !== height
     ? {

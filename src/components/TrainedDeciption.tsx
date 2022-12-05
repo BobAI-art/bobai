@@ -1,6 +1,6 @@
 import React from "react";
 import { Depiction } from "@prisma/client";
-import { ImageWithLabel } from "../pages/components/ImageWithLabel";
+import { ImageWithLabel } from "./ImageWithLabel";
 
 export const TrainedDeciption: React.FC<{
   depiction: Pick<

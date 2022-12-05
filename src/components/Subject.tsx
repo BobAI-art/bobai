@@ -1,6 +1,6 @@
 import React from "react";
 import { Subject as SubjectModel } from "@prisma/client";
-import { ImageWithLabel } from "../pages/components/ImageWithLabel";
+import { ImageWithLabel } from "./ImageWithLabel";
 
 const Subject: React.FC<{ subject: SubjectModel; className?: string }> = ({
   subject,
