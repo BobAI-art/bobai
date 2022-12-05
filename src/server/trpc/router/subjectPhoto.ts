@@ -9,7 +9,11 @@ import {
 import { router, protectedProcedure } from "../trpc";
 import { deleteS3Object, putS3Object } from "../../s3";
 import { env } from "../../../env/server.mjs";
-import { s3SubjectPhotoPath, s3SubjectPhotoRoot } from "../../../utils/helpers";
+import {
+  photoUrl,
+  s3SubjectPhotoPath,
+  s3SubjectPhotoRoot,
+} from "../../../utils/helpers";
 
 export const subjectPhotoRouter = router({
   list: protectedProcedure
@@ -68,17 +72,17 @@ export const subjectPhotoRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const model = await ctx.prisma.subject.findFirst({
+      const subject = await ctx.prisma.subject.findFirst({
         where: {
           slug: input.model,
           owner_id: ctx.session.user.id,
         },
       });
-      if (model) {
-        const s3PathRoot = s3SubjectPhotoRoot(ctx.session.user.id, model.id);
+      if (subject) {
+        const s3PathRoot = s3SubjectPhotoRoot(ctx.session.user.id, subject.id);
         const s3Path = s3SubjectPhotoPath(
           ctx.session.user.id,
-          model.id,
+          subject.id,
           input.photoCuid
         );
 
@@ -91,7 +95,7 @@ export const subjectPhotoRouter = router({
         const buffer = Buffer.from(data, "base64");
         await putS3Object(s3Path, contentType, buffer);
 
-        return await ctx.prisma.subjectPhoto.create({
+        const photo = await ctx.prisma.subjectPhoto.create({
           data: {
             subject_slug: input.model,
             id: input.photoCuid,
@@ -99,6 +103,17 @@ export const subjectPhotoRouter = router({
             bucket: env.AWS_S3_BUCKET,
           },
         });
+        if (!subject.photoUrl) {
+          await ctx.prisma.subject.update({
+            where: {
+              slug: input.model,
+            },
+            data: {
+              photoUrl: photoUrl(photo),
+            },
+          });
+        }
+        return photo;
       }
       throw new trpc.TRPCError({
         code: "FORBIDDEN",

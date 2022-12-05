@@ -60,7 +60,7 @@ model VerificationToken {
 
 // My models
 
-model Photo {
+model Photo {   
   id      String   @id @default(cuid())
   root    String   @db.Char(190)
   bucket  String   @db.Char(190)
@@ -88,6 +88,11 @@ model Photo {
   score         Int    @default(0)
   votes         Int    @default(0)
   average_score Float? @db.Float
+
+  @@index([owner_id])
+  @@index([style_slug])
+  @@index([depiction_id])
+  @@index([prompt_id])
 }
 
 enum PhotoStatus {
@@ -104,6 +109,8 @@ model SubjectPhoto {
   subject_slug String  @db.Char(190)
   subject      Subject @relation(fields: [subject_slug], references: [slug], onDelete: Cascade)
   is_public    Boolean @default(false)
+
+  @@index([subject_slug])
 }
 
 model Subject {
@@ -117,6 +124,10 @@ model Subject {
   is_public      Boolean        @default(false)
   finished       Boolean        @default(false)
   depiction      Depiction[]
+
+  photoUrl String? @db.Char(190)
+
+  @@index([owner_id])
 }
 
 enum ModelState {
@@ -127,9 +138,9 @@ enum ModelState {
 }
 
 model AutocompletePrompt {
-    content    String   @id @db.Char(190)
-    photoUrl   String   @db.Char(190)
-    score      Decimal  @db.Decimal(5, 2)
+  content  String  @id @db.Char(190)
+  photoUrl String  @db.Char(190)
+  score    Decimal @db.Decimal(5, 2)
 }
 
 model Prompt {
@@ -169,8 +180,15 @@ model Depiction {
   style          Style      @relation(fields: [style_slug], references: [slug], onDelete: Cascade)
   regularization Json       @db.Json
   photos         Photo[]
+  is_public      Boolean    @default(false)
 
-  // photoUrl       String?   @db.Char(190)
+  photoUrl    String? @db.Char(190)
+  photoWidth  Int     @default(512) @db.UnsignedInt
+  photoHeight Int     @default(512) @db.UnsignedInt
+
+  @@index([owner_id])
+  @@index([subject_slug])
+  @@index([style_slug])
 }
 
 enum TimelineAction {
@@ -185,4 +203,6 @@ model Timeline {
   action   TimelineAction
   payload  Json           @db.Json
   finished Boolean        @default(false)
+
+  @@index([owner_id])
 }
