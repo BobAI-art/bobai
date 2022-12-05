@@ -11,10 +11,36 @@ import { toast } from "react-hot-toast";
 import Button from "../../components/Button";
 import Link from "next/link";
 import { Prompt } from "../../components/Prompt";
-import { Toggle } from "../../components/Toggle";
 import { useSession } from "next-auth/react";
+import { PublicToggle } from "../../components/PublicToggle";
 import { trpc } from "../../utils/trpc";
 
+const MakeCover: React.FC<{
+  photo: {
+    id: string;
+  };
+}> = ({ photo }) => {
+  const mutation = trpc.depiction.setCover.useMutation({
+    onSuccess: () => {
+      toast.success("Cover photo updated");
+    },
+    onError: () => {
+      toast.error("Error updating cover photo");
+    },
+  });
+  return (
+    <Button
+      disabled={mutation.isLoading}
+      onClick={() =>
+        mutation.mutate({
+          photoId: photo.id,
+        })
+      }
+    >
+      Make cover
+    </Button>
+  );
+};
 const PhotoDetails: NextPage = () => {
   const session = useSession();
   const router = useRouter();
@@ -25,11 +51,7 @@ const PhotoDetails: NextPage = () => {
       toast.success("Thanks for voting!");
     },
   });
-  const changePublicStatus = trpc.photos.changePublicStatus.useMutation({
-    onSuccess: () => {
-      refetch();
-    },
-  });
+
   if (isLoading)
     return (
       <Layout>
@@ -121,21 +143,15 @@ const PhotoDetails: NextPage = () => {
               </Button>
             </div>
             {isOwner && (
-              <div className="p-2">
-                <Toggle
-                  value={photo.is_public}
-                  disabled={changePublicStatus.isLoading}
-                  onChange={(value) =>
-                    changePublicStatus.mutate({
-                      id: photo.id,
-                      isPublic: value,
-                    })
-                  }
-                >
-                  <span className="mb-4 text-base text-gray-700">
-                    {photo.is_public ? "Public" : "Private"}
-                  </span>
-                </Toggle>
+              <div className="flex flex-wrap">
+                <div className="p-2">
+                  <PublicToggle
+                    item={photo}
+                    type="photos"
+                    onSuccess={refetch}
+                  />
+                  <MakeCover photo={photo} />
+                </div>
               </div>
             )}
           </div>

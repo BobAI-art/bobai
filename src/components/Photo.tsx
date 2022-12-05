@@ -40,7 +40,7 @@ const Photo: React.FC<{
           height={photo.height}
           className={classNames(
             showModal
-              ? "min-w-full scale-100 rounded shadow transition-transform duration-200 hover:scale-105"
+              ? "min-w-full scale-100 rounded shadow transition-transform duration-300 hover:scale-110"
               : ""
           )}
         />

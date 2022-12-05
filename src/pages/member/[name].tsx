@@ -8,16 +8,16 @@ import {
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import Button from "../../components/Button";
-import moment from "moment";
 import H2 from "../../components/H2";
 import UserLink from "../../components/UserLink";
-import useMyDepictions from "../../hooks/useMyDepictions";
+import useMyDepictionsBySubject from "../../hooks/useMyDepictionsBySubject";
 import useSubjects from "../../hooks/useSubjects";
 import React from "react";
 import useUserByName from "../../hooks/useUserByName";
+import Subject from "../../components/Subject";
 
 const MemberPrivate: React.FC = () => {
-  const { data: models } = useMyDepictions();
+  const { data: models } = useMyDepictionsBySubject();
   return (
     <div className="">
       <hr />
@@ -113,29 +113,27 @@ const Member: NextPage = () => {
             <h3 className="text-xl font-extrabold leading-normal tracking-tight">
               @{user.name} Subjects
             </h3>
-            {subjects?.map((subject) => (
-              <div key={subject.id} className="flex gap-2 ">
+
+            <div className="grid grid-cols-6 gap-2 ">
+              {subjects?.map((subject) => (
                 <Link
+                  key={subject.id}
                   href={{
                     pathname: "/subject/[slug]",
                     query: { slug: subject.slug },
                   }}
                 >
-                  <Button>{subject.slug}</Button>
+                  <Subject subject={subject} />
                 </Link>
-
-                <div>{moment(subject.created).fromNow()}</div>
-              </div>
-            ))}
-            {isMe && (
-              <Link href="/subject/new">
-                <div>
-                  <Button>
+              ))}
+              {isMe && (
+                <Link href="/subject/new">
+                  <Button className="aspect-square">
                     <PlusCircleIcon className="w-4" /> Add new subject
                   </Button>
-                </div>
-              </Link>
-            )}
+                </Link>
+              )}
+            </div>
           </div>
           {isMe && <MemberPrivate />}
 

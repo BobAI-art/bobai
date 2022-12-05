@@ -7,6 +7,10 @@ import {
 } from "../trpc";
 import { ModelClass, modelClasses } from "../../../utils/consts";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
+import { photoUrl } from "../../../utils/helpers";
+import { Depiction, Subject } from "@prisma/client";
+import * as trpc from "@trpc/server";
 
 const makeRegularization = (regularization: string) => {
   if (modelClasses.has(regularization as ModelClass)) {
@@ -39,7 +43,7 @@ export const depictionRouter = router({
       });
     }),
   ownedByMe: protectedProcedure.input(z.object({})).query(async ({ ctx }) => {
-    return await ctx.prisma.depiction.findMany({
+    const depictions = await ctx.prisma.depiction.findMany({
       where: {
         owner_id: ctx.session.user.id,
         state: "TRAINED",
@@ -47,15 +51,28 @@ export const depictionRouter = router({
       orderBy: {
         created: "desc",
       },
-      select: {
-        id: true,
-        name: true,
-        created: true,
+      include: {
+        subject: true,
       },
     });
+    // group by subject
+    return Object.values(
+      depictions.reduce((acc, depiction) => {
+        let current = acc[depiction.subject_slug];
+        if (!current) {
+          current = {
+            subject: depiction.subject,
+            depictions: [],
+          };
+        }
+        current.depictions.push(depiction);
+        acc[depiction.subject_slug] = current;
+        return acc;
+      }, {} as Record<string, { subject: Subject; depictions: Depiction[] }>)
+    );
   }),
   get: publicProcedure.input(cuidSchema).query(async ({ ctx, input }) => {
-    const model = await ctx.prisma.depiction.findFirst({
+    const depiction = await ctx.prisma.depiction.findUnique({
       where: {
         id: input,
       },
@@ -65,9 +82,15 @@ export const depictionRouter = router({
         style: true,
       },
     });
-    if (!model) return model;
+    if (!depiction) {
+      throw new trpc.TRPCError({
+        code: "NOT_FOUND",
+      });
+    }
+    if (depiction.owner_id !== ctx.session?.user?.id && depiction) {
+    }
 
-    return model;
+    return depiction;
   }),
   create: protectedProcedure
     .input(depictionCreateSchema)
@@ -110,4 +133,31 @@ export const depictionRouter = router({
       },
     });
   }),
+  setCover: protectedProcedure
+    .input(
+      z.object({
+        photoId: cuidSchema,
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const photo = await ctx.prisma.photo.findUnique({
+        where: {
+          id: input.photoId,
+        },
+      });
+      if (!photo) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!photo.depiction_id) throw new TRPCError({ code: "BAD_REQUEST" });
+      if (photo.owner_id !== ctx.session.user.id)
+        throw new TRPCError({ code: "FORBIDDEN" });
+      return await ctx.prisma.depiction.update({
+        where: {
+          id: photo.depiction_id,
+        },
+        data: {
+          photoUrl: photoUrl(photo),
+          photoWidth: photo.width,
+          photoHeight: photo.height,
+        },
+      });
+    }),
 });

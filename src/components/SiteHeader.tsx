@@ -13,7 +13,7 @@ const SiteHeader: React.FC = () => {
         <Link href="/">Bob AI</Link>
       </H1>
       <div className="flex-grow" />
-      <Link href="/new">
+      <Link href="/paint">
         <Button>
           <span>Bob, please paint</span>
         </Button>

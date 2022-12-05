@@ -15,7 +15,7 @@ export const userSchema = {
     ),
 };
 
-const slugSchema = dbStringSchema
+export const slugSchema = dbStringSchema
   .min(3, "Slug must be at least 3 character long")
   .regex(
     /^[a-z\-\d]+$/,
